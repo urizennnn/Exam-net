@@ -12,8 +12,8 @@ const router = createRouter({
       component: License,
     },
     {
-      path: "/mba",
-      name: "Mba",
+      path: "/exams",
+      name: "Exams",
       component: Mba,
     },
     {
