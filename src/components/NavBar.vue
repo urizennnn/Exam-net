@@ -1,0 +1,68 @@
+<template>
+  <nav class="flex items-center justify-between p-5 bg-[#2d3541] cursor-pointer">
+    <!-- Logo -->
+    <img src="../assets/images/logo.png" alt="logo" class="h-[30px]" />
+
+    <!-- Mobile Menu Button -->
+    <button @click="menuOpen = !menuOpen" class="md:hidden text-white text-2xl">
+      <i :class="menuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"></i>
+    </button>
+
+    <!-- Links -->
+    <div
+      :class="menuOpen ? 'flex' : 'hidden'"
+      class="md:flex flex-col md:flex-row gap-6 items-center absolute md:static top-16 left-0 w-full md:w-auto bg-[#2d3541] md:bg-transparent p-5 md:p-0 shadow-md md:shadow-none transition-all duration-300 ease-in-out"
+    >
+      <div class="flex gap-2 items-center">
+        <i class="fa-solid fa-pencil text-[#ffffff] text-[14px]"></i>
+        <p class="text-[#ffffff] text-[14px] font-[500]">New exam</p>
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <i class="fa-solid fa-bars text-[#ffffff] text-[14px]"></i>
+        <p class="text-[#ffffff] text-[14px] font-[500]">Exams</p>
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <i class="fa-solid fa-desktop text-[#ffffff] text-[14px]"></i>
+        <p class="text-[#ffffff] text-[14px] font-[500]">Monitoring/Results</p>
+      </div>
+
+      <div class="relative">
+        <div class="flex gap-2 items-center">
+          <i class="fa-solid fa-house text-[#ffffff] text-[14px]"></i>
+          <p class="text-[#ffffff] text-[14px] font-[500]">School</p>
+        </div>
+        <div class="absolute text-orange-500 left-8 bottom-4">
+          <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <i class="fa-solid fa-user text-[#ffffff] text-[14px]"></i>
+        <p class="text-[#ffffff] text-[14px] font-[500]">Profile</p>
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <i class="fa-solid fa-circle-play text-[#ffffff] text-[14px]"></i>
+        <p class="text-[#ffffff] text-[14px] font-[500]">Training</p>
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <i class="fa-solid fa-circle-question text-[#ffffff] text-[14px]"></i>
+        <p class="text-[#ffffff] text-[14px] font-[500]">Support</p>
+      </div>
+
+      <!-- Logout Icon -->
+      <div class="text-[#ffffff]">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script setup>
+import { ref } from "vue";
+
+const menuOpen = ref(false);
+</script>
