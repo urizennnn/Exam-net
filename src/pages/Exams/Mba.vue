@@ -1,10 +1,10 @@
 <template>
   <div class="h-screen w-full">
     <NavBar />
-    <div class="flex flex-col gap-2 h-[100%] bg-[#e8e8e8] px-5">
+    <div class="flex flex-col gap-2 h-[100%] bg-[#cdcccc] px-5">
       <div class="flex justify-center items-center w-full p-4 md:p-0">
         <div
-          class="w-full max-w-[90%] md:max-w-[80%] lg:max-w-[60%] h-auto md:h-[500px] flex flex-col mt-10 rounded-2xl bg-[#ffffff] shadow-[0px_6px_32px_0px_rgba(0,0,0,0.2)]"
+          class="w-full max-w-[90%] md:max-w-[80%] lg:max-w-[60%] h-auto md:h-[500px] lg:pb-0 pb-5 flex flex-col mt-10 rounded-2xl bg-[#ffffff] shadow-[0px_6px_32px_0px_rgba(0,0,0,0.2)]"
         >
           <div
             class="bg-[#15325d] text-[#ffffff] p-3 rounded-t-lg flex justify-between items-center"
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import NavBar from "../components/NavBar.vue";
+import NavBar from "../../components/NavBar.vue";
 
 export default {
   components: {
