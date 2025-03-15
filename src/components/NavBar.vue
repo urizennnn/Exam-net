@@ -3,7 +3,7 @@
     class="flex items-center justify-between px-5 bg-[#2d3541] cursor-pointer h-[60px]"
   >
     <!-- Logo -->
-    <img src="../assets/images/logo.png" alt="logo" class="h-[30px]" />
+    <img src="../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]" />
 
     <!-- Mobile Menu Button -->
     <button @click="menuOpen = !menuOpen" class="md:hidden text-white text-2xl">

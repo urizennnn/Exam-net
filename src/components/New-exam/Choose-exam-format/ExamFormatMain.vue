@@ -11,7 +11,7 @@
       <!-- cards -->
       <Cards />
 
-      <div class="flex flex-col flex-row items-center gap-4 font-sans text-[#464646] font-medium text-sm md:text-base">
+      <div class="flex flex-col lg:flex-row items-center gap-4 font-sans text-[#464646] font-medium text-sm md:text-base">
         <p>Neither, skip digital questions</p>
         <i class="fa-solid fa-angles-right"></i>
       </div>

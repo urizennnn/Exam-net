@@ -1,15 +1,20 @@
 <template>
-  <div class="flex bg-[#cdcccc] h-screen">main</div>
+  <div class="h-screen flex w-full">
+    <!-- Sidebar -->
+    <SideBar />
+    <!-- Question -->
+    <Question />
+  </div>
 </template>
 
 <script>
+import SideBar from "./SideBar.vue";
+import Question from "../New-question/Question.vue";
+
 export default {
-  name: "Test",
-  created() {},
-  data() {
-    return {};
+  components: {
+    SideBar,
+    Question,
   },
-  props: {},
-  methods: {},
 };
 </script>

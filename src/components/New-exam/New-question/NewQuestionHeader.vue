@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-between items-center py-4 border-b-2 border-[#cacaca] px-4 bg-[#e6e6e6] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.1)]"
+    class="hidden lg:flex justify-between items-center py-4 border-b-2 border-[#cacaca] px-4 bg-[#e6e6e6] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.1)]"
   >
     <input
       type="text"
@@ -43,14 +43,14 @@
       </div>
     </div>
     <!-- binocular -->
-    <div class="border-2 border-[#37373758] py-1 px-5 text-lg rounded-4xl">
+    <div class="border-2 border-[#37373758] py-1 px-5 font-[400] text-lg rounded-4xl">
       <i class="fa-solid fa-binoculars"></i>
     </div>
 
     <div class="flex gap-4">
       <!-- Next Button -->
       <div
-        class="flex gap-1 bg-[#38383858] text-[#ffffff] font-semibold rounded-2xl py-1 px-3"
+        class="flex gap-1 bg-[#211d1d] text-[#ffffff] font-semibold rounded-3xl py-2 px-3"
       >
         <p>Next</p>
         <div>
