@@ -1,6 +1,5 @@
 <template>
   <div class="h-screen w-full">
-    <NavBar />
     <div class="flex flex-col gap-2 h-[100%] bg-[#cdcccc] px-5">
       <div class="flex justify-center items-center w-full p-4 md:p-0">
         <div
@@ -48,10 +47,14 @@
           <i class="fa-solid fa-magnifying-glass"></i>
         </div>
         <div class="flex gap-4 items-center">
-          <div class="text-[#348ef4] bg-[#ffffff] p-5 w-[20px] h-[20px] rounded-full flex justify-center items-center">
+          <div
+            class="text-[#348ef4] bg-[#ffffff] p-5 w-[20px] h-[20px] rounded-full flex justify-center items-center"
+          >
             <i class="fa-solid fa-arrow-up"></i>
           </div>
-          <div class="text-[#ffffff] bg-[#1fc2f0] p-5 w-[50px] h-[50px] rounded-full flex justify-center items-center">
+          <div
+            class="text-[#ffffff] bg-[#1fc2f0] p-5 w-[50px] h-[50px] rounded-full flex justify-center items-center"
+          >
             <i class="fa-solid fa-question"></i>
           </div>
         </div>
@@ -60,12 +63,6 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import NavBar from "../../components/NavBar.vue";
-
-export default {
-  components: {
-    NavBar,
-  },
-};
 </script>

@@ -16,7 +16,7 @@
       class="h-[100%] md:flex flex-col md:flex-row gap-6 items-center absolute md:static top-16 left-0 w-full md:w-auto bg-[#2d3541] md:bg-transparent p-5 md:p-0 shadow-md md:shadow-none transition-all duration-300 ease-in-out"
     >
       <RouterLink
-        to="/exam-format"
+        to="/new-exam"
         class="flex gap-2 items-center px-3 py-2 h-full text-[#ffffff] text-[14px] font-[500] hover:bg-[#495057]"
         active-class="bg-[#495057]"
       >
