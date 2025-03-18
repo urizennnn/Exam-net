@@ -20,9 +20,9 @@ defineProps({
   label: String,
 });
 
-const emits = defineEmits(['click'])
+const emits = defineEmits(["click"]);
 
 function handleClick(event: Event) {
-  emits('click', event)
+  emits("click", event);
 }
 </script>

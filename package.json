@@ -10,7 +10,9 @@
     "format": "prettier --write \"**/*.{ts,vue,scss,html,md,json}\" --ignore-path .gitignore"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-vue": "^7.3.0",
     "@tailwindcss/vite": "^4.0.12",
+    "ckeditor5": "^44.3.0",
     "pinia": "^3.0.1",
     "prettier": "^3.5.3",
     "tailwindcss": "^4.0.12",

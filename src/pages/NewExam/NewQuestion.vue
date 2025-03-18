@@ -65,7 +65,7 @@
       </section>
     </template>
     <template v-if="steps === 3">
-
+      <AppEditor />
     </template>
   </section>
 </template>
@@ -78,9 +78,10 @@ import AppAnswerType from "../../components/NewExam/AppAnswerType.vue";
 import AppButton from "../../components/AppButton.vue";
 import { hasTrueValue } from "../../utils/functions";
 import AppContentType from "../../components/NewExam/AppContentType.vue";
+import AppEditor from "../../components/AppEditor.vue";
 
 const newExamStore = useNewExamStore();
-const steps = ref(2);
+const steps = ref(1);
 const answerTypeList = ref<
   {
     label: string;
@@ -152,7 +153,7 @@ const contentTypes = [
   {
     fileType: "T",
     label: "Write or paste in exam questions",
-    actionOnClick: nextStep
+    actionOnClick: nextStep,
   },
 ];
 
