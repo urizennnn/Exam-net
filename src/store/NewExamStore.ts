@@ -7,5 +7,15 @@ export const useNewExamStore = defineStore("newExams", {
     form: {
       examFormat: "",
     },
+    formStepTwo: {
+      informationBlock: false,
+      multipleChoice: true,
+      simpleAnswer: true,
+      fillTheGaps: true,
+      matchAnswer: true,
+      grid: true,
+      freeText: false,
+      attachment: false,
+    },
   }),
 });

@@ -3,4 +3,14 @@ export interface NewExamStore {
   form: {
     examFormat: string;
   };
+  formStepTwo: {
+    informationBlock: boolean;
+    multipleChoice: boolean;
+    simpleAnswer: boolean;
+    fillTheGaps: boolean;
+    matchAnswer: boolean;
+    grid: boolean;
+    freeText: boolean;
+    attachment: boolean;
+  };
 }
