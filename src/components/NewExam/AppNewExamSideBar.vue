@@ -4,7 +4,7 @@
       role="button"
       v-for="(tab, index) in tabs"
       :key="index"
-      :class="`${tab.class} ${tab.active ? 'border-solid border-l-5 px-4 py-2 border-amber-400 active' : ''} text-3xl md:text-4xl cursor-pointer text-gray-400 font-extralight`"
+      :class="`${tab.class} ${tab.active ? 'border-solid border-l-3 px-2 py-2 border-amber-400 active' : ''} text-3xl md:text-4xl cursor-pointer text-gray-400 font-extralight`"
     ></i>
   </nav>
 </template>
