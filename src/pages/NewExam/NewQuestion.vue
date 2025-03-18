@@ -49,11 +49,11 @@
       </section>
     </template>
     <template v-if="steps === 2">
-      <section class="w-full pt-20">
+      <section class="w-full mt-20">
         <h1 class="text-center text-2xl text-gray-600 tracking-wide">
           Select how to add content
         </h1>
-        <div class="my-20 flex gap-5 items-center justify-center">
+        <div class="my-10 flex gap-5 items-center justify-center">
           <AppContentType
             v-for="contentType in contentTypes"
             :key="contentType.fileType"
@@ -63,6 +63,9 @@
           />
         </div>
       </section>
+    </template>
+    <template v-if="steps === 3">
+
     </template>
   </section>
 </template>
