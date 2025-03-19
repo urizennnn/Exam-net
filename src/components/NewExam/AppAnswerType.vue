@@ -60,7 +60,6 @@ label div::before {
   transition: 500ms ease-in-out;
 }
 
-label:hover div::before,
 input:checked + label div::before {
   transition: 500ms ease-in-out;
   content: "";
