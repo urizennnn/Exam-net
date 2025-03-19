@@ -40,6 +40,7 @@
             </template>
           </div>
           <AppButton
+            v-if="newExamStore.counter > 1"
             extraClass="py-1 px-4 rounded-4xl! border-[#37373758]! border-2! text-lg!"
           >
             <i class="fa-solid fa-binoculars text-black"></i>
