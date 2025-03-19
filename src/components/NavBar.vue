@@ -1,17 +1,20 @@
 <template>
-  <nav
+  <section
     class="flex items-center z-50 justify-between px-5 bg-[#2d3541] cursor-pointer h-[60px]"
   >
     <!-- Logo -->
     <img src="../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]" />
 
     <!-- Mobile Menu Button -->
-    <button @click="menuOpen = !menuOpen" class="lg:hidden cursor-pointer text-white text-2xl outline-none">
+    <button
+      @click="menuOpen = !menuOpen"
+      class="lg:hidden cursor-pointer text-white text-2xl outline-none"
+    >
       <i :class="menuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"></i>
     </button>
 
     <!-- Links -->
-    <div
+    <nav
       :class="menuOpen ? 'flex' : 'hidden'"
       class="z-50 lg:flex flex-col lg:flex-row gap-6 items-center absolute lg:static top-15 left-0 w-full lg:w-auto bg-[#2d3541] lg:bg-transparent p-5 lg:p-0 shadow-md lg:shadow-none transition-all duration-300 ease-in-out"
     >
@@ -36,8 +39,8 @@
       <button class="text-[#ffffff]">
         <i class="fa-solid fa-right-from-bracket"></i>
       </button>
-    </div>
-  </nav>
+    </nav>
+  </section>
 </template>
 
 <script setup>
