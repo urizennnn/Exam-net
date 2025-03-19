@@ -39,6 +39,7 @@
           <AppButton
             :disabled="!hasTrueValue(newExamStore.formStepTwo)"
             label="Generate questions"
+            @click="toggleShowGenerateQuestionsModal"
             leftIcon="fa-solid fa-wand-sparkles"
           />
           <AppButton
@@ -72,6 +73,10 @@
       <AppEditor />
     </div>
   </section>
+  <AppModal
+    :isVisible="showGenerateQuestionsModal"
+    @onClose="toggleShowGenerateQuestionsModal"
+  />
 </template>
 
 <script setup lang="ts">
@@ -83,6 +88,7 @@ import AppButton from "../../components/AppButton.vue";
 import { hasTrueValue } from "../../utils/functions";
 import AppContentType from "../../components/NewExam/AppContentType.vue";
 import AppEditor from "../../components/AppEditor.vue";
+import AppModal from "../../components/AppModal.vue";
 
 const newExamStore = useNewExamStore();
 const steps = ref(1);
@@ -160,9 +166,13 @@ const contentTypes = [
     actionOnClick: nextStep,
   },
 ];
+const showGenerateQuestionsModal = ref(false);
 
 function nextStep() {
   steps.value += 1;
+}
+function toggleShowGenerateQuestionsModal() {
+  showGenerateQuestionsModal.value = !showGenerateQuestionsModal.value;
 }
 
 onMounted(() => {
