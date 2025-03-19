@@ -3,7 +3,6 @@
     :disabled="disabled"
     @click="handleClick"
     :class="[
-      extraClass,
       theme === 'primary'
         ? 'w-fit flex items-center text-gray-500 py-2 gap-2 border border-gray-400  px-2 rounded-lg'
         : 'flex items-center gap-1 text-white font-semibold rounded-2xl py-1 px-3',
@@ -17,11 +16,15 @@
         : !disabled && theme === 'secondary'
           ? 'cursor-pointer bg-[#211d1d]'
           : '',
+      extraClass,
     ]"
   >
-    <i v-if="rightIcon" :class="rightIcon"></i>
-    <span class="text-sm font-medium">{{ label }}</span>
     <i v-if="leftIcon" :class="leftIcon"></i>
+    <span v-if="label" class="text-sm font-medium">{{ label }}</span>
+    <template v-else>
+      <slot></slot>
+    </template>
+    <i v-if="rightIcon" :class="rightIcon"></i>
   </button>
 </template>
 

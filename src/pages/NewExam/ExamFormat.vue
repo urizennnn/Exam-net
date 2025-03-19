@@ -26,7 +26,7 @@
     </div>
 
     <div
-      class="flex flex-col lg:flex-row justify-center mt-10 items-center gap-2 font-sans text-[#464646] font-medium text-sm md:text-base"
+      class="flex flex-row justify-center mt-10 items-center gap-1 font-sans text-[#464646] font-medium text-sm md:text-base"
     >
       <p>Neither, skip digital questions</p>
       <i class="fa-solid fa-angles-right"></i>

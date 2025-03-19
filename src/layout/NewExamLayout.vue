@@ -9,19 +9,18 @@
           placeholder="Enter the Exam Name"
           class="border-2 border-[#cacaca] bg-white w-full md:w-[50%] p-2 rounded-md placeholder:text-[#8a8787] font-semibold"
         />
-        <div class="flex items-center gap-4">
-          <button
+        <div class="flex items-center md:gap-2 gap-4">
+          <AppButton
             @click="
               () => {
                 router.back();
               }
             "
             v-if="newExamStore.counter > 1"
-            class="cursor-pointer h-full flex gap-1 items-center text-lg font-semibold text-[#464646]"
-          >
-            <i class="fa-solid fa-arrow-left"></i>
-            <p>Back</p>
-          </button>
+            class="border-none! text-lg! font-semibold! text-[#464646]!"
+            label="Back"
+            leftIcon="fa-solid fa-arrow-left"
+          />
           <div class="flex items-center gap-1">
             <template v-for="(step, index) in steps" :key="index">
               <i
@@ -40,12 +39,11 @@
               ></i>
             </template>
           </div>
-          <button
-            v-if="newExamStore.counter > 1"
-            class="border-2 cursor-pointer border-[#37373758] py-1 px-5 font-[400] text-lg rounded-4xl"
+          <AppButton
+            extraClass="py-1 px-4 rounded-4xl! border-[#37373758]! border-2! text-lg!"
           >
-            <i class="fa-solid fa-binoculars"></i>
-          </button>
+            <i class="fa-solid fa-binoculars text-black"></i>
+          </AppButton>
         </div>
         <div class="flex gap-1">
           <template v-for="(verifier, index) in formVerifier" :key="index">
@@ -55,7 +53,7 @@
               @click="handleClick"
               label="Next"
               theme="secondary"
-              leftIcon="fa-solid fa-arrow-right"
+              rightIcon="fa-solid fa-arrow-right"
             />
           </template>
           <i class="fa-solid fa-circle-question" role="button"></i>

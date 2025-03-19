@@ -39,13 +39,13 @@
           <AppButton
             :disabled="!hasTrueValue(newExamStore.formStepTwo)"
             label="Generate questions"
-            rightIcon="fa-solid fa-wand-sparkles"
+            leftIcon="fa-solid fa-wand-sparkles"
           />
           <AppButton
             :disabled="!hasTrueValue(newExamStore.formStepTwo)"
             @click="nextStep"
             label="Import questions"
-            rightIcon="fa-solid fa-circle-arrow-down"
+            leftIcon="fa-solid fa-circle-arrow-down"
           />
         </div>
       </section>
