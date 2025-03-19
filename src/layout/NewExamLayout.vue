@@ -47,17 +47,16 @@
             <i class="fa-solid fa-binoculars"></i>
           </button>
         </div>
-        <div class="flex gap-4">
+        <div class="flex gap-1">
           <template v-for="(verifier, index) in formVerifier" :key="index">
-            <button
+            <AppButton
               v-if="index + 1 === newExamStore.counter"
-              class="cursor-pointer disabled:cursor-not-allowed flex items-center gap-1 bg-[#211d1d] disabled:bg-[#38383858] text-white font-semibold rounded-2xl py-1 px-3"
               :disabled="verifier.validator"
               @click="handleClick"
-            >
-              Next
-              <i class="fa-solid fa-arrow-right"></i>
-            </button>
+              label="Next"
+              theme="secondary"
+              leftIcon="fa-solid fa-arrow-right"
+            />
           </template>
           <i class="fa-solid fa-circle-question" role="button"></i>
         </div>
@@ -73,6 +72,7 @@
 import { watch, ref, computed } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import { useNewExamStore } from "../store/NewExamStore";
+import AppButton from "../components/AppButton.vue";
 
 const router = useRouter();
 const newExamStore = useNewExamStore();
