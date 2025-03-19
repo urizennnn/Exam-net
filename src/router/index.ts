@@ -19,12 +19,12 @@ const router = createRouter({
           component: License,
         },
         {
-          path: "/exams",
+          path: "exams",
           name: "exams",
           component: Mba,
         },
         {
-          path: "/new-exam",
+          path: "new-exam",
           component: NewExamLayout,
           children: [
             {

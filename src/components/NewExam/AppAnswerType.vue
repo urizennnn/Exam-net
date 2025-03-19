@@ -5,7 +5,7 @@
     :name="tag"
     v-model="internalValue"
   />
-  <label :for="`checkbox-${id}`" class="flex flex-col gap-2 text-center">
+  <label :for="`checkbox-${id}`" class="flex flex-col gap-2 text-center z-0">
     <div
       class="bg-white border border-gray-300 rounded-lg h-20 w-full max-w-[150px] flex items-center justify-center text-2xl mx-auto"
     >

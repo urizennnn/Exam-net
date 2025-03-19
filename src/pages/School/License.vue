@@ -1,7 +1,8 @@
 <template>
   <Header />
-  <div
-    class="flex justify-center items-center l w-full h-[100%] bg-[#cdcccc] p-4 md:p-0"
+  <section
+    id="section"
+    class="flex justify-center items-center w-full bg-[#cdcccc] p-4 md:p-0"
   >
     <div
       class="w-full max-w-[90%] md:max-w-[80%] lg:max-w-[60%] h-auto md:h-[600px] flex flex-col mt-10 rounded-2xl bg-[#ffffff] shadow-[0px_6px_32px_0px_rgba(0,0,0,0.2)]"
@@ -67,10 +68,16 @@
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
 import NavBar from "../../components/NavBar.vue";
 import Header from "../../components/Header.vue";
 </script>
+
+<style scoped>
+#section {
+  min-height: calc(100dvh - 92px);
+}
+</style>

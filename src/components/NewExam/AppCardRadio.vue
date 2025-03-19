@@ -9,7 +9,7 @@
   />
   <label
     :for="`card-${id}`"
-    class="h-[250px] sm:h-[300px] w-full sm:w-[48%] rounded-lg shadow-lg flex flex-col border-2 border-[#e4e1e1]"
+    class="h-[250px] md:h-[300px] w-full rounded-lg shadow-lg flex flex-col border-2 border-[#e4e1e1]"
   >
     <section
       class="h-[70%] sm:h-[80%] bg-[#eeeeee] rounded-t-lg flex justify-center pt-6 relative"
@@ -41,7 +41,7 @@
     <section
       class="h-[30%] sm:h-[40%] bg-white flex items-center justify-center rounded-b-lg"
     >
-      <p class="text-lg sm:text-2xl font-sans text-[#464646]">
+      <p class="text-lg sm:text-2xl text-center font-sans text-[#464646]">
         {{ label }}
       </p>
     </section>

@@ -11,7 +11,9 @@
       How will this look for students?
     </p>
 
-    <div class="flex gap-5 w-full mt-10 justify-center">
+    <div
+      class="flex flex-col items-center md:flex-row gap-5 w-full mt-10 justify-center"
+    >
       <AppCardRadio
         v-for="(radio, index) in radioOptions"
         :key="index"

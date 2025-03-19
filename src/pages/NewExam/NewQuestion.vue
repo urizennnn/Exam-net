@@ -1,6 +1,6 @@
 <template>
   <section class="bg-white w-full flex">
-    <template v-if="steps === 1">
+    <div v-if="steps === 1" class="flex md:flex-row flex-col">
       <AppNewExamSideBar />
       <section class="p-10 w-full">
         <div class="m-auto w-full rounded-t-lg bg-white">
@@ -18,7 +18,9 @@
               <span class="bg-gray-900 py-1 px-2 text-white rounded">A</span>
               = Auto marked
             </p>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 px-6"
+            >
               <div v-for="(answerType, index) in answerTypeList" :key="index">
                 <AppAnswerType
                   :id="index"
@@ -47,13 +49,15 @@
           />
         </div>
       </section>
-    </template>
-    <template v-if="steps === 2">
-      <section class="w-full mt-20">
+    </div>
+    <div v-if="steps === 2" class="w-full">
+      <section class="mx-auto pt-20 px-10">
         <h1 class="text-center text-2xl text-gray-600 tracking-wide">
           Select how to add content
         </h1>
-        <div class="my-10 flex gap-5 items-center justify-center">
+        <div
+          class="my-10 flex md:flex-row flex-col gap-5 items-center justify-center"
+        >
           <AppContentType
             v-for="contentType in contentTypes"
             :key="contentType.fileType"
@@ -63,10 +67,10 @@
           />
         </div>
       </section>
-    </template>
-    <template v-if="steps === 3">
+    </div>
+    <div v-if="steps === 3" class="w-full h-fit overflow-auto">
       <AppEditor />
-    </template>
+    </div>
   </section>
 </template>
 

@@ -324,7 +324,8 @@ function onReady(editor) {
 }
 
 .main-container {
-  --ckeditor5-preview-height: 700px;
+  --ckeditor5-preview-height: calc(100dvh - 265px);
+  --ckeditor5-preview-width: 100%;
   font-family: "Lato";
   width: fit-content;
   margin-left: auto;

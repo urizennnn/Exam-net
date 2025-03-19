@@ -1,5 +1,5 @@
 <template>
-  <section class="h-screen w-full bg-[#cdcccc]">
+  <section class="w-full bg-[#cdcccc]" id="section">
     <div class="section-container-width">
       <div
         class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-[#cacaca] px-4 bg-[#e6e6e6] shadow-md gap-4 md:gap-0"
@@ -98,3 +98,11 @@ function handleClick() {
   }
 }
 </script>
+
+<style scoped>
+#section {
+  min-height: calc(100dvh - 60px);
+  padding: 0;
+  margin: 0;
+}
+</style>
