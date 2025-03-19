@@ -6,6 +6,16 @@
     ]"
   >
     <div
+      v-if="loading"
+      class="bg-white text-black w-full max-w-[800px] h-full max-h-[700px] rounded-lg overflow-x-hidden overflow-y-hidden p-3 flex flex-col gap-8 justify-center items-center"
+    >
+      <p class="text-2xl tracking-wide text-gray-500 block">
+        This may take a few moments.
+      </p>
+      <AppLoader />
+    </div>
+    <div
+      v-else
       class="bg-white text-black w-full max-w-[800px] h-full max-h-[700px] rounded-lg overflow-x-hidden overflow-y-hidden p-4"
     >
       <div class="flex justify-end">
@@ -21,9 +31,14 @@
 
 <script lang="ts" setup>
 import { watch, computed, ref, onMounted } from "vue";
+import AppLoader from "./AppLoader.vue";
 
 const props = defineProps({
   isVisible: Boolean,
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
 const emits = defineEmits(["onClose"]);
 
