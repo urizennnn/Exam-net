@@ -29,6 +29,9 @@
 </template>
 
 <script lang="ts" setup>
+import {computed} from 'vue'
+import { useRouter } from "vue-router";
+
 const props = defineProps({
   label: String,
   extraClass: {
@@ -51,13 +54,23 @@ const props = defineProps({
     type: String,
     default: "primary",
   },
+  to: {
+    type: String,
+    default: "",
+  },
 });
+const router = useRouter()
 
 const emit = defineEmits(["click"]);
 
 const handleClick = (event: Event) => {
+  if(href.value) {
+    router.push(props.to)
+  }
   emit("click", event);
 };
+
+const href = computed(() => props.to)
 </script>
 
 <style scoped>
