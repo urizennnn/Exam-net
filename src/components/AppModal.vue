@@ -26,7 +26,7 @@
         ></i>
       </div>
       <div>
-        <h1 class="font-sans text-2xl font-medium tracking-wide">
+        <h1 class="font-sans text-gray-700 text-2xl font-medium tracking-wide">
           {{ title }}
         </h1>
         <form @submit.prevent.stop="handleActions">

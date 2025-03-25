@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import License from "../pages/School/License.vue";
-import Mba from "../pages/Exams/Mba.vue";
+import Exams from "../pages/Exams/Exams.vue";
 import ExamFormat from "../pages/NewExam/ExamFormat.vue";
 import NewQuestion from "../pages/NewExam/NewQuestion.vue";
 import MainLayout from "../layout/MainLayout.vue";
@@ -21,7 +21,7 @@ const router = createRouter({
         {
           path: "exams",
           name: "exams",
-          component: Mba,
+          component: Exams,
         },
         {
           path: "new-exam",
