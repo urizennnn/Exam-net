@@ -5,27 +5,35 @@
       'fixed inset-0 w-full h-full overflow-hidden items-center justify-center p-5',
     ]"
   >
-    <div
+    <section
       v-if="loading"
-      class="bg-white text-black w-full max-w-[800px] h-full max-h-[700px] rounded-lg overflow-x-hidden overflow-y-hidden p-3 flex flex-col gap-8 justify-center items-center"
+      class="bg-white text-black w-full max-w-[800px] max-h-[700px] rounded-lg overflow-x-hidden overflow-y-hidden p-3 flex flex-col gap-8 justify-center items-center"
     >
       <p class="text-2xl tracking-wide text-gray-500 block">
         This may take a few moments.
       </p>
       <AppLoader />
-    </div>
-    <div
+    </section>
+    <section
       v-else
-      class="bg-white text-black w-full max-w-[800px] h-full max-h-[700px] rounded-lg overflow-x-hidden overflow-y-hidden p-4"
+      class="bg-white! text-black w-full max-w-[800px] max-h-[700px] rounded-lg overflow-x-hidden overflow-y-hidden p-4"
     >
       <div class="flex justify-end">
         <i
           class="text-2xl fa-solid fa-xmark text-black cursor-pointer"
-          @click="toggleShow"
+          @click="handleActions"
           role="button"
         ></i>
       </div>
-    </div>
+      <div>
+        <h1 class="font-sans text-2xl font-medium tracking-wide">
+          {{ title }}
+        </h1>
+        <form @submit.prevent.stop="handleActions">
+          <slot name="body" />
+        </form>
+      </div>
+    </section>
   </section>
 </template>
 
@@ -39,10 +47,12 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  title: String,
 });
-const emits = defineEmits(["onClose"]);
+const emits = defineEmits(["onClose", "onSubmit"]);
 
-function toggleShow() {
+function handleActions() {
+  emits("onSubmit");
   emits("onClose");
 }
 

@@ -1,6 +1,9 @@
 <template>
   <section class="bg-white w-full flex">
-    <div v-if="steps === 1" class="flex md:flex-row flex-col">
+    <div
+      v-if="newExamStore.formStepTwoCounter === 1"
+      class="flex md:flex-row flex-col"
+    >
       <AppNewExamSideBar />
       <section class="p-10 w-full">
         <div class="m-auto w-full rounded-t-lg bg-white">
@@ -36,22 +39,22 @@
           </div>
         </div>
         <div class="flex gap-4 mt-4">
+          <!-- <AppButton -->
+          <!--   :disabled="!hasTrueValue(newExamStore.formStepTwo)" -->
+          <!--   label="Generate questions" -->
+          <!--   @click="toggleShowGenerateQuestionsModal" -->
+          <!--   leftIcon="fa-solid fa-wand-sparkles" -->
+          <!-- /> -->
           <AppButton
             :disabled="!hasTrueValue(newExamStore.formStepTwo)"
-            label="Generate questions"
-            @click="toggleShowGenerateQuestionsModal"
-            leftIcon="fa-solid fa-wand-sparkles"
-          />
-          <AppButton
-            :disabled="!hasTrueValue(newExamStore.formStepTwo)"
-            @click="nextStep"
+            @click="increaseFormStepTwoCounter"
             label="Import questions"
             leftIcon="fa-solid fa-circle-arrow-down"
           />
         </div>
       </section>
     </div>
-    <div v-if="steps === 2" class="w-full">
+    <div v-if="newExamStore.formStepTwoCounter === 2" class="w-full">
       <section class="mx-auto pt-20 px-10">
         <h1 class="text-center text-2xl text-gray-600 tracking-wide">
           Select how to add content
@@ -69,13 +72,17 @@
         </div>
       </section>
     </div>
-    <div v-if="steps === 3" class="w-full h-fit overflow-auto">
+    <div
+      v-if="newExamStore.formStepTwoCounter === 3"
+      class="w-full h-fit overflow-auto"
+    >
       <AppEditor />
     </div>
   </section>
   <AppModal
-    :isVisible="showGenerateQuestionsModal"
-    @onClose="toggleShowGenerateQuestionsModal"
+    :isVisible="uploadExamQuestionsModal"
+    @onClose="toggleUploadExamQuestionsModal"
+    title="Upload PDF file"
   />
 </template>
 
@@ -91,7 +98,7 @@ import AppEditor from "../../components/AppEditor.vue";
 import AppModal from "../../components/AppModal.vue";
 
 const newExamStore = useNewExamStore();
-const steps = ref(1);
+const { increaseFormStepTwoCounter } = useNewExamStore();
 const answerTypeList = ref<
   {
     label: string;
@@ -159,20 +166,19 @@ const contentTypes = [
   {
     fileType: "PDF",
     label: "Upload exam questions as PDF",
+    actionOnClick: toggleUploadExamQuestionsModal,
   },
   {
     fileType: "T",
     label: "Write or paste in exam questions",
-    actionOnClick: nextStep,
+    actionOnClick: increaseFormStepTwoCounter,
   },
 ];
 const showGenerateQuestionsModal = ref(false);
+const uploadExamQuestionsModal = ref(false);
 
-function nextStep() {
-  steps.value += 1;
-}
-function toggleShowGenerateQuestionsModal() {
-  showGenerateQuestionsModal.value = !showGenerateQuestionsModal.value;
+function toggleUploadExamQuestionsModal() {
+  uploadExamQuestionsModal.value = !uploadExamQuestionsModal.value;
 }
 
 onMounted(() => {

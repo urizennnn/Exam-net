@@ -11,11 +11,7 @@
         />
         <div class="flex items-center md:gap-2 gap-4">
           <AppButton
-            @click="
-              () => {
-                router.back();
-              }
-            "
+            @click="decreaseCounter"
             v-if="newExamStore.counter > 1"
             class="border-none! text-lg! font-semibold! text-[#464646]!"
             label="Back"
@@ -51,7 +47,7 @@
             <AppButton
               v-if="index + 1 === newExamStore.counter"
               :disabled="verifier.validator"
-              @click="handleClick"
+              @click="increaseCounter"
               label="Next"
               theme="secondary"
               rightIcon="fa-solid fa-arrow-right"
@@ -75,6 +71,7 @@ import AppButton from "../components/AppButton.vue";
 
 const router = useRouter();
 const newExamStore = useNewExamStore();
+const { increaseCounter, decreaseCounter } = useNewExamStore();
 const steps = new Array(3).fill("");
 const firstStep = computed(() => newExamStore.form.examFormat);
 const formVerifier = computed(() => [
@@ -86,16 +83,16 @@ const formVerifier = computed(() => [
   },
 ]);
 
-function handleClick() {
-  newExamStore.counter += 1;
-
-  if (
-    newExamStore.counter === 2 &&
-    newExamStore.form.examFormat === "question"
-  ) {
-    router.push("/new-question");
-  }
-}
+watch(
+  () => newExamStore.counter,
+  (n) => {
+    if (n === 1) {
+      router.push("/new-exam");
+    } else if (n === 2 && newExamStore.form.examFormat === "question") {
+      router.push("/new-question");
+    }
+  },
+);
 </script>
 
 <style scoped>

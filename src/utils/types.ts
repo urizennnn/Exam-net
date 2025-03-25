@@ -3,6 +3,7 @@ export interface NewExamStore {
   form: {
     examFormat: string;
   };
+  formStepTwoCounter: number;
   formStepTwo: {
     informationBlock: boolean;
     multipleChoice: boolean;

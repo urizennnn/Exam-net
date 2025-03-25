@@ -7,6 +7,7 @@ export const useNewExamStore = defineStore("newExams", {
     form: {
       examFormat: "",
     },
+    formStepTwoCounter: 1,
     formStepTwo: {
       informationBlock: false,
       multipleChoice: true,
@@ -18,4 +19,19 @@ export const useNewExamStore = defineStore("newExams", {
       attachment: false,
     },
   }),
+  actions: {
+    increaseCounter() {
+      this.counter += 1;
+    },
+    decreaseCounter() {
+      if (this.formStepTwoCounter > 1) {
+        this.formStepTwoCounter -= 1;
+        return;
+      }
+      this.counter -= 1;
+    },
+    increaseFormStepTwoCounter() {
+      this.formStepTwoCounter += 1;
+    },
+  },
 });

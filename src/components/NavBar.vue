@@ -16,13 +16,13 @@
     <!-- Links -->
     <nav
       :class="menuOpen ? 'flex' : 'hidden'"
-      class="z-50 lg:flex flex-col lg:flex-row gap-6 items-center absolute lg:static top-15 left-0 w-full lg:w-auto bg-[#2d3541] lg:bg-transparent p-5 lg:p-0 shadow-md lg:shadow-none transition-all duration-300 ease-in-out"
+      class="z-50 lg:flex flex-col lg:flex-row gap-6 items-center absolute lg:static top-15 left-0 w-full lg:w-auto bg-[#2d3541] lg:bg-transparent shadow-md lg:shadow-none transition-all duration-300 ease-in-out"
     >
       <RouterLink
         v-for="(navLink, index) in navLinks"
         :key="index"
         :to="navLink.to"
-        :class="`flex justify-center items-center px-3 py-2 lg:h-full text-[#ffffff] text-[14px] font-[500] hover:bg-[#495057] ${navLink.notification ? 'flex-col-reverse' : ''}`"
+        :class="`flex justify-center items-center px-3 py-2 h-full text-[#ffffff] text-[14px] font-[500] hover:bg-[#495057] ${navLink.notification ? 'flex-col-reverse' : ''}`"
         active-class="bg-[#495057]"
       >
         <p class="capitalize flex gap-2 items-center">
