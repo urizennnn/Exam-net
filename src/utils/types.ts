@@ -14,4 +14,5 @@ export interface NewExamStore {
     freeText: boolean;
     attachment: boolean;
   };
+  editorContent: string;
 }

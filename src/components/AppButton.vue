@@ -75,6 +75,6 @@ const href = computed(() => props.to);
 
 <style scoped>
 button {
-  transition: 300ms ease-in-out;
+  transition: 100ms ease-in-out;
 }
 </style>

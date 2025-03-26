@@ -11,10 +11,10 @@
           <div ref="editorElement">
             <ckeditor
               v-if="editor && config"
-              :modelValue="config.initialData"
               :editor="editor"
               :config="config"
               @ready="onReady"
+              v-model="newExamStore.editorContent"
             />
           </div>
         </div>
@@ -95,7 +95,13 @@ import {
   WordCount,
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
+import { useNewExamStore } from "../store/NewExamStore";
 
+defineProps({
+  modelValue: String,
+});
+
+const newExamStore = useNewExamStore();
 const LICENSE_KEY = "GPL";
 const editorToolbar = useTemplateRef("editorToolbarElement");
 const editorMenuBar = useTemplateRef("editorMenuBarElement");

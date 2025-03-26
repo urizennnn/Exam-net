@@ -18,6 +18,7 @@ export const useNewExamStore = defineStore("newExams", {
       freeText: false,
       attachment: false,
     },
+    editorContent: "",
   }),
   actions: {
     increaseCounter() {

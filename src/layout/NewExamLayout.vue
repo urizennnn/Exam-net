@@ -79,7 +79,7 @@ const formVerifier = computed(() => [
     validator: firstStep.value == "",
   },
   {
-    validator: true,
+    validator: newExamStore.editorContent === "",
   },
 ]);
 
