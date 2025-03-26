@@ -25,7 +25,7 @@ export const useNewExamStore = defineStore("newExams", {
       this.counter += 1;
     },
     decreaseCounter() {
-      if (this.formStepTwoCounter > 1) {
+      if (this.counter == 2 && this.formStepTwoCounter > 1) {
         this.formStepTwoCounter -= 1;
         return;
       }

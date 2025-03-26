@@ -43,15 +43,24 @@
           </AppButton>
         </div>
         <div class="flex gap-1">
-          <template v-for="(verifier, index) in formVerifier" :key="index">
+          <template v-if="newExamStore.counter != steps.length">
+            <template v-for="(verifier, index) in formVerifier" :key="index">
+              <AppButton
+                v-if="index + 1 === newExamStore.counter"
+                :disabled="verifier.validator"
+                @click="increaseCounter"
+                label="Next"
+                theme="secondary"
+                rightIcon="fa-solid fa-arrow-right"
+              />
+            </template>
+          </template>
+          <template v-else>
             <AppButton
-              v-if="index + 1 === newExamStore.counter"
-              :disabled="verifier.validator"
-              @click="increaseCounter"
-              label="Next"
-              theme="secondary"
-              rightIcon="fa-solid fa-arrow-right"
-            />
+                label="Save"
+                theme="secondary"
+                leftIcon="fa-regular fa-floppy-disk"
+              />
           </template>
           <i class="fa-solid fa-circle-question" role="button"></i>
         </div>
@@ -79,7 +88,7 @@ const formVerifier = computed(() => [
     validator: firstStep.value == "",
   },
   {
-    validator: newExamStore.editorContent === "",
+    validator: newExamStore.editorContent == "",
   },
 ]);
 
@@ -88,8 +97,10 @@ watch(
   (n) => {
     if (n === 1) {
       router.push("/new-exam");
-    } else if (n === 2 && newExamStore.form.examFormat === "question") {
+    } else if (n === 2) {
       router.push("/new-question");
+    } else if (n === 3) {
+      router.push("/exam-config");
     }
   },
 );
