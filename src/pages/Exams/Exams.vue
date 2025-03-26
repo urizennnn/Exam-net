@@ -28,7 +28,7 @@
             label="New Exam"
             theme="secondary"
             extraClass="bg-gray-700 py-2 px-4"
-            to='/new-exam'
+            to="/new-exam"
           />
         </div>
       </div>

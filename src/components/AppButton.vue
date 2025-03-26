@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import {computed} from 'vue'
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 
 const props = defineProps({
@@ -59,18 +59,18 @@ const props = defineProps({
     default: "",
   },
 });
-const router = useRouter()
+const router = useRouter();
 
 const emit = defineEmits(["click"]);
 
 const handleClick = (event: Event) => {
-  if(href.value) {
-    router.push(props.to)
+  if (href.value) {
+    router.push(props.to);
   }
   emit("click", event);
 };
 
-const href = computed(() => props.to)
+const href = computed(() => props.to);
 </script>
 
 <style scoped>

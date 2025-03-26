@@ -1,44 +1,60 @@
 <template>
   <section
-    class="flex items-center z-50 justify-between px-5 bg-[#2d3541] cursor-pointer h-[60px]"
+    class="flex items-center z-50 justify-between px-5 bg-gray-800 cursor-pointer"
   >
     <!-- Logo -->
     <img src="../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]" />
 
     <!-- Mobile Menu Button -->
     <button
-      @click="menuOpen = !menuOpen"
-      class="lg:hidden cursor-pointer text-white text-2xl outline-none"
+      @click="toggleMenuOpen"
+      class="lg:hidden cursor-pointer text-white text-2xl outline-none py-[0.85rem]"
     >
       <i :class="menuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"></i>
     </button>
 
     <!-- Links -->
+    <nav class="hidden lg:flex items-center gap-4">
+      <RouterLink
+        v-for="(navLink, index) in navLinks"
+        :key="index"
+        :to="navLink.to"
+        :class="`flex justify-center items-center h-full px-3 py-[1.22rem] text-white text-[14px] font-[500] hover:bg-gray-600 ${navLink.notification ? 'flex-row-reverse gap-2' : ''}`"
+        active-class="bg-gray-600"
+      >
+        <p class="capitalize flex gap-2 items-center">
+          <i :class="navLink.icon"></i> {{ navLink.label }}
+        </p>
+        <div v-if="navLink.notification" class="text-orange-500">
+          <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+      </RouterLink>
+      <i class="fa-solid fa-right-from-bracket text-white"></i>
+    </nav>
+
+    <!-- Mobile Nav Bar -->
     <nav
-      :class="menuOpen ? 'flex' : 'hidden'"
-      class="z-50 lg:flex flex-col lg:flex-row gap-6 items-center absolute lg:static top-15 left-0 w-full lg:w-auto bg-[#2d3541] lg:bg-transparent shadow-md lg:shadow-none transition-all duration-300 ease-in-out"
+      :class="`${menuOpen ? 'flex' : 'hidden'} lg:hidden z-50  flex-col items-center absolute top-13 left-0 w-full lg:w-auto bg-gray-800 shadow-md lg:shadow-none transition-all duration-300 ease-in-out`"
     >
       <RouterLink
         v-for="(navLink, index) in navLinks"
         :key="index"
         :to="navLink.to"
-        :class="`flex justify-center items-center px-3 py-2 h-full text-[#ffffff] text-[14px] font-[500] hover:bg-[#495057] ${navLink.notification ? 'flex-col-reverse' : ''}`"
-        active-class="bg-[#495057]"
+        :class="`flex justify-center items-center h-full w-full px-3 py-[1.22rem] text-white text-[14px] font-[500] hover:bg-gray-600 ${navLink.notification ? 'flex-row-reverse gap-2' : ''}`"
+        active-class="bg-gray-600"
+        @click="toggleMenuOpen"
       >
         <p class="capitalize flex gap-2 items-center">
           <i :class="navLink.icon"></i> {{ navLink.label }}
         </p>
-        <div
-          v-if="navLink.notification"
-          class="text-orange-500 left-[50%] top-0"
-        >
+        <div v-if="navLink.notification" class="text-orange-500">
           <i class="fa-solid fa-circle-exclamation"></i>
         </div>
       </RouterLink>
-      <!-- Logout Icon -->
-      <button class="text-[#ffffff]">
-        <i class="fa-solid fa-right-from-bracket"></i>
-      </button>
+      <i
+        class="fa-solid fa-right-from-bracket text-white px-3 py-[1.22rem]"
+        @click="toggleMenuOpen"
+      ></i>
     </nav>
   </section>
 </template>
@@ -91,4 +107,8 @@ const navLinks = [
     notification: false,
   },
 ];
+
+function toggleMenuOpen() {
+  menuOpen.value = !menuOpen.value;
+}
 </script>
