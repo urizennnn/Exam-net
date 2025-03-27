@@ -14,7 +14,7 @@
               :editor="editor"
               :config="config"
               @ready="onReady"
-              v-model="newExamStore.editorContent"
+              v-model="localData"
             />
           </div>
         </div>
@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, useTemplateRef } from "vue";
+import { computed, ref, onMounted, useTemplateRef, watch } from "vue";
 import { Ckeditor } from "@ckeditor/ckeditor5-vue";
 import {
   DecoupledEditor,
@@ -97,10 +97,12 @@ import {
 import "ckeditor5/ckeditor5.css";
 import { useNewExamStore } from "../store/NewExamStore";
 
-defineProps({
+const props = defineProps({
   modelValue: String,
 });
+const emit = defineEmits(['update:modelValue'])
 
+const localData = ref(props.modelValue)
 const newExamStore = useNewExamStore();
 const LICENSE_KEY = "GPL";
 const editorToolbar = useTemplateRef("editorToolbarElement");
@@ -318,6 +320,19 @@ function onReady(editor) {
   editorToolbar.value.appendChild(editor.ui.view.toolbar.element);
   editorMenuBar.value.appendChild(editor.ui.view.menuBarView.element);
 }
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (newVal !== localData.value) {
+      localData.value = newVal
+    }
+  }
+)
+
+watch(localData, (newVal) => {
+  emit('update:modelValue', newVal)
+})
 </script>
 
 <style scoped>

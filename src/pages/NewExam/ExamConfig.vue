@@ -1,12 +1,22 @@
 <template>
-testing
+
 </template>
 
 <script lang="ts" setup>
-import {onMounted} from 'vue'
-import {useNewExamStore} from '../../store/NewExamStore'
+import { onMounted, ref } from "vue";
+import { useNewExamStore } from "../../store/NewExamStore";
 
-const newExamStore = useNewExamStore()
+const newExamStore = useNewExamStore();
+const configOptions = ref([
+  {
+    label: 'Gemeral',
+    isActive: true
+  },
+  {
+    label: 'Exam Type Settings',
+    isActive: false
+  },
+])
 
 onMounted(() => {
   newExamStore.counter = 3;

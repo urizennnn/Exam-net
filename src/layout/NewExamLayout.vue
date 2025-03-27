@@ -57,10 +57,10 @@
           </template>
           <template v-else>
             <AppButton
-                label="Save"
-                theme="secondary"
-                leftIcon="fa-regular fa-floppy-disk"
-              />
+              label="Save"
+              theme="secondary"
+              leftIcon="fa-regular fa-floppy-disk"
+            />
           </template>
           <i class="fa-solid fa-circle-question" role="button"></i>
         </div>
