@@ -76,7 +76,7 @@
       v-if="newExamStore.formStepTwoCounter === 3"
       class="w-full h-fit overflow-auto"
     >
-      <AppEditor v-model="newExamStore.editorContent"/>
+      <AppEditor v-model="newExamStore.editorContent" />
     </div>
   </section>
   <AppModal

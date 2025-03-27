@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="bg-[#2d3541] h-full w-full flex md:flex-col flex-row gap-4 md:w-fit md:pt-20 md:pb-10 px-10 pb-1 md:px-0"
+    class="bg-gray-800 h-full w-full flex md:flex-col flex-row gap-4 md:w-fit md:pt-20 md:pb-10 px-10 pb-1 md:px-0"
   >
     <i
       role="button"

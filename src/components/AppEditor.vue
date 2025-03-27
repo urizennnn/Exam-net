@@ -100,9 +100,9 @@ import { useNewExamStore } from "../store/NewExamStore";
 const props = defineProps({
   modelValue: String,
 });
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue"]);
 
-const localData = ref(props.modelValue)
+const localData = ref(props.modelValue);
 const newExamStore = useNewExamStore();
 const LICENSE_KEY = "GPL";
 const editorToolbar = useTemplateRef("editorToolbarElement");
@@ -325,14 +325,14 @@ watch(
   () => props.modelValue,
   (newVal) => {
     if (newVal !== localData.value) {
-      localData.value = newVal
+      localData.value = newVal;
     }
-  }
-)
+  },
+);
 
 watch(localData, (newVal) => {
-  emit('update:modelValue', newVal)
-})
+  emit("update:modelValue", newVal);
+});
 </script>
 
 <style scoped>
