@@ -19,6 +19,14 @@ export const useNewExamStore = defineStore("newExams", {
       attachment: false,
     },
     editorContent: "",
+    configOptions: {
+      anonymizeExam: true,
+      setTimeLimit: true,
+      setTime: 60,
+      studentSelfResume: false,
+      hidePoints: true,
+      showExamResult: true,
+    },
   }),
   actions: {
     increaseCounter() {

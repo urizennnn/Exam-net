@@ -15,4 +15,12 @@ export interface NewExamStore {
     attachment: boolean;
   };
   editorContent: string;
+  configOptions: {
+    anonymizeExam: boolean;
+    setTimeLimit: boolean;
+    setTime: number;
+    studentSelfResume: boolean;
+    hidePoints: boolean;
+    showExamResult: boolean;
+  };
 }

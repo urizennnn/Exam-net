@@ -4,11 +4,7 @@
       <div
         class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-[#cacaca] px-4 bg-[#e6e6e6] shadow-md gap-4 md:gap-0"
       >
-        <input
-          type="text"
-          placeholder="Enter the Exam Name"
-          class="border-2 border-[#cacaca] bg-white w-full md:w-[50%] p-2 rounded-md placeholder:text-[#8a8787] font-semibold"
-        />
+        <Appinput placeholder="Enter the Exam Name" />
         <div class="flex items-center md:gap-2 gap-4">
           <AppButton
             @click="decreaseCounter"
@@ -77,6 +73,7 @@ import { watch, ref, computed } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import { useNewExamStore } from "../store/NewExamStore";
 import AppButton from "../components/AppButton.vue";
+import Appinput from "../components/AppInput.vue";
 
 const router = useRouter();
 const newExamStore = useNewExamStore();
