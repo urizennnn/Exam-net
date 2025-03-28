@@ -6,6 +6,7 @@ import NewQuestion from "../pages/NewExam/NewQuestion.vue";
 import MainLayout from "../layout/MainLayout.vue";
 import NewExamLayout from "../layout/NewExamLayout.vue";
 import ExamConfig from "../pages/NewExam/ExamConfig.vue";
+import Preview from "../pages/Preview/Preview.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +47,11 @@ const router = createRouter({
           ],
         },
       ],
+    },
+    {
+      path: "/preview",
+      name: "preview",
+      component: Preview,
     },
   ],
 });

@@ -9,7 +9,7 @@
         <li
           v-for="(option, index) in configOptionsTabs"
           :key="index"
-          :class="`${option.isActive ? 'border-solid md:border-l-3 border-t-3 md:border-t-0 border-amber-400 active relative' : ''} cursor-pointer px-4 py-4 hover:bg-gray-700 capitalize`"
+          :class="`${option.isActive ? 'border-solid md:border-l-3 border-t-3 md:border-t-0 border-amber-400 active relative bg-gray-700' : ''} cursor-pointer px-4 py-4 hover:bg-gray-700 capitalize`"
         >
           {{ option.label }}
         </li>

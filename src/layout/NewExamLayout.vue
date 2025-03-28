@@ -2,7 +2,7 @@
   <section class="w-full bg-zinc-300" id="section">
     <div class="section-container-width">
       <div
-        class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-[#cacaca] px-4 bg-[#e6e6e6] shadow-md gap-4 md:gap-0"
+        class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-[#cacaca] px-4 bg-[#e6e6e6] shadow-md gap-4"
       >
         <Appinput placeholder="Enter the Exam Name" />
         <div class="flex items-center md:gap-2 gap-4">
@@ -56,6 +56,7 @@
               label="Save"
               theme="secondary"
               leftIcon="fa-regular fa-floppy-disk"
+              to="/preview"
             />
           </template>
           <i class="fa-solid fa-circle-question" role="button"></i>
