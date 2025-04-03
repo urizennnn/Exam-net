@@ -1,5 +1,7 @@
 <template>
-  <AppToast />
+  <AppToast
+    text="This is a preview of how this exam will appear to the students."
+  />
   <section class="w-full h-[100dvh] flex">
     <!-- Sidebar -->
     <aside class="h-full w-full max-w-[300px]">
