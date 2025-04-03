@@ -69,10 +69,6 @@ input {
   display: none;
 }
 
-label {
-  transition: 500ms ease-in-out;
-}
-
 input:checked + label {
   border: 1px solid black;
 }

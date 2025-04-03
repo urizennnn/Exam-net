@@ -29,6 +29,7 @@
             theme="secondary"
             extraClass="bg-gray-700 py-2 px-4"
             to="/new-exam"
+            @click="clearData"
           />
         </div>
       </div>
@@ -44,6 +45,7 @@
 
 <script setup lang="ts">
 import AppButton from "../../components/AppButton.vue";
+import { clearData } from "../../utils/functions";
 </script>
 
 <style scoped>

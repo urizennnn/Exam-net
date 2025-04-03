@@ -37,7 +37,7 @@
 <script setup>
 import AppCardRadio from "../../components/NewExam/AppCardRadio.vue";
 import { useNewExamStore } from "../../store/NewExamStore";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 const newExamStore = useNewExamStore();
 const radioOptions = [
@@ -56,4 +56,11 @@ const radioOptions = [
 onMounted(() => {
   newExamStore.counter = 1;
 });
+
+watch(
+  () => newExamStore.form.examFormat,
+  (n) => {
+    sessionStorage.setItem("examFormat", n);
+  },
+);
 </script>

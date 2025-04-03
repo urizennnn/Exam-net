@@ -47,7 +47,7 @@
           <!-- /> -->
           <AppButton
             :disabled="!hasTrueValue(newExamStore.formStepTwo)"
-            @click="increaseFormStepTwoCounter"
+            @click="saveAnswerType"
             label="Import questions"
             leftIcon="fa-solid fa-circle-arrow-down"
           />
@@ -181,6 +181,14 @@ function toggleUploadExamQuestionsModal() {
   uploadExamQuestionsModal.value = !uploadExamQuestionsModal.value;
 }
 
+function saveAnswerType() {
+  increaseFormStepTwoCounter();
+  answerTypeList.value.map((items) => {
+    newExamStore.formStepTwo[items.tag] = items.value;
+    sessionStorage.setItem(items.tag, `${items.value}`);
+  });
+}
+
 onMounted(() => {
   newExamStore.counter = 2;
 });
@@ -188,10 +196,27 @@ onMounted(() => {
 watch(
   () => answerTypeList,
   (n) => {
-    n.value.map((items) => (newExamStore.formStepTwo[items.tag] = items.value));
+    n.value.map((items) => {
+      newExamStore.formStepTwo[items.tag] = items.value;
+      sessionStorage.setItem(items.tag, `${items.value}`);
+    });
   },
   {
     deep: true,
+  },
+);
+
+watch(
+  () => newExamStore.formStepTwoCounter,
+  (n) => {
+    sessionStorage.setItem("formStepTwoCounter", `${n}`);
+  },
+);
+
+watch(
+  () => newExamStore.editorContent,
+  (n) => {
+    localStorage.setItem("editorContent", `${n}`);
   },
 );
 </script>

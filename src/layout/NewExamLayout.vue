@@ -93,6 +93,7 @@ const formVerifier = computed(() => [
 watch(
   () => newExamStore.counter,
   (n) => {
+    sessionStorage.setItem("counter", `${n}`);
     if (n === 1) {
       router.push("/new-exam");
     } else if (n === 2) {

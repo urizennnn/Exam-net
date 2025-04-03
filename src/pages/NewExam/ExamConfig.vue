@@ -159,10 +159,12 @@ watch(
   (n) => {
     n.value.map((items) => {
       newExamStore.configOptions[items.tag] = items.value;
+      sessionStorage.setItem(items.tag, `${items.value}`);
       if (items.children) {
-        items.children.map(
-          (item) => (newExamStore.configOptions[item.tag] = item.value),
-        );
+        items.children.map((item) => {
+          newExamStore.configOptions[item.tag] = item.value;
+          sessionStorage.setItem(item.tag, `${item.value}`);
+        });
       }
     });
   },
@@ -174,9 +176,10 @@ watch(
 watch(
   () => examTypeSettingConfigs,
   (n) => {
-    n.value.map(
-      (items) => (newExamStore.configOptions[items.tag] = items.value),
-    );
+    n.value.map((items) => {
+      newExamStore.configOptions[items.tag] = items.value;
+      sessionStorage.setItem(items.tag, `${items.value}`);
+    });
   },
   {
     deep: true,

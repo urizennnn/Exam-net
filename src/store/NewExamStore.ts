@@ -3,29 +3,65 @@ import { NewExamStore } from "../utils/types";
 
 export const useNewExamStore = defineStore("newExams", {
   state: (): NewExamStore => ({
-    counter: 1,
+    counter: sessionStorage.getItem("counter")
+      ? JSON.parse(sessionStorage.getItem("counter"))
+      : 1,
     form: {
-      examFormat: "",
+      examFormat: sessionStorage.getItem("examFormat")
+        ? sessionStorage.getItem("examFormat")
+        : "",
     },
-    formStepTwoCounter: 1,
+    formStepTwoCounter: sessionStorage.getItem("formStepTwoCounter")
+      ? JSON.parse(sessionStorage.getItem("formStepTwoCounter"))
+      : 1,
     formStepTwo: {
-      informationBlock: false,
-      multipleChoice: true,
-      simpleAnswer: true,
-      fillTheGaps: true,
-      matchAnswer: true,
-      grid: true,
-      freeText: false,
-      attachment: false,
+      informationBlock: sessionStorage.getItem("informationBlock")
+        ? JSON.parse(sessionStorage.getItem("informationBlock"))
+        : false,
+      multipleChoice: sessionStorage.getItem("multipleChoice")
+        ? JSON.parse(sessionStorage.getItem("multipleChoice"))
+        : true,
+      simpleAnswer: sessionStorage.getItem("simpleAnswer")
+        ? JSON.parse(sessionStorage.getItem("simpleAnswer"))
+        : true,
+      fillTheGaps: sessionStorage.getItem("fillTheGaps")
+        ? JSON.parse(sessionStorage.getItem("fillTheGaps"))
+        : true,
+      matchAnswer: sessionStorage.getItem("matchAnswer")
+        ? JSON.parse(sessionStorage.getItem("matchAnswer"))
+        : true,
+      grid: sessionStorage.getItem("grid")
+        ? JSON.parse(sessionStorage.getItem("grid"))
+        : true,
+      freeText: sessionStorage.getItem("freeText")
+        ? JSON.parse(sessionStorage.getItem("freeText"))
+        : false,
+      attachment: sessionStorage.getItem("attachment")
+        ? JSON.parse(sessionStorage.getItem("attachment"))
+        : false,
     },
-    editorContent: "",
+    editorContent: localStorage.getItem("editorContent")
+      ? localStorage.getItem("editorContent")
+      : "",
     configOptions: {
-      anonymizeExam: true,
-      setTimeLimit: true,
-      setTime: 60,
-      studentSelfResume: false,
-      hidePoints: true,
-      showExamResult: true,
+      anonymizeExam: sessionStorage.getItem("anonymizeExam")
+        ? JSON.parse(sessionStorage.getItem("anonymizeExam"))
+        : true,
+      setTimeLimit: sessionStorage.getItem("setTimeLimit")
+        ? JSON.parse(sessionStorage.getItem("setTimeLimit"))
+        : true,
+      setTime: sessionStorage.getItem("setTime")
+        ? JSON.parse(sessionStorage.getItem("setTime"))
+        : 60,
+      studentSelfResume: sessionStorage.getItem("studentSelfResume")
+        ? JSON.parse(sessionStorage.getItem("studentSelfResume"))
+        : false,
+      hidePoints: sessionStorage.getItem("hidePoints")
+        ? JSON.parse(sessionStorage.getItem("hidePoints"))
+        : true,
+      showExamResult: sessionStorage.getItem("showExamResult")
+        ? JSON.parse(sessionStorage.getItem("showExamResult"))
+        : true,
     },
   }),
   actions: {

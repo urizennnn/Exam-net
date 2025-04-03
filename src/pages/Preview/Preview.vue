@@ -2,9 +2,9 @@
   <section class="w-full h-[100dvh] flex">
     <!-- Sidebar -->
     <aside class="h-full w-full max-w-[300px]">
-      <div class="bg-orange-400 flex justify-center items-center gap-2 p-4">
+      <div class="bg-orange-400 flex justify-center items-center gap-2 p-4 capitalize">
         <i class="fa-solid fa-lock"></i>
-        Text Exam
+        Test Person
       </div>
       <div class="w-full bg-gray-900" id="SideBarMain">
         <ul class="w-full">
@@ -109,6 +109,11 @@ onMounted(() => {
 <style scoped>
 #SideBarMain {
   height: calc(100% - 112px);
+}
+
+#questionSection * {
+  list-style: auto;
+  list-style-position: inside;
 }
 
 #questionSection *:not(:last-of-type) {
