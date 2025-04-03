@@ -1,28 +1,23 @@
 <template>
   <div class="main-container">
     <div
-      class="editor-container editor-container_document-editor editor-container_include-word-count"
+      class="editor-container editor-container_document-editor"
       ref="editorContainerElement"
     >
-      <div class="editor-container__menu-bar" ref="editorMenuBarElement"></div>
       <div class="editor-container__toolbar" ref="editorToolbarElement"></div>
       <div class="editor-container__editor-wrapper">
         <div class="editor-container__editor">
           <div ref="editorElement">
             <ckeditor
               v-if="editor && config"
+              v-model="localData"
               :editor="editor"
               :config="config"
               @ready="onReady"
-              v-model="localData"
             />
           </div>
         </div>
       </div>
-      <div
-        class="editor_container__word-count"
-        ref="editorWordCountElement"
-      ></div>
     </div>
   </div>
 </template>
@@ -30,6 +25,7 @@
 <script setup>
 import { computed, ref, onMounted, useTemplateRef, watch } from "vue";
 import { Ckeditor } from "@ckeditor/ckeditor5-vue";
+
 import {
   DecoupledEditor,
   Alignment,
@@ -39,7 +35,6 @@ import {
   Autosave,
   Base64UploadAdapter,
   Bold,
-  CloudServices,
   Code,
   Essentials,
   FindAndReplace,
@@ -48,6 +43,7 @@ import {
   FontFamily,
   FontSize,
   Heading,
+  HorizontalLine,
   ImageBlock,
   ImageCaption,
   ImageEditing,
@@ -67,7 +63,6 @@ import {
   LinkImage,
   List,
   ListProperties,
-  MediaEmbed,
   PageBreak,
   Paragraph,
   PasteFromOffice,
@@ -88,14 +83,11 @@ import {
   TableColumnResize,
   TableProperties,
   TableToolbar,
-  TextPartLanguage,
   TextTransformation,
   TodoList,
   Underline,
-  WordCount,
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
-import { useNewExamStore } from "../store/NewExamStore";
 
 const props = defineProps({
   modelValue: String,
@@ -103,20 +95,20 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 const localData = ref(props.modelValue);
-const newExamStore = useNewExamStore();
 const LICENSE_KEY = "GPL";
 const editorToolbar = useTemplateRef("editorToolbarElement");
-const editorMenuBar = useTemplateRef("editorMenuBarElement");
-const editorWordCount = useTemplateRef("editorWordCountElement");
 const isLayoutReady = ref(false);
 const editor = DecoupledEditor;
 const config = computed(() => {
   if (!isLayoutReady.value) {
     return null;
   }
+
   return {
     toolbar: {
       items: [
+        "findAndReplace",
+        "|",
         "heading",
         "|",
         "fontSize",
@@ -127,7 +119,15 @@ const config = computed(() => {
         "bold",
         "italic",
         "underline",
+        "strikethrough",
+        "subscript",
+        "superscript",
+        "code",
+        "removeFormat",
         "|",
+        "specialCharacters",
+        "horizontalLine",
+        "pageBreak",
         "link",
         "insertImage",
         "insertTable",
@@ -150,7 +150,6 @@ const config = computed(() => {
       Autosave,
       Base64UploadAdapter,
       Bold,
-      CloudServices,
       Code,
       Essentials,
       FindAndReplace,
@@ -159,6 +158,7 @@ const config = computed(() => {
       FontFamily,
       FontSize,
       Heading,
+      HorizontalLine,
       ImageBlock,
       ImageCaption,
       ImageEditing,
@@ -178,7 +178,6 @@ const config = computed(() => {
       LinkImage,
       List,
       ListProperties,
-      MediaEmbed,
       PageBreak,
       Paragraph,
       PasteFromOffice,
@@ -199,11 +198,9 @@ const config = computed(() => {
       TableColumnResize,
       TableProperties,
       TableToolbar,
-      TextPartLanguage,
       TextTransformation,
       TodoList,
       Underline,
-      WordCount,
     ],
     fontFamily: {
       supportAllValues: true,
@@ -290,9 +287,6 @@ const config = computed(() => {
         reversed: true,
       },
     },
-    menuBar: {
-      isVisible: true,
-    },
     placeholder: "Type or paste your content here!",
     table: {
       contentToolbar: [
@@ -311,14 +305,9 @@ onMounted(() => {
 });
 
 function onReady(editor) {
-  [...editorWordCount.value.children].forEach((child) => child.remove());
   [...editorToolbar.value.children].forEach((child) => child.remove());
-  [...editorMenuBar.value.children].forEach((child) => child.remove());
 
-  const wordCount = editor.plugins.get("WordCount");
-  editorWordCount.value.appendChild(wordCount.wordCountContainer);
   editorToolbar.value.appendChild(editor.ui.view.toolbar.element);
-  editorMenuBar.value.appendChild(editor.ui.view.menuBarView.element);
 }
 
 watch(

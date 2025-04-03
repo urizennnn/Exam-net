@@ -16,6 +16,11 @@
         : !disabled && theme === 'secondary'
           ? 'cursor-pointer bg-[#211d1d]'
           : '',
+      disabled && theme === 'variant'
+        ? 'cursor-not-allowed bg-[#38383858]'
+        : !disabled && theme === 'variant'
+          ? 'cursor-pointer bg-white text-black! hover:bg-slate-200'
+          : '',
       extraClass,
     ]"
   >

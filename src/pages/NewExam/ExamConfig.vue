@@ -25,7 +25,7 @@
         >
           <div v-for="(config, index) in generalConfigs" :key="index">
             <AppToggleButton
-              :id="index"
+              :id="`generalType${index}`"
               :label="config.label"
               class="text-black tracking-wider"
               v-model="config.value"
@@ -55,15 +55,15 @@
         <div
           class="flex flex-col gap-4 border-l-2 border-r-0 border-t-0 border-b-0 border-solid border-l-gray-300 mt-2 h-auto px-4"
         >
-          <div v-for="(config, index) in examTypeSettingConfigs" :key="index">
+          <div v-for="(con, index) in examTypeSettingConfigs" :key="index">
             <AppToggleButton
-              :id="index"
-              :label="config.label"
+              :id="`examType${index}`"
+              :label="con.label"
               class="text-black tracking-wider"
-              v-model="config.value"
+              v-model="con.value"
             />
             <p class="mt-1 text-gray-400 text-sm leading-5 tracking-wider">
-              {{ config.description }}
+              {{ con.description }}
             </p>
           </div>
         </div>
@@ -90,7 +90,19 @@ const configOptionsTabs = ref([
   },
 ]);
 
-const generalConfigs = ref([
+interface configTypes {
+  label: string;
+  description: string;
+  value: boolean;
+  tag: string;
+  children?: {
+    label: string;
+    value: any;
+    tag: string;
+  }[];
+}
+
+const generalConfigs = ref<configTypes[]>([
   {
     label: "Anonymize exam",
     description:
@@ -121,7 +133,7 @@ const generalConfigs = ref([
   },
 ]);
 
-const examTypeSettingConfigs = ref([
+const examTypeSettingConfigs = ref<configTypes[]>([
   {
     label: "Hide points for students during the exam",
     description:
