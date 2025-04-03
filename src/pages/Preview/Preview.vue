@@ -25,6 +25,8 @@
             leftIcon="fa-solid fa-check text-green-600"
             theme="variant"
             extraClass="rounded-2xl! px-5! py-3! gap-4!"
+            to="/monitoring-results"
+            @click="clearData"
           />
           <div class="flex flex-col items-center gap-4">
             <p class="text-gray-400 text-2xl">{{ examID }}</p>
@@ -100,6 +102,7 @@ import AppEditor from "../../components/AppEditor.vue";
 import AppButton from "../../components/AppButton.vue";
 import { uid } from "uid";
 import AppToast from "../../components/AppToast.vue";
+import { clearData } from "../../utils/functions";
 
 const newExamStore = useNewExamStore();
 const timerValue = ref(newExamStore.configOptions.setTime);

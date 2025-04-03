@@ -6,17 +6,20 @@
     <h4 class="font-semibold">
       This is a preview of how this exam will appear to the students.
     </h4>
-    <i class="fa-solid fa-xmark cursor-pointer text-2xl" role="button" @click="closeToast"></i>
+    <i
+      class="fa-solid fa-xmark cursor-pointer text-2xl"
+      role="button"
+      @click="closeToast"
+    ></i>
   </section>
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from "vue";
 
-const showToast = ref(true)
+const showToast = ref(true);
 
 function closeToast() {
-  showToast.value = false
+  showToast.value = false;
 }
 </script>
-
