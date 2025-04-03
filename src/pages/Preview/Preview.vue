@@ -1,8 +1,11 @@
 <template>
+  <AppToast />
   <section class="w-full h-[100dvh] flex">
     <!-- Sidebar -->
     <aside class="h-full w-full max-w-[300px]">
-      <div class="bg-orange-400 flex justify-center items-center gap-2 p-4 capitalize">
+      <div
+        class="bg-orange-400 flex justify-center items-center gap-2 p-4 capitalize"
+      >
         <i class="fa-solid fa-lock"></i>
         Test Person
       </div>
@@ -24,7 +27,7 @@
             extraClass="rounded-2xl! px-5! py-3! gap-4!"
           />
           <div class="flex flex-col items-center gap-4">
-            <p class="text-gray-400 text-2xl">Exam Id</p>
+            <p class="text-gray-400 text-2xl">{{ examID }}</p>
             <div class="flex gap-4 justify-between text-white">
               <p class="text-white text-2xl">
                 <i class="fa-regular fa-clock"></i> {{ timerValue }}:00
@@ -46,14 +49,14 @@
         <h1>Exam</h1>
         <div class="flex items-center gap-4">
           <i
-            class="fa-solid fa-table-columns cursor-pointer"
-            role="button"
-            @click="fileDirectionHorizontal = false"
-          ></i>
-          <i
-            class="fa-solid fa-table-columns cursor-pointer rotate-90"
+            :class="`${fileDirectionHorizontal ? 'text-orange-400' : ''} fa-solid fa-table-columns cursor-pointer rotate-270`"
             role="button"
             @click="fileDirectionHorizontal = true"
+          ></i>
+          <i
+            :class="`${!fileDirectionHorizontal ? 'text-orange-400' : ''} fa-solid fa-table-columns cursor-pointer`"
+            role="button"
+            @click="fileDirectionHorizontal = false"
           ></i>
         </div>
       </div>
@@ -95,11 +98,14 @@ import { ref, onMounted } from "vue";
 import { fileSize } from "../../utils/variables";
 import AppEditor from "../../components/AppEditor.vue";
 import AppButton from "../../components/AppButton.vue";
+import { uid } from "uid";
+import AppToast from "../../components/AppToast.vue";
 
 const newExamStore = useNewExamStore();
 const timerValue = ref(newExamStore.configOptions.setTime);
 const fileDirectionHorizontal = ref(false);
 const questionSection = ref(null);
+const examID = ref(uid(7));
 
 onMounted(() => {
   questionSection.value.innerHTML = `${newExamStore.editorContent}`;
