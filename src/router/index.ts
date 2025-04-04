@@ -36,12 +36,12 @@ const router = createRouter({
               component: ExamFormat,
             },
             {
-              path: "new-question",
+              path: "/new-question",
               name: "new-question",
               component: NewQuestion,
             },
             {
-              path: "exam-config",
+              path: "/exam-config",
               name: "examConfiguration",
               component: ExamConfig,
             },
