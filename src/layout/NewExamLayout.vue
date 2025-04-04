@@ -90,7 +90,7 @@ const formVerifier = computed(() => [
     validator: newExamStore.editorContent == "",
   },
 ]);
-const examId = ref(uid(7))
+const examId = ref(uid(7));
 
 watch(
   () => newExamStore.counter,
