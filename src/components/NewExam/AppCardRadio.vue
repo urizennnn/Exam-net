@@ -6,6 +6,7 @@
     :value="value"
     :checked="value === modelValue"
     @change="updateValue(value)"
+    @click="handleClick"
   />
   <label
     :for="`card-${id}`"
@@ -57,11 +58,15 @@ defineProps({
   modelValue: String,
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "click"]);
 
 const updateValue = (value: string) => {
   emit("update:modelValue", value);
 };
+
+function handleClick(event: Event) {
+  emit("click", event);
+}
 </script>
 
 <style scoped>

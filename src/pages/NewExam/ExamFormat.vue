@@ -22,6 +22,7 @@
         :top="radio.top"
         :value="radio.value"
         v-model="newExamStore.form.examFormat"
+        @click="radio.actionOnClick"
       />
     </div>
 
@@ -32,14 +33,22 @@
       <i class="fa-solid fa-angles-right"></i>
     </div>
   </section>
+  <AppModal
+    :isVisible="showUploadDocumentModal"
+    @onClose="toggleShowUploadDocumentModal"
+    title="Upload a Document"
+  >
+  </AppModal>
 </template>
 
 <script setup>
 import AppCardRadio from "../../components/NewExam/AppCardRadio.vue";
 import { useNewExamStore } from "../../store/NewExamStore";
 import { ref, onMounted, watch } from "vue";
+import AppModal from "../../components/AppModal.vue";
 
 const newExamStore = useNewExamStore();
+const showUploadDocumentModal = ref(false);
 const radioOptions = [
   {
     label: "Use Question types",
@@ -49,9 +58,14 @@ const radioOptions = [
   {
     label: "Upload or Create a document",
     top: ["PDF", "T"],
-    value: "upload",
+    value: "",
+    actionOnClick: toggleShowUploadDocumentModal,
   },
 ];
+
+function toggleShowUploadDocumentModal() {
+  showUploadDocumentModal.value = !showUploadDocumentModal.value;
+}
 
 onMounted(() => {
   newExamStore.counter = 1;
