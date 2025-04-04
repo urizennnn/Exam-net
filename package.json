@@ -24,8 +24,10 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.12",
+    "@types/node": "^22.14.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "autoprefixer": "^10.4.20",
+    "dotenv": "^16.4.7",
     "vite": "^6.2.0"
   }
 }

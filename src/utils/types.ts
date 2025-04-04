@@ -1,3 +1,5 @@
+import { Bold } from "ckeditor5";
+
 export interface NewExamStore {
   counter: number;
   form: {
@@ -23,4 +25,40 @@ export interface NewExamStore {
     hidePoints: boolean;
     showExamResult: boolean;
   };
+}
+
+export interface BaseState {
+  success: boolean;
+  message?: string;
+  data?: any;
+  error?: string;
+  loading: boolean;
+}
+
+
+export interface UploadDocumentPayload {
+  file: any | null;
+}
+
+export interface UploadDocumentResponse {
+  data: string[]
+}
+
+export interface ErrorResponse {
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  message: string;
+  error:
+    | {
+        response: {
+          message: string;
+          success: boolean;
+        };
+        status: number;
+        options: any;
+        message: string;
+        name: string;
+      }
+    | string;
 }
