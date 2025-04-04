@@ -98,19 +98,21 @@
 import { useNewExamStore } from "../../store/NewExamStore";
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { fileSize } from "../../utils/variables";
 import AppEditor from "../../components/AppEditor.vue";
 import AppButton from "../../components/AppButton.vue";
 import { uid } from "uid";
 import AppToast from "../../components/AppToast.vue";
 import { clearData } from "../../utils/functions";
+import { useRoute } from 'vue-router'
 
 const newExamStore = useNewExamStore();
 const timerValue = ref(newExamStore.configOptions.setTime);
 const fileDirectionHorizontal = ref(false);
 const questionSection = ref(null);
-const examID = ref(uid(7));
+const routes = useRoute()
+const examID = computed(() => routes.params.id);
 
 onMounted(() => {
   questionSection.value.innerHTML = `${newExamStore.editorContent}`;

@@ -56,7 +56,7 @@
               label="Save"
               theme="secondary"
               leftIcon="fa-regular fa-floppy-disk"
-              to="/preview"
+              :to="`/preview/${examId}`"
             />
           </template>
           <i class="fa-solid fa-circle-question" role="button"></i>
@@ -75,6 +75,7 @@ import { RouterView, useRouter } from "vue-router";
 import { useNewExamStore } from "../store/NewExamStore";
 import AppButton from "../components/AppButton.vue";
 import Appinput from "../components/AppInput.vue";
+import { uid } from "uid";
 
 const router = useRouter();
 const newExamStore = useNewExamStore();
@@ -89,6 +90,7 @@ const formVerifier = computed(() => [
     validator: newExamStore.editorContent == "",
   },
 ]);
+const examId = ref(uid(7))
 
 watch(
   () => newExamStore.counter,
