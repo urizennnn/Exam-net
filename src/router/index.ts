@@ -8,6 +8,7 @@ import NewExamLayout from "../layout/NewExamLayout.vue";
 import ExamConfig from "../pages/NewExam/ExamConfig.vue";
 import Preview from "../pages/Preview/Preview.vue";
 import NotFound from "../pages/NotFound.vue";
+import MonitoringResults from '../pages/MonitoringResults/MonitoringResults.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +48,11 @@ const router = createRouter({
             },
           ],
         },
+        {
+          path: "/monitoring-results",
+          name: "monitoring-results",
+          component: MonitoringResults,
+        },
       ],
     },
     {
@@ -54,6 +60,7 @@ const router = createRouter({
       name: "preview",
       component: Preview,
     },
+    
     // Always leave this as last one,
     // but you can also remove it
     {
