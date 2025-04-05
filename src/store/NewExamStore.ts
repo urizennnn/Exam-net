@@ -69,7 +69,10 @@ export const useNewExamStore = defineStore("newExams", {
       this.counter += 1;
     },
     decreaseCounter() {
-      if (this.counter == 2 && this.formStepTwoCounter > 1) {
+      if (this.counter == 2 && this.form.examFormat === "") {
+        this.counter -= 1;
+        return;
+      } else if (this.counter == 2 && this.formStepTwoCounter > 1) {
         this.formStepTwoCounter -= 1;
         return;
       }

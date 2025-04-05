@@ -70,7 +70,9 @@ import AppModal from "../../components/AppModal.vue";
 import AppInput from "../../components/AppInput.vue";
 import AppButton from "../../components/AppButton.vue";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const newExamStore = useNewExamStore();
 const documentStore = useDocumentStore();
 const { loading: documentLoading, success: documentSuccess } =
@@ -107,8 +109,9 @@ async function submitUploadDocumentForm() {
 
   if (documentSuccess.value) {
     toggleShowUploadDocumentModal();
+    router.push("/new-question");
   } else {
-    fileUpload.value = null
+    fileUpload.value = null;
   }
 }
 

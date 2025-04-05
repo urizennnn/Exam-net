@@ -89,6 +89,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, computed } from "vue";
 import { useNewExamStore } from "../../store/NewExamStore";
+import { useDocumentStore } from "../../store/server/document";
 import AppNewExamSideBar from "../../components/NewExam/AppNewExamSideBar.vue";
 import AppAnswerType from "../../components/NewExam/AppAnswerType.vue";
 import AppButton from "../../components/AppButton.vue";
@@ -98,6 +99,7 @@ import AppEditor from "../../components/AppEditor.vue";
 import AppModal from "../../components/AppModal.vue";
 
 const newExamStore = useNewExamStore();
+const documentStore = useDocumentStore();
 const { increaseFormStepTwoCounter } = useNewExamStore();
 const answerTypeList = ref<
   {
@@ -191,6 +193,20 @@ function saveAnswerType() {
 
 onMounted(() => {
   newExamStore.counter = 2;
+  if (
+    newExamStore.counter === 2 &&
+    newExamStore.form.examFormat != "question"
+  ) {
+    newExamStore.formStepTwoCounter = 3;
+    const content = documentStore.result.flat(Infinity).toString();
+    if (content) {
+      newExamStore.editorContent = content;
+      localStorage.setItem("editorContent", `${content}`);
+    }
+  } else {
+    newExamStore.formStepTwoCounter = 1;
+    newExamStore.editorContent = "";
+  }
 });
 
 watch(
