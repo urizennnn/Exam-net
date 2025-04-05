@@ -87,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, computed } from "vue";
+import { onMounted, onUnmounted, ref, watch, computed } from "vue";
 import { useNewExamStore } from "../../store/NewExamStore";
 import { useDocumentStore } from "../../store/server/document";
 import AppNewExamSideBar from "../../components/NewExam/AppNewExamSideBar.vue";
@@ -203,11 +203,16 @@ onMounted(() => {
       newExamStore.editorContent = content;
       localStorage.setItem("editorContent", `${content}`);
     }
-  } else {
-    newExamStore.formStepTwoCounter = 1;
-    newExamStore.editorContent = "";
   }
 });
+
+onUnmounted(() => {
+  if(newExamStore.form.examFormat === "") {
+    newExamStore.formStepTwoCounter = 1;
+    newExamStore.editorContent = '';
+    localStorage.setItem("editorContent", '');
+  }
+})
 
 watch(
   () => answerTypeList,
