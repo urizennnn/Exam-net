@@ -14,7 +14,7 @@
       disabled && theme === 'secondary'
         ? 'cursor-not-allowed bg-[#38383858]'
         : !disabled && theme === 'secondary'
-          ? 'cursor-pointer bg-[#211d1d]'
+          ? 'cursor-pointer bg-black hover:bg-neutral-800'
           : '',
       disabled && theme === 'variant'
         ? 'cursor-not-allowed bg-[#38383858]'

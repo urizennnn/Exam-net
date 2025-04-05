@@ -3,26 +3,29 @@ import {
   UploadDocumentPayload,
   ErrorResponse,
   BaseState,
-  UploadDocumentResponse
+  UploadDocumentResponse,
 } from "../../utils/types";
 import { AxiosError } from "axios";
 import { axiosInstance } from "../../utils/axiosConfig";
 
 interface DocumentStore extends BaseState {
+  result: UploadDocumentResponse[];
 }
 
 export const useDocumentStore = defineStore("documents", {
   state: (): DocumentStore => ({
     loading: false,
     success: false,
+    result: [],
   }),
   actions: {
     async uploadDocument(payload: UploadDocumentPayload) {
       try {
+        this.success = false;
         this.loading = true;
 
         const formData = new FormData();
-        formData.append("fileUpload", payload.file);
+        formData.append("file", payload.file);
 
         const { data } = await axiosInstance.post("/api/process", formData, {
           headers: {
@@ -30,10 +33,10 @@ export const useDocumentStore = defineStore("documents", {
           },
         });
 
-        console.log(data);
-        const result = data as UploadDocumentResponse[] 
-        console.log(result)
+        const result = data as UploadDocumentResponse[];
 
+        this.success = true;
+        this.result = result;
         this.loading = false;
       } catch (error: any) {
         this.loading = false;

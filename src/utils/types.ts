@@ -35,13 +35,12 @@ export interface BaseState {
   loading: boolean;
 }
 
-
 export interface UploadDocumentPayload {
   file: any | null;
 }
 
 export interface UploadDocumentResponse {
-  data: string[]
+  data: string[];
 }
 
 export interface ErrorResponse {

@@ -37,17 +37,45 @@
     :isVisible="showUploadDocumentModal"
     @onClose="toggleShowUploadDocumentModal"
     title="Upload a Document"
+    :loading="documentLoading"
   >
+    <template #body>
+      <div class="mt-4">
+        <div class="flex flex-col gap-1">
+          <label for="">Choose a File: </label>
+          <AppInput
+            type="file"
+            accept=".pdf, application/pdf"
+            v-model="fileUpload"
+          />
+        </div>
+        <AppButton
+          label="Submit File"
+          extraClass="mt-3 w-full py-4! font-semibold rounded-md flex justify-center! items-center! uppercase"
+          theme="secondary"
+          :disabled="!fileUpload"
+          @click="submitUploadDocumentForm"
+        />
+      </div>
+    </template>
   </AppModal>
 </template>
 
 <script setup>
 import AppCardRadio from "../../components/NewExam/AppCardRadio.vue";
 import { useNewExamStore } from "../../store/NewExamStore";
+import { useDocumentStore } from "../../store/server/document";
 import { ref, onMounted, watch } from "vue";
 import AppModal from "../../components/AppModal.vue";
+import AppInput from "../../components/AppInput.vue";
+import AppButton from "../../components/AppButton.vue";
+import { storeToRefs } from "pinia";
 
 const newExamStore = useNewExamStore();
+const documentStore = useDocumentStore();
+const { loading: documentLoading, success: documentSuccess } =
+  storeToRefs(documentStore);
+const { uploadDocument } = documentStore;
 const showUploadDocumentModal = ref(false);
 const radioOptions = [
   {
@@ -62,9 +90,26 @@ const radioOptions = [
     actionOnClick: toggleShowUploadDocumentModal,
   },
 ];
+const fileUpload = ref(null);
 
 function toggleShowUploadDocumentModal() {
   showUploadDocumentModal.value = !showUploadDocumentModal.value;
+
+  if (!showUploadDocumentModal.value) {
+    fileUpload.value = null;
+  }
+}
+
+async function submitUploadDocumentForm() {
+  await uploadDocument({
+    file: fileUpload.value,
+  });
+
+  if (documentSuccess.value) {
+    toggleShowUploadDocumentModal();
+  } else {
+    fileUpload.value = null
+  }
 }
 
 onMounted(() => {

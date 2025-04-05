@@ -7,7 +7,7 @@
   >
     <section
       v-if="loading"
-      class="bg-white text-black w-full max-w-[800px] max-h-[700px] rounded-lg overflow-x-hidden overflow-y-hidden p-3 flex flex-col gap-8 justify-center items-center"
+      class="bg-white! text-black w-full max-w-[800px] max-h-[700px] rounded-lg overflow-x-hidden overflow-y-hidden p-3 flex flex-col gap-8 justify-center items-center"
     >
       <p class="text-2xl tracking-wide text-gray-500 block">
         This may take a few moments.
