@@ -207,12 +207,12 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  if(newExamStore.form.examFormat === "") {
+  if (newExamStore.form.examFormat === "") {
     newExamStore.formStepTwoCounter = 1;
-    newExamStore.editorContent = '';
-    localStorage.setItem("editorContent", '');
+    newExamStore.editorContent = "";
+    localStorage.setItem("editorContent", "");
   }
-})
+});
 
 watch(
   () => answerTypeList,

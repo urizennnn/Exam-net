@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`${extraClass} select-none flex gap-4 capitalize items-center cursor-pointer`"
+    :class="`${props.class} select-none flex gap-4 capitalize items-center cursor-pointer`"
   >
     <input
       type="checkbox"
@@ -28,7 +28,7 @@ const props = defineProps({
   },
   id: String,
   modelValue: Boolean,
-  extraClass: {
+  class: {
     type: String,
     default: "",
   },

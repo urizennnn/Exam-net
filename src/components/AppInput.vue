@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`${label ? 'grid grid-cols-2' : 'flex'} gap-4 w-full items-center`"
+    :class="`${label ? 'grid grid-cols-2 gap-4' : ''} w-full items-center m-0`"
   >
     <input
       v-if="type !== 'file'"
@@ -14,11 +14,10 @@
           : theme === 'secondary'
             ? 'bg-gray-100 border-1 border-gray-200'
             : '',
-        'outline-none w-full p-2 rounded-md placeholder:text-gray-400 font-semibold',
+        'outline-none w-full p-2 rounded-md placeholder:text-gray-400 font-semibold m-0',
       ]"
       :max="max"
       :min="min"
-      v-bind="props.accept ? { accept } : {}"
     />
     <input
       v-else
@@ -30,7 +29,7 @@
           : theme === 'secondary'
             ? 'bg-gray-100 border-1 border-gray-200'
             : '',
-        'outline-none w-full p-2 rounded-md placeholder:text-gray-400 font-semibold',
+        'outline-none w-full p-2 rounded-md placeholder:text-gray-400 font-semibold m-0',
       ]"
       v-bind="props.accept ? { accept } : {}"
       @change="onFileChange"
