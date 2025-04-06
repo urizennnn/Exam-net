@@ -198,7 +198,8 @@ onMounted(() => {
     newExamStore.form.examFormat != "question"
   ) {
     newExamStore.formStepTwoCounter = 3;
-    const content = documentStore.result.flat(Infinity).toString();
+    const content = documentStore.result;
+    console.log(content)
     if (content) {
       newExamStore.editorContent = content;
       localStorage.setItem("editorContent", `${content}`);

@@ -16,6 +16,7 @@
               v-for="(exam, index) in allAvailableExams"
               :key="index"
               :value="exam.title"
+              class="w-full text-wrap"
             >
               {{ exam.title }}
             </option>
@@ -39,6 +40,13 @@
               {{ tab.label }}
             </li>
           </ul>
+          <!-- main section -->
+          <main class="py-8 px-4">
+            <h1 class="text-black text-5xl font-bold">{{ examTitle }}</h1>
+            <div>
+            </div>
+            <div></div>
+          </main>
         </div>
       </section>
     </div>
@@ -52,10 +60,10 @@ import AppToggleButton from "../../components/AppToggleButton.vue";
 
 const allAvailableExams = ref([
   {
-    title: "MATHS101",
+    title: "BIT 906- DIGITAL INNOVATION BUSINESS STRATEGY",
   },
   {
-    title: "COSC303",
+    title: "Intro AI (MBA)",
   },
 ]);
 const examTitle = ref(allAvailableExams.value[0].title);

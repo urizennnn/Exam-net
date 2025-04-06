@@ -40,7 +40,7 @@ export interface UploadDocumentPayload {
 }
 
 export interface UploadDocumentResponse {
-  data: string[];
+  data: string[] | string;
 }
 
 export interface ErrorResponse {

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://exam-mode-be.onrender.com/",
+  baseURL: "http://bore.pub:41845",
   headers: {
     "Content-Type": "application/json",
   },
