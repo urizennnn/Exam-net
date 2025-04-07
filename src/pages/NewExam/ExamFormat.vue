@@ -51,7 +51,7 @@
         </div>
         <AppButton
           label="Submit File"
-          extraClass="mt-3 w-full py-4! font-semibold rounded-md flex justify-center! items-center! uppercase"
+          class="mt-3 w-full py-4! font-semibold rounded-md flex justify-center! items-center! uppercase"
           theme="secondary"
           :disabled="!fileUpload"
           @click="submitUploadDocumentForm"

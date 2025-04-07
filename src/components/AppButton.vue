@@ -4,7 +4,7 @@
     @click="handleClick"
     :class="[
       theme === 'primary'
-        ? 'w-fit flex items-center text-gray-500 py-2 gap-2 border border-gray-400  px-2 rounded-lg'
+        ? 'w-fit flex items-center text-gray-500 py-2 gap-2 border border-gray-400 px-2 rounded-lg'
         : 'flex items-center gap-1 text-white font-semibold rounded-2xl py-1 px-3',
       disabled && theme === 'primary'
         ? 'cursor-not-allowed bg-gray-200'
@@ -21,7 +21,7 @@
         : !disabled && theme === 'variant'
           ? 'cursor-pointer bg-white text-black! hover:bg-slate-200'
           : '',
-      extraClass,
+      props.class,
     ]"
   >
     <i v-if="leftIcon" :class="leftIcon"></i>
@@ -39,7 +39,7 @@ import { useRouter } from "vue-router";
 
 const props = defineProps({
   label: String,
-  extraClass: {
+  class: {
     type: String,
     required: false,
   },

@@ -24,7 +24,7 @@
               You will get access as soon as the license is ordered.
             </p>
             <AppButton
-              extraClass="py-1 px-4 rounded-4xl! text-black! border-2! text-lg!"
+              class="py-1 px-4 rounded-4xl! text-black! border-2! text-lg!"
               label="See pricing and purchase a license"
             />
           </div>
@@ -38,7 +38,7 @@
             </p>
 
             <AppButton
-              extraClass="py-1 px-4 rounded-4xl! text-black! border-2! text-lg!"
+              class="py-1 px-4 rounded-4xl! text-black! border-2! text-lg!"
               label="Activate 5 days of temporary access"
             />
           </div>

@@ -27,7 +27,7 @@
             leftIcon="fa-solid fa-plus text-white"
             label="New Exam"
             theme="secondary"
-            extraClass="bg-gray-700 py-2 px-4"
+            class="bg-gray-700 py-2 px-4"
             to="/new-exam"
             @click="clearData"
           />

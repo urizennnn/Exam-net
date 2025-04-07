@@ -39,12 +39,6 @@
           </div>
         </div>
         <div class="flex gap-4 mt-4">
-          <!-- <AppButton -->
-          <!--   :disabled="!hasTrueValue(newExamStore.formStepTwo)" -->
-          <!--   label="Generate questions" -->
-          <!--   @click="toggleShowGenerateQuestionsModal" -->
-          <!--   leftIcon="fa-solid fa-wand-sparkles" -->
-          <!-- /> -->
           <AppButton
             :disabled="!hasTrueValue(newExamStore.formStepTwo)"
             @click="saveAnswerType"
@@ -87,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch, computed } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useNewExamStore } from "../../store/NewExamStore";
 import { useDocumentStore } from "../../store/server/document";
 import AppNewExamSideBar from "../../components/NewExam/AppNewExamSideBar.vue";
@@ -176,7 +170,6 @@ const contentTypes = [
     actionOnClick: increaseFormStepTwoCounter,
   },
 ];
-const showGenerateQuestionsModal = ref(false);
 const uploadExamQuestionsModal = ref(false);
 
 function toggleUploadExamQuestionsModal() {
