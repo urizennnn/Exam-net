@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, computed, ref, onMounted } from "vue";
+import { watch, onMounted } from "vue";
 import AppLoader from "./AppLoader.vue";
 
 const props = defineProps({

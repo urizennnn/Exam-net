@@ -10,7 +10,7 @@
           <div ref="editorElement">
             <ckeditor
               v-if="editor && config"
-              v-model="localData"
+              v-model="model"
               :editor="editor"
               :config="config"
               @ready="onReady"
@@ -89,12 +89,7 @@ import {
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 
-const props = defineProps({
-  modelValue: String,
-});
-const emit = defineEmits(["update:modelValue"]);
-
-const localData = ref(props.modelValue);
+const model = defineModel()
 const LICENSE_KEY = "GPL";
 const editorToolbar = useTemplateRef("editorToolbarElement");
 const isLayoutReady = ref(false);
@@ -309,19 +304,6 @@ function onReady(editor) {
 
   editorToolbar.value.appendChild(editor.ui.view.toolbar.element);
 }
-
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    if (newVal !== localData.value) {
-      localData.value = newVal;
-    }
-  },
-);
-
-watch(localData, (newVal) => {
-  emit("update:modelValue", newVal);
-});
 </script>
 
 <style scoped>

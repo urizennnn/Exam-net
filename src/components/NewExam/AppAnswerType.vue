@@ -3,7 +3,7 @@
     type="checkbox"
     :id="`checkbox-${id}`"
     :name="tag"
-    v-model="internalValue"
+    v-model="model"
   />
   <label :for="`checkbox-${id}`" class="flex flex-col gap-2 text-center z-0">
     <div
@@ -19,13 +19,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
-
-const props = defineProps({
+defineProps({
   id: Number,
   label: String,
   tag: String,
-  modelValue: Boolean,
   icon: String,
   auto: {
     type: Boolean,
@@ -33,12 +30,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
-
-const internalValue = computed({
-  get: () => props.modelValue,
-  set: (val: boolean) => emit("update:modelValue", val),
-});
+const model = defineModel()
 </script>
 
 <style scoped>

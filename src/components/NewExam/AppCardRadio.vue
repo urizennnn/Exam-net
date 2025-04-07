@@ -4,8 +4,7 @@
     :id="`card-${id}`"
     name="AppCardRadio"
     :value="value"
-    :checked="value === modelValue"
-    @change="updateValue(value)"
+    v-model="model"
     @click="handleClick"
   />
   <label
@@ -31,7 +30,7 @@
         >
           <p
             v-for="(text, index) in top"
-            :key="text"
+            :key="index"
             :class="`w-8 sm:w-10 h-8 sm:h-10 ${index % 2 === 1 ? 'bg-[#0968a7]' : 'bg-[#e92b2b]'} rounded-md flex justify-center items-center`"
           >
             {{ text }}
@@ -55,14 +54,11 @@ defineProps({
   label: String,
   top: [String, Array],
   value: String,
-  modelValue: String,
 });
 
-const emit = defineEmits(["update:modelValue", "click"]);
+const model = defineModel({required: false})
 
-const updateValue = (value: string) => {
-  emit("update:modelValue", value);
-};
+const emit = defineEmits(["click"]);
 
 function handleClick(event: Event) {
   emit("click", event);

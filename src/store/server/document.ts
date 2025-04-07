@@ -38,7 +38,7 @@ export const useDocumentStore = defineStore("documents", {
         result.forEach((chunk) => {
           if (typeof chunk === "string") {
             const cleanedStr = chunk
-              .replace(/,\s*\n/g, "\n") 
+              .replace(/,\s*\n/g, "\n")
               .replace(/,\s*$/, "")
               .replace(/\n,\s*/g, "\n")
               .trim();

@@ -199,7 +199,7 @@ onMounted(() => {
   ) {
     newExamStore.formStepTwoCounter = 3;
     const content = documentStore.result;
-    console.log(content)
+    console.log(content);
     if (content) {
       newExamStore.editorContent = content;
       localStorage.setItem("editorContent", `${content}`);
