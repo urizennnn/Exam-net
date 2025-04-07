@@ -43,7 +43,7 @@
           <!-- main section -->
           <main class="py-8 px-4">
             <h1 class="text-black text-5xl font-bold">{{ examTitle }}</h1>
-            <section class="flex gap-2 mt-4">
+            <section class="flex gap-6 mt-4">
               <div class="flex flex-col gap-2 w-full max-w-[350px]">
                 <template v-for="(details, index) in examDetails" :key="index">
                   <AppSelect
@@ -63,9 +63,34 @@
                 </p>
                 <div class="mt-4">
                   <h4 class="font-bold">Student Status</h4>
+                  <div class="flex gap-2 w-full mt-3">
+                    <div
+                      v-for="(status, index) in studentStatus"
+                      :key="index"
+                      :class="`${status.borderBottom} border-b-4 p-4 flex items-center justify-center flex-col gap-3 bg-gray-100 w-full`"
+                    >
+                      <p class="text-xl flex items-end">
+                        <span class="font-bold text-2xl">
+                          {{ status.done }}
+                        </span>
+                        /{{ status.total }}
+                      </p>
+                      <p class="capitalize text-xl tracking-wide">
+                        {{ status.title }}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div></div>
+              <div class="w-full px-4 flex flex-col gap-4">
+                <AppButton
+                  v-for="(button, index) in buttonList"
+                  :key="index"
+                  :label="button.label"
+                  :leftIcon="button.leftIcon"
+                  extraClass="w-full! items-center justify-center rounded-3xl!"
+                />
+              </div>
             </section>
           </main>
         </div>
@@ -79,6 +104,7 @@ import { ref } from "vue";
 import AppInput from "../../components/AppInput.vue";
 import AppToggleButton from "../../components/AppToggleButton.vue";
 import AppSelect from "../../components/AppSelect.vue";
+import AppButton from "../../components/AppButton.vue";
 
 const allAvailableExams = ref([
   {
@@ -115,6 +141,44 @@ const examDetails = ref([
       { title: "Discoverable", value: "discoverable" },
       { title: "Scheduled", value: "scheduled" },
     ],
+  },
+]);
+
+const studentStatus = ref([
+  {
+    done: 0,
+    total: 0,
+    title: "ongoing",
+    borderBottom: "border-blue-300",
+  },
+  {
+    done: 0,
+    total: 0,
+    title: "submitted",
+    borderBottom: "border-green-300",
+  },
+]);
+
+const buttonList = ref([
+  {
+    label: "End the exam for students",
+    leftIcon: "fa-solid fa-right-from-bracket",
+  },
+  {
+    label: "Set a timer for the students",
+    leftIcon: "fa-regular fa-clock",
+  },
+  {
+    label: "Individual exam keys",
+    leftIcon: "fa-solid fa-key",
+  },
+  {
+    label: "Preview exam",
+    leftIcon: "fa-solid fa-binoculars",
+  },
+  {
+    label: "Anonymous identities",
+    leftIcon: "fa-regular fa-eye-slash",
   },
 ]);
 

@@ -56,7 +56,7 @@ defineProps({
   value: String,
 });
 
-const model = defineModel({required: false})
+const model = defineModel({ required: false });
 
 const emit = defineEmits(["click"]);
 

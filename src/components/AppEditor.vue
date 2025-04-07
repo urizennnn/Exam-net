@@ -89,7 +89,7 @@ import {
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 
-const model = defineModel()
+const model = defineModel();
 const LICENSE_KEY = "GPL";
 const editorToolbar = useTemplateRef("editorToolbarElement");
 const isLayoutReady = ref(false);
