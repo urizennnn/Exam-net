@@ -5,7 +5,7 @@
     <input
       v-if="type !== 'file'"
       :type="type"
-      v-model="internalValue"
+      v-model="model"
       :placeholder="placeholder"
       :class="[
         props.class,
@@ -39,8 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-
 const props = defineProps({
   theme: {
     type: String,
@@ -58,7 +56,6 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  modelValue: [String, Number],
   class: {
     type: String,
     default: "",
@@ -76,12 +73,8 @@ const props = defineProps({
   },
 });
 
+const model = defineModel();
 const emit = defineEmits(["update:modelValue"]);
-
-const internalValue = computed({
-  get: () => props.modelValue,
-  set: (val: string | number) => emit("update:modelValue", val),
-});
 
 function onFileChange(event: Event) {
   const target = event.target as HTMLInputElement;
