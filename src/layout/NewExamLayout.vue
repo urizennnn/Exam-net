@@ -75,7 +75,7 @@
     <template #body>
       <Appinput placeholder="Enter the name" v-model="newExamStore.examName" />
       <AppButton
-        label="Save"
+        label="Save Exam"
         theme="secondary"
         leftIcon="fa-regular fa-floppy-disk"
         class="w-full! items-center justify-center p-3! mt-3"
