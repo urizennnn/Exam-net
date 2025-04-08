@@ -63,6 +63,7 @@ export const useNewExamStore = defineStore("newExams", {
         ? JSON.parse(sessionStorage.getItem("showExamResult"))
         : true,
     },
+    examName: "",
   }),
   actions: {
     increaseCounter() {

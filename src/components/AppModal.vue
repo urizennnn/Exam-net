@@ -29,7 +29,7 @@
         <h1 class="font-sans text-gray-700 text-2xl font-medium tracking-wide">
           {{ title }}
         </h1>
-        <form @submit.prevent.stop="handleActions">
+        <form @submit.prevent.stop="handleActions" class="mt-4">
           <slot name="body" />
         </form>
       </div>

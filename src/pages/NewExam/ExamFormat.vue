@@ -40,23 +40,21 @@
     :loading="documentLoading"
   >
     <template #body>
-      <div class="mt-4">
-        <div class="flex flex-col gap-1">
-          <label for="">Choose a File: </label>
-          <AppInput
-            type="file"
-            accept=".pdf, application/pdf"
-            v-model="fileUpload"
-          />
-        </div>
-        <AppButton
-          label="Submit File"
-          class="mt-3 w-full py-4! font-semibold rounded-md flex justify-center! items-center! uppercase"
-          theme="secondary"
-          :disabled="!fileUpload"
-          @click="submitUploadDocumentForm"
+      <div class="flex flex-col gap-1">
+        <label for="">Choose a File: </label>
+        <AppInput
+          type="file"
+          accept=".pdf, application/pdf"
+          v-model="fileUpload"
         />
       </div>
+      <AppButton
+        label="Submit File"
+        class="mt-3 w-full py-4! font-semibold rounded-md flex justify-center! items-center! uppercase"
+        theme="secondary"
+        :disabled="!fileUpload"
+        @click="submitUploadDocumentForm"
+      />
     </template>
   </AppModal>
 </template>

@@ -25,6 +25,7 @@ export interface NewExamStore {
     hidePoints: boolean;
     showExamResult: boolean;
   };
+  examName: string;
 }
 
 export interface BaseState {

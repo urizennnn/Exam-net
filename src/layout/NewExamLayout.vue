@@ -14,7 +14,7 @@
             leftIcon="fa-solid fa-arrow-left"
           />
           <div class="flex items-center gap-1">
-            <template v-for="(step, index) in steps" :key="index">
+            <template v-for="(_, index) in steps" :key="index">
               <i
                 v-if="index + 1 < newExamStore.counter"
                 class="text-center text-[#36a8d8] font-semibold rounded-full text-4xl fa-solid fa-circle-check"
@@ -56,7 +56,7 @@
               label="Save"
               theme="secondary"
               leftIcon="fa-regular fa-floppy-disk"
-              :to="`/preview/${examId}`"
+              @click="toggleShowNameExamModal"
             />
           </template>
           <i class="fa-solid fa-circle-question" role="button"></i>
@@ -67,6 +67,23 @@
       </main>
     </div>
   </section>
+  <AppModal
+    title="Give your exam a name"
+    :isVisible="showNameExamModal"
+    @onClose="toggleShowNameExamModal"
+  >
+    <template #body>
+      <Appinput placeholder="Enter the name" v-model="newExamStore.examName" />
+      <AppButton
+        label="Save"
+        theme="secondary"
+        leftIcon="fa-regular fa-floppy-disk"
+        class="w-full! items-center justify-center p-3! mt-3"
+        :to="`/preview/${examId}`"
+        :disabled="!newExamStore.examName"
+      />
+    </template>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -76,6 +93,7 @@ import { useNewExamStore } from "../store/NewExamStore";
 import AppButton from "../components/AppButton.vue";
 import Appinput from "../components/AppInput.vue";
 import { uid } from "uid";
+import AppModal from "../components/AppModal.vue";
 
 const router = useRouter();
 const newExamStore = useNewExamStore();
@@ -91,6 +109,15 @@ const formVerifier = computed(() => [
   },
 ]);
 const examId = ref(uid(7));
+const showNameExamModal = ref(false);
+
+function toggleShowNameExamModal() {
+  showNameExamModal.value = !showNameExamModal.value;
+
+  if (!showNameExamModal.value) {
+    newExamStore.examName = "";
+  }
+}
 
 watch(
   () => newExamStore.counter,
