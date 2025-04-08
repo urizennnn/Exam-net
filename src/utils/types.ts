@@ -1,5 +1,3 @@
-import { Bold } from "ckeditor5";
-
 export interface NewExamStore {
   counter: number;
   form: {
