@@ -192,7 +192,6 @@ onMounted(() => {
   ) {
     newExamStore.formStepTwoCounter = 3;
     const content = documentStore.result;
-    console.log(content);
     if (content) {
       newExamStore.editorContent = content;
       localStorage.setItem("editorContent", `${content}`);
@@ -201,7 +200,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  if (newExamStore.form.examFormat === "") {
+  if (newExamStore.counter == 1 && newExamStore.form.examFormat === "") {
     newExamStore.formStepTwoCounter = 1;
     newExamStore.editorContent = "";
     localStorage.setItem("editorContent", "");
