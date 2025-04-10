@@ -60,3 +60,9 @@ export interface ErrorResponse {
       }
     | string;
 }
+
+export interface TabsType {
+  isActive: boolean;
+  label: string;
+  value: string;
+}

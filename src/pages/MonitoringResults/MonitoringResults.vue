@@ -34,6 +34,7 @@
           <!-- main section -->
           <main class="py-8 px-4">
             <h1 class="text-black text-5xl font-bold">{{ examTitle }}</h1>
+            <!-- Monitoring section -->
             <template v-if="selectSelectedTab === 'monitoring'">
               <section class="flex gap-6 mt-4">
                 <div class="flex flex-col gap-2 w-full max-w-[350px]">
@@ -50,13 +51,19 @@
                   <div
                     class="flex gap-6 items-center font-light text-black text-xl justify-between"
                   >
-                    Teachers
-                    <div>
+                    <p>Teachers</p>
+                    <div class="flex">
                       <i
-                      class="py-3 px-4 bg-gray-400 text-white rounded-full select-none"
-                      >D</i
-                    >
-                    <i class="fa-solid fa-share-nodes border border-gray-400 text-gray-400 py-3 px-3 rounded-full"></i>
+                        v-for="(teacher, index) in teachersList.slice(0, 3)"
+                        :key="index"
+                        :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : ''} py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`"
+                        >{{ teacher.name[0].toUpperCase() }}</i
+                      >
+                      <AppButton
+                        class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-4 rounded-full! bg-white"
+                      >
+                        <i class="fa-solid fa-share-nodes"></i>
+                      </AppButton>
                     </div>
                   </div>
                   <div class="mt-4">
@@ -91,16 +98,26 @@
                 </div>
               </section>
             </template>
+            <!-- Results section -->
             <template v-if="selectSelectedTab === 'results'">
-              <p
-                class="flex gap-6 items-center font-light text-black my-8 max-w-[250px] w-full text-xl justify-between"
+              <div
+                class="w-full max-w-[350px] my-8 flex gap-6 items-center font-light text-black text-xl justify-between"
               >
-                Teachers
-                <i
-                  class="py-2 px-4 bg-gray-400 text-white rounded-full select-none"
-                  >D</i
-                >
-              </p>
+                <p>Teachers</p>
+                <div class="flex">
+                  <i
+                    v-for="(teacher, index) in teachersList.slice(0, 3)"
+                    :key="index"
+                    :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : ''} py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`"
+                    >{{ teacher.name[0].toUpperCase() }}</i
+                  >
+                  <AppButton
+                    class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-4 rounded-full! bg-white"
+                  >
+                    <i class="fa-solid fa-share-nodes"></i>
+                  </AppButton>
+                </div>
+              </div>
               <div class="w-full px-4 flex gap-4">
                 <AppButton
                   v-for="(button, index) in buttonListTwo"
@@ -109,6 +126,15 @@
                   :leftIcon="button.leftIcon"
                   :rightIcon="button.rightIcon"
                   class="w-full! items-center justify-center rounded-3xl!"
+                />
+              </div>
+              <div class="mt-4">
+                <AppTab
+                  :tabs="resultsTab"
+                  v-model="selectedResultTab"
+                  theme="variant"
+                  class="py-1 tracking-wider hover:border-b-3 hover:border-zinc-800 mr-4 text-zinc-600 hover:text-zinc-800"
+                  activeClass="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer"
                 />
               </div>
             </template>
@@ -126,6 +152,7 @@ import AppToggleButton from "../../components/AppToggleButton.vue";
 import AppSelect from "../../components/AppSelect.vue";
 import AppButton from "../../components/AppButton.vue";
 import AppTab from "../../components/AppTab.vue";
+import { TabsType } from "../../utils/types";
 
 const allAvailableExams = ref([
   {
@@ -136,7 +163,7 @@ const allAvailableExams = ref([
   },
 ]);
 const examTitle = ref(allAvailableExams.value[0].title);
-const tabs = ref([
+const tabs = ref<TabsType[]>([
   {
     label: "monitoring",
     isActive: true,
@@ -231,15 +258,37 @@ const buttonListTwo = ref([
 
 const teachersList = ref([
   {
-    name: 'Damian'
+    name: "Damian",
   },
   {
-    name: 'Damian'
+    name: "Fisayo",
   },
   {
-    name: 'Damian'
+    name: "Victor",
   },
-])
+  {
+    name: "Fara",
+  },
+]);
+
+const resultsTab = ref<TabsType[]>([
+  {
+    isActive: true,
+    label: "Student",
+    value: "student",
+  },
+  {
+    isActive: false,
+    label: "Questions",
+    value: "question",
+  },
+  {
+    isActive: false,
+    label: "Statistics",
+    value: "statistics",
+  },
+]);
+const selectedResultTab = ref(resultsTab.value[0].value);
 </script>
 
 <style scoped>

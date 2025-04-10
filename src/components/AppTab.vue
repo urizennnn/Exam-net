@@ -1,9 +1,16 @@
 <template>
-  <ul class="w-full flex overflow-y-hidden overflow-x-hidden">
+  <ul class="w-full flex overflow-y-hidden overflow-x-hidden select-none">
     <li
       v-for="(tab, index) in tabsFromProps"
       :key="index"
-      :class="`${props.class} text-center w-full p-4 capitalize cursor-pointer ${tab.isActive ? 'border-3 border-l-0 border-r-0 border-t-0 border-b-blue-500' : 'bg-gray-200'}`"
+      :class="[
+        theme === 'primary'
+          ? `${props.class} text-center w-full p-4 capitalize cursor-pointer ${tab.isActive ? 'border-3 border-l-0 border-r-0 border-t-0 border-b-blue-500' : 'bg-gray-200'}`
+          : '',
+        theme === 'variant'
+          ? `${props.class} ${tab.isActive ? activeClass : ''}`
+          : '',
+      ]"
       @click="handleTabSwitch(index)"
     >
       {{ tab.label }}
@@ -13,19 +20,24 @@
 
 <script setup lang="ts">
 import { PropType, ref, onMounted } from "vue";
+import { TabsType } from "../utils/types";
 
 const props = defineProps({
   tabs: {
-    type: Array as PropType<
-      {
-        isActive: boolean;
-        label: string;
-        value: string;
-      }[]
-    >,
+    type: Array as PropType<TabsType[]>,
     default: () => [],
   },
   class: {
+    type: String,
+    default: "",
+    required: false,
+  },
+  theme: {
+    type: String as PropType<"primary" | "variant">,
+    default: "primary",
+    required: false,
+  },
+  activeClass: {
     type: String,
     default: "",
     required: false,

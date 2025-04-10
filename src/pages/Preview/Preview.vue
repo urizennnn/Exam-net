@@ -26,7 +26,7 @@
             label="Submit Exam"
             leftIcon="fa-solid fa-check text-green-600"
             theme="variant"
-            extraClass="rounded-2xl! px-5! py-3! gap-4!"
+            class="rounded-2xl! px-5! py-3! gap-4!"
             to="/monitoring-results"
             @click="clearData"
           />
@@ -102,7 +102,6 @@ import { ref, onMounted, computed } from "vue";
 import { fileSize } from "../../utils/variables";
 import AppEditor from "../../components/AppEditor.vue";
 import AppButton from "../../components/AppButton.vue";
-import { uid } from "uid";
 import AppToast from "../../components/AppToast.vue";
 import { clearData } from "../../utils/functions";
 import { useRoute } from "vue-router";
