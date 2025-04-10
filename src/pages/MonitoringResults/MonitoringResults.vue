@@ -88,7 +88,7 @@
                   :key="index"
                   :label="button.label"
                   :leftIcon="button.leftIcon"
-                  extraClass="w-full! items-center justify-center rounded-3xl!"
+                  class="w-full! items-center justify-center rounded-3xl!"
                 />
               </div>
             </section>
@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import AppInput from "../../components/AppInput.vue";
 import AppToggleButton from "../../components/AppToggleButton.vue";
 import AppSelect from "../../components/AppSelect.vue";
@@ -119,12 +119,15 @@ const tabs = ref([
   {
     label: "monitoring",
     isActive: true,
+    value: "monitoring",
   },
   {
     label: "results",
     isActive: false,
+    value: "results",
   },
 ]);
+const selectSelectedTab = ref();
 
 const examDetails = ref([
   {
@@ -187,6 +190,8 @@ const handleTabSwitch = (tabindex: number) => {
     tab.isActive = tabindex === index;
   });
 };
+
+watch(tabs, (n) => {});
 </script>
 
 <style scoped>
