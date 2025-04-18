@@ -17,6 +17,15 @@
           </div>
         </div>
         <template v-if="examStore.exams.length > 0">
+          <div class="bg-blue-950 py-2 px-4 text-gray-400 flex gap-4 text-2xl">
+            <i class="fa-solid fa-lock"></i>
+            <i class="fa-solid fa-lock-open"></i>
+            <i class="fa-solid fa-trash"></i>
+            <i class="fa-solid fa-box-archive"></i>
+            <i class="fa-solid fa-paintbrush"></i>
+            <i class="fa-solid fa-people-group"></i>
+            <i class="fa-solid fa-circle-right"></i>
+          </div>
           <AppTable :columns="columns" :rows="rows" :selectable="true">
             <template #row="{ row }">
               <td class="tracking-wide p-2">
@@ -35,6 +44,7 @@
               <td class="p-2 flex gap-1 items-center">
                 <i class="fa-regular fa-compass"></i>
                 <i class="fa-solid fa-user-secret"></i>
+                <i class="fa-solid fa-check"></i>
               </td>
               <td class="p-2">
                 <select v-model="row.access">

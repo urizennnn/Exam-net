@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white! text-black p-4 rounded-lg">
+  <div class="bg-white! text-black">
     <table class="w-full text-sm">
       <thead class="border-b-4 border-gray-300">
         <tr>
