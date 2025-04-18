@@ -16,20 +16,23 @@
             <i class="fa-solid fa-caret-down text-white"></i>
           </div>
         </div>
+        <template v-if="examStore.exams.length > 0"> </template>
         <div
           class="w-full h-full flex gap-3 items-center justify-center bg-white flex-col px-4 py-8"
         >
-          <i class="fa-solid fa-file text-5xl text-gray-700"></i>
-          <p class="font-semibold text-gray-700 text-[16px]">
-            No exams in this group yet
-          </p>
+          <template v-if="examStore.exams.length === 0">
+            <i class="fa-solid fa-file text-5xl text-gray-700"></i>
+            <p class="font-semibold text-gray-700 text-[16px]">
+              No exams in this group yet
+            </p>
+          </template>
           <AppButton
             leftIcon="fa-solid fa-plus text-white"
             label="New Exam"
             theme="secondary"
             class="bg-gray-700 py-2 px-4"
             to="/new-exam"
-            @click="clearData"
+            @click="clearNewExamData"
           />
         </div>
       </div>
@@ -45,7 +48,15 @@
 
 <script setup lang="ts">
 import AppButton from "../../components/AppButton.vue";
-import { clearData } from "../../utils/functions";
+import { clearNewExamData } from "../../utils/functions";
+import { useExamStore } from "../../store/ExamStore";
+import { onMounted } from "vue";
+
+const examStore = useExamStore();
+
+onMounted(() => {
+  console.log(examStore.exams);
+});
 </script>
 
 <style scoped>

@@ -4,7 +4,7 @@
       <div
         class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-[#cacaca] px-4 bg-[#e6e6e6] shadow-md gap-4"
       >
-        <Appinput placeholder="Enter the Exam Name" />
+        <AppInput placeholder="Enter the Exam Name" />
         <div class="flex items-center md:gap-2 gap-4">
           <AppButton
             @click="decreaseCounter"
@@ -73,13 +73,13 @@
     @onClose="toggleShowNameExamModal"
   >
     <template #body>
-      <Appinput placeholder="Enter the name" v-model="newExamStore.examName" />
+      <AppInput placeholder="Enter the name" v-model="newExamStore.examName" />
       <AppButton
         label="Save Exam"
         theme="secondary"
         leftIcon="fa-regular fa-floppy-disk"
         class="w-full! items-center justify-center p-3! mt-3"
-        :to="`/preview/${examId}`"
+        :to="`/preview/${newExamStore.examId}`"
         :disabled="!newExamStore.examName"
       />
     </template>
@@ -91,12 +91,12 @@ import { watch, ref, computed } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import { useNewExamStore } from "../store/NewExamStore";
 import AppButton from "../components/AppButton.vue";
-import Appinput from "../components/AppInput.vue";
-import { uid } from "uid";
+import AppInput from "../components/AppInput.vue";
 import AppModal from "../components/AppModal.vue";
 
 const router = useRouter();
 const newExamStore = useNewExamStore();
+const { generateExamKey } = useNewExamStore();
 const { increaseCounter, decreaseCounter } = useNewExamStore();
 const steps = new Array(3).fill("");
 const firstStep = computed(() => newExamStore.form.examFormat);
@@ -108,7 +108,6 @@ const formVerifier = computed(() => [
     validator: newExamStore.editorContent == "",
   },
 ]);
-const examId = ref(uid(7));
 const showNameExamModal = ref(false);
 
 function toggleShowNameExamModal() {
@@ -116,6 +115,9 @@ function toggleShowNameExamModal() {
 
   if (!showNameExamModal.value) {
     newExamStore.examName = "";
+    newExamStore.examId = "";
+  } else {
+    generateExamKey();
   }
 }
 
@@ -130,6 +132,20 @@ watch(
     } else if (n === 3) {
       router.push("/exam-config");
     }
+  },
+);
+
+watch(
+  () => newExamStore.examName,
+  (n) => {
+    sessionStorage.setItem("examName", n);
+  },
+);
+
+watch(
+  () => newExamStore.examId,
+  (n) => {
+    sessionStorage.setItem("examId", n);
   },
 );
 </script>

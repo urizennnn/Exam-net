@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { NewExamStore } from "../utils/types";
+import { uid } from "uid";
 
 export const useNewExamStore = defineStore("newExams", {
   state: (): NewExamStore => ({
@@ -63,7 +64,12 @@ export const useNewExamStore = defineStore("newExams", {
         ? JSON.parse(sessionStorage.getItem("showExamResult"))
         : true,
     },
-    examName: "",
+    examName: sessionStorage.getItem("examName")
+      ? sessionStorage.getItem("examName")
+      : "",
+    examId: sessionStorage.getItem("examId")
+      ? sessionStorage.getItem("examId")
+      : "",
   }),
   actions: {
     increaseCounter() {
@@ -81,6 +87,9 @@ export const useNewExamStore = defineStore("newExams", {
     },
     increaseFormStepTwoCounter() {
       this.formStepTwoCounter += 1;
+    },
+    generateExamKey() {
+      this.examId = uid(7);
     },
   },
 });

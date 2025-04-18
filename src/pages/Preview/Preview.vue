@@ -28,7 +28,7 @@
             theme="variant"
             class="rounded-2xl! px-5! py-3! gap-4!"
             to="/monitoring-results"
-            @click="clearData"
+            @click="handleSubmitExam"
           />
           <div class="flex flex-col items-center gap-4">
             <p class="text-gray-400 text-2xl">{{ examID }}</p>
@@ -98,13 +98,14 @@
 import { useNewExamStore } from "../../store/NewExamStore";
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { fileSize } from "../../utils/variables";
 import AppEditor from "../../components/AppEditor.vue";
 import AppButton from "../../components/AppButton.vue";
 import AppToast from "../../components/AppToast.vue";
-import { clearData } from "../../utils/functions";
+import { clearNewExamData } from "../../utils/functions";
 import { useRoute } from "vue-router";
+import { useExamStore } from "../../store/ExamStore";
 
 const newExamStore = useNewExamStore();
 const timerValue = ref(newExamStore.configOptions.setTime);
@@ -112,10 +113,28 @@ const fileDirectionHorizontal = ref(false);
 const questionSection = ref(null);
 const routes = useRoute();
 const examID = computed(() => routes.params.id);
+const examStore = useExamStore();
+
+function handleSubmitExam() {
+  examStore.exams.push({
+    examName: newExamStore.examName,
+    examKey: newExamStore.examId,
+    createdAt: new Date().toLocaleDateString(),
+    access: "open",
+  });
+  clearNewExamData();
+}
 
 onMounted(() => {
   questionSection.value.innerHTML = `${newExamStore.editorContent}`;
 });
+
+watch(
+  () => examStore.exams,
+  (n) => {
+    localStorage.setItem("exams", `${n}`);
+  },
+);
 </script>
 
 <style scoped>

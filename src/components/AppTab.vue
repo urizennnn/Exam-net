@@ -5,7 +5,7 @@
       :key="index"
       :class="[
         theme === 'primary'
-          ? `${props.class} text-center w-full p-4 capitalize cursor-pointer ${tab.isActive ? 'border-3 border-l-0 border-r-0 border-t-0 border-b-blue-500' : 'bg-gray-200'}`
+          ? `${props.class} ${index < tabsFromProps.length - 1 ? 'relative after:w-[20px]' : ''} text-center w-full p-4 capitalize cursor-pointer ${tab.isActive ? 'border-b-3 border-b-blue-500' : 'bg-gray-200'}`
           : '',
         theme === 'variant'
           ? `${props.class} ${tab.isActive ? activeClass : ''}`
@@ -59,6 +59,7 @@ const handleTabSwitch = (tabindex: number) => {
 };
 
 onMounted(() => {
+  tabsFromProps.value = props.tabs;
   model.value = tabsFromProps.value[0].value;
 });
 </script>

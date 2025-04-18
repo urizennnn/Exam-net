@@ -24,6 +24,16 @@ export interface NewExamStore {
     showExamResult: boolean;
   };
   examName: string;
+  examId: string;
+}
+
+export interface ExamStoreState {
+  exams: {
+    examName: string;
+    examKey: string;
+    createdAt: string;
+    access: "open" | "closed" | "discoverable" | "scheduled";
+  }[];
 }
 
 export interface BaseState {
