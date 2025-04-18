@@ -137,6 +137,7 @@
                   activeClass="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer"
                 />
               </div>
+              <AppTable :columns="columns" :rows="rows"></AppTable>
             </template>
           </main>
         </div>
@@ -153,6 +154,7 @@ import AppSelect from "../../components/AppSelect.vue";
 import AppButton from "../../components/AppButton.vue";
 import AppTab from "../../components/AppTab.vue";
 import { TabsType } from "../../utils/types";
+import AppTable from "../../components/AppTable.vue";
 
 const allAvailableExams = ref([
   {
@@ -289,6 +291,24 @@ const resultsTab = ref<TabsType[]>([
   },
 ]);
 const selectedResultTab = ref(resultsTab.value[0].value);
+const columns = [
+  {
+    label: "Student",
+    field: "student",
+    sortable: true,
+  },
+  {
+    label: "Points",
+    field: "points",
+    sortable: true,
+  },
+  {
+    label: "Submission Time",
+    field: "submissionTime",
+    sortable: true,
+  },
+];
+const rows = [];
 </script>
 
 <style scoped>

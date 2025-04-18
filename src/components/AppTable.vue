@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white! text-black">
+  <div class="bg-white! text-black select-none">
     <table class="w-full text-sm">
       <thead class="border-b-4 border-gray-300">
         <tr>
@@ -14,27 +14,25 @@
           >
             {{ col.label }}
             <span v-if="sortKey === col.field">
-              <i v-if="sortAsc">▲</i>
-              <i v-else>▼</i>
+              <i v-if="sortAsc" class="fa-solid fa-caret-up"></i>
+              <i v-else class="fa-solid fa-caret-down"></i>
             </span>
           </th>
         </tr>
       </thead>
       <tbody class="">
         <!-- if parent gave us a #row slot, use it -->
-        <template v-if="$slots.row">
-          <tr
-            v-for="row in filteredAndSortedRows"
-            :key="row[idKey]"
-            class="border-b-1 p-2 border-b-gray-200"
-          >
-            <!-- expose row, columns, selected array, etc. -->
-            <td v-if="selectable" class="p-2 text-center">
-              <input type="checkbox" :value="row" v-model="selected" />
-            </td>
-            <slot name="row" :row="row" />
-          </tr>
-        </template>
+        <tr
+          v-for="row in filteredAndSortedRows"
+          :key="row[idKey]"
+          class="border-b-1 p-2 border-b-gray-200"
+        >
+          <!-- expose row, columns, selected array, etc. -->
+          <td v-if="selectable" class="p-2 text-center">
+            <input type="checkbox" :value="row" v-model="selected" />
+          </td>
+          <slot name="row" :row="row" />
+        </tr>
       </tbody>
     </table>
   </div>

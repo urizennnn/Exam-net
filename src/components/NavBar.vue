@@ -20,7 +20,8 @@
         :key="index"
         :to="navLink.to"
         :class="`flex justify-center items-center h-full px-3 py-[1.21rem] text-white text-[14px] font-[500] hover:bg-gray-600 ${navLink.notification ? 'flex-row-reverse gap-2' : ''}`"
-        active-class="bg-gray-600"
+        exact-active-class="bg-gray-600"
+        exact
       >
         <p class="capitalize flex gap-2 items-center">
           <i :class="navLink.icon"></i> {{ navLink.label }}
