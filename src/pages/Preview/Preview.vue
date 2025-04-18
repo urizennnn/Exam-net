@@ -98,7 +98,7 @@
 import { useNewExamStore } from "../../store/NewExamStore";
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { fileSize } from "../../utils/variables";
 import AppEditor from "../../components/AppEditor.vue";
 import AppButton from "../../components/AppButton.vue";
@@ -122,19 +122,13 @@ function handleSubmitExam() {
     createdAt: new Date().toLocaleDateString(),
     access: "open",
   });
+  localStorage.setItem("exams", JSON.stringify(examStore.exams));
   clearNewExamData();
 }
 
 onMounted(() => {
   questionSection.value.innerHTML = `${newExamStore.editorContent}`;
 });
-
-watch(
-  () => examStore.exams,
-  (n) => {
-    localStorage.setItem("exams", `${n}`);
-  },
-);
 </script>
 
 <style scoped>
