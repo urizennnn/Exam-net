@@ -33,11 +33,29 @@
                   {{ row.name }}
                 </p>
               </td>
-              <td class="text-center p-2">
-                <p class="bg-gray-200 p-1.5 w-fit rounded-lg">
+              <td
+                class="relative group text-center p-2 flex items-center justify-center gap-2"
+              >
+                <p class="bg-gray-200 p-1.5 rounded-lg">
                   {{ row.key }}
                 </p>
+                <div
+                  class="flex flex-col gap-1 text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                >
+                  <i
+                    role="button"
+                    class="fa-solid fa-magnifying-glass-plus cursor-pointer"
+                    @click="zoom(row)"
+                  ></i>
+
+                  <i
+                    role="button"
+                    class="fa-solid fa-copy cursor-pointer"
+                    @click="copyKey(row.key)"
+                  ></i>
+                </div>
               </td>
+
               <td class="p-2">
                 {{ row.createdAt }}
               </td>
@@ -113,6 +131,7 @@ import { clearNewExamData } from "../../utils/functions";
 import { useExamStore } from "../../store/ExamStore";
 import AppTable from "../../components/AppTable.vue";
 import { ref } from "vue";
+import { toast } from "vue3-toastify";
 
 const examStore = useExamStore();
 const columns = [
@@ -126,7 +145,7 @@ const columns = [
     label: "Exam key",
     field: "key",
     sortable: true,
-    align: "center",
+    align: "left",
   },
   {
     label: "Created",
@@ -162,6 +181,21 @@ const rows = ref(
     key: exam.examKey,
   })),
 );
+
+function copyKey(key: string) {
+  navigator.clipboard
+    .writeText(key)
+    .then(() => {
+      toast.success("Copied");
+    })
+    .catch((err) => {
+      toast.error("Copy Failed");
+    });
+}
+
+function zoom(row) {
+  console.log("Zoom in on", row);
+}
 </script>
 
 <style scoped>

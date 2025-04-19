@@ -1,9 +1,9 @@
 <template>
   <section class="bg-zinc-300" id="section">
     <div class="section-container-width">
-      <p class="w-full text-right pt-4 flex gap-3 items-center justify-end">
-        <i class="fa-regular fa-bell text-2xl"></i>
-        System Notification: Off
+      <p class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer" @click="toggleSystemNotification">
+      <i :class="`${systemNotification ? 'fa-solid' : 'fa-regular'} fa-bell text-2xl`"></i>
+        System Notification: {{ systemNotification ? 'On' : 'Off' }}
       </p>
       <!-- Side tab -->
       <section class="mt-4 w-full flex gap-3">
@@ -126,6 +126,7 @@
                   :leftIcon="button.leftIcon"
                   :rightIcon="button.rightIcon"
                   class="w-full! items-center justify-center rounded-3xl!"
+                  @click="button.clickAction"
                 />
               </div>
               <div class="mt-4">
@@ -144,10 +145,96 @@
       </section>
     </div>
   </section>
+  <AppModal
+    title="Send exam back to student"
+    :isVisible="sendModal"
+    @onClose="toggleSendModal"
+    theme="secondary"
+  >
+    <template #body>
+      <p class="text-center my-3 text-gray-600">
+        This will send a link to the student which can be used to see the
+        answers and the marking. For Students that don't have an email address
+        set you can copy the link and send it manually
+      </p>
+      <section class="grid gap-6 grid-cols-2">
+        <div>
+          <h1 class="p-2 bg-blue-100 text-blue-500 font-bold rounded-t-lg">
+            Settings
+          </h1>
+          <div class="text-gray-600 flex flex-col gap-4 mt-3">
+            <h2>
+              <i class="fa-regular fa-clock"></i>
+              Time Limit
+            </h2>
+            <p>Select how long this link is valid</p>
+            <div class="flex gap-3">
+              <AppInput
+                theme="secondary"
+                v-model="sendExamTimeLimit.number"
+                type="number"
+                max="60"
+                min="15"
+              />
+              <select
+                value="hours"
+                class="border-b border-b-gray-600 w-full"
+                v-model="sendExamTimeLimit.type"
+              >
+                <option value="hours">hours</option>
+                <option value="minutes">minutes</option>
+              </select>
+            </div>
+          </div>
+          <div class="text-gray-600 flex flex-col gap-4 mt-4">
+            <div class="flex items-center justify-between">
+              <h1>
+                <i class="fa-solid fa-eye-slash"></i>
+                View options
+              </h1>
+              <i
+                :class="`cursor-pointer fa-solid ${!viewOptionShow ? 'fa-angle-down' : 'fa-angle-up'}`"
+                role="button"
+                @click="toggleViewOptionShow"
+              ></i>
+            </div>
+            <div
+              v-show="viewOptionShow"
+              v-for="(option, index) in sendModelViewOption"
+              :key="index"
+              class="flex flex-col gap-1"
+            >
+              <label
+                :for="`radio-${index}`"
+                class="flex items-center gap-3 select-none cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="viewOptionRadio"
+                  v-model="option.value"
+                  :id="`radio-${index}`"
+                />
+                <p>{{ option.label }}</p>
+              </label>
+            </div>
+            <AppButton label="Preview settings" class="rounded-4xl! px-5!" />
+          </div>
+        </div>
+        <div class="rounded-lg">
+          <h1 class="p-2 bg-blue-500 text-white font-bold rounded-t-lg">
+            Students
+          </h1>
+        </div>
+      </section>
+    </template>
+    <template #footer>
+      <AppButton label="Send" @click="toggleSendModal" class="w-fit! px-8" />
+    </template>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import AppInput from "../../components/AppInput.vue";
 import AppToggleButton from "../../components/AppToggleButton.vue";
 import AppSelect from "../../components/AppSelect.vue";
@@ -155,7 +242,9 @@ import AppButton from "../../components/AppButton.vue";
 import AppTab from "../../components/AppTab.vue";
 import { TabsType } from "../../utils/types";
 import AppTable from "../../components/AppTable.vue";
+import AppModal from "../../components/AppModal.vue";
 
+const systemNotification = ref(false)
 const allAvailableExams = ref([
   {
     title: "BIT 906- DIGITAL INNOVATION BUSINESS STRATEGY",
@@ -178,7 +267,6 @@ const tabs = ref<TabsType[]>([
   },
 ]);
 const selectSelectedTab = ref(tabs.value[0].value);
-
 const examDetails = ref([
   {
     label: "Exam key",
@@ -255,6 +343,7 @@ const buttonListTwo = ref([
     label: "Send",
     leftIcon: "fa-solid fa-envelope",
     rightIcon: "fa-solid fa-caret-down text-md",
+    clickAction: toggleSendModal,
   },
 ]);
 
@@ -309,6 +398,42 @@ const columns = [
   },
 ];
 const rows = [];
+const sendModal = ref(false);
+const sendExamTimeLimit = reactive({
+  number: 15,
+  type: "hours",
+});
+const viewOptionShow = ref(true);
+const sendModelViewOption = ref([
+  {
+    label: "Show all",
+    value: true,
+  },
+  {
+    label: "Show points and feedback",
+    value: false,
+  },
+  {
+    label: "Customize",
+    value: false,
+  },
+]);
+
+function toggleSystemNotification () {
+  systemNotification.value = !systemNotification.value
+}
+
+function toggleSendModal() {
+  sendModal.value = !sendModal.value;
+
+  if (!sendModal.value) {
+    viewOptionShow.value = false;
+  }
+}
+
+function toggleViewOptionShow() {
+  viewOptionShow.value = !viewOptionShow.value;
+}
 </script>
 
 <style scoped>
