@@ -67,9 +67,11 @@
               v-if="showTimeLimit"
               class="flex gap-2 text-white font-bold items-center justify-center text-xl"
             >
-              <p class="border border-white rounded py-1 px-2">58</p>
+              <p class="border border-white rounded py-1 px-2">
+                {{ timerValue }}
+              </p>
               :
-              <p class="border border-white rounded py-1 px-2">58</p>
+              <p class="border border-white rounded py-1 px-2">00</p>
             </div>
           </div>
         </div>
@@ -153,6 +155,7 @@ const questionSection = ref(null);
 const examStore = useExamStore();
 const routes = useRoute();
 const examID = computed(() => routes.params.id);
+const timerValue = ref(newExamStore.configOptions.setTime);
 
 function toggleShowTimeLimit() {
   showTimeLimit.value = !showTimeLimit.value;
