@@ -79,7 +79,7 @@ export const useDocumentStore = defineStore("documents", {
 
         this.success = true;
         this.result = output;
-        toast.error("File Uploaded");
+        toast.success("File Uploaded");
       } catch (error: any) {
         this.success = false;
         const errorMessage =

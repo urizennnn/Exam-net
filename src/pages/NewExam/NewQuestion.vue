@@ -77,7 +77,26 @@
     :isVisible="uploadExamQuestionsModal"
     @onClose="toggleUploadExamQuestionsModal"
     title="Upload PDF file"
-  />
+    :loading="documentLoading"
+  >
+    <template #body>
+      <div class="flex flex-col gap-1">
+        <label for="">Choose a File: </label>
+        <AppInput
+          type="file"
+          accept=".pdf, application/pdf"
+          v-model="fileUpload"
+        />
+      </div>
+      <AppButton
+        label="Submit File"
+        class="mt-3 w-full py-4! font-semibold rounded-md flex justify-center! items-center! uppercase"
+        theme="secondary"
+        :disabled="!fileUpload"
+        @click="submitUploadDocumentForm"
+      />
+    </template>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -91,10 +110,18 @@ import { hasTrueValue } from "../../utils/functions";
 import AppContentType from "../../components/NewExam/AppContentType.vue";
 import AppEditor from "../../components/AppEditor.vue";
 import AppModal from "../../components/AppModal.vue";
+import { storeToRefs } from "pinia";
+import AppInput from "../../components/AppInput.vue";
 
 const newExamStore = useNewExamStore();
-const documentStore = useDocumentStore();
+const { uploadDocument } = useDocumentStore();
 const { increaseFormStepTwoCounter } = useNewExamStore();
+const {
+  loading: documentLoading,
+  success: documentSuccess,
+  result: documentResult,
+} = storeToRefs(useDocumentStore());
+const fileUpload = ref(null);
 const answerTypeList = ref<
   {
     label: string;
@@ -174,6 +201,24 @@ const uploadExamQuestionsModal = ref(false);
 
 function toggleUploadExamQuestionsModal() {
   uploadExamQuestionsModal.value = !uploadExamQuestionsModal.value;
+
+  if (!uploadExamQuestionsModal.value) {
+    fileUpload.value = null;
+  }
+}
+
+async function submitUploadDocumentForm() {
+  await uploadDocument({
+    file: fileUpload.value,
+  });
+
+  if (documentSuccess.value) {
+    toggleUploadExamQuestionsModal();
+    newExamStore.increaseFormStepTwoCounter();
+    newExamStore.editorContent = documentResult.value;
+  } else {
+    fileUpload.value = null;
+  }
 }
 
 function saveAnswerType() {
