@@ -119,7 +119,7 @@
                         :class="`${action.label === 'Delete the exam' ? 'text-red-500' : ''} w-full flex items-center gap-2 px-2 py-3 text-left! cursor-pointer text-nowrap hover:bg-gray-200`"
                       >
                         <i :class="action.icon"></i>
-                        {{ action.label }}exam
+                        {{ action.label }}
                       </button>
                     </Menuitem>
                   </Menu>

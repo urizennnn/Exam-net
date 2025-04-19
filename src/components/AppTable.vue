@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white! text-black select-none">
+  <div class="bg-white! text-black select-none w-full overflow-scroll p-2">
     <table class="w-full text-sm">
       <thead class="border-b-4 border-gray-300">
         <tr>

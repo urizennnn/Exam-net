@@ -57,7 +57,7 @@ const router = createRouter({
       ],
     },
     {
-      path: "/preview/:id",
+      path: "/preview/:id?",
       name: "preview",
       component: Preview,
     },

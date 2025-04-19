@@ -22,15 +22,23 @@
         <div
           class="bg-gray-800 h-full rounded-t-xl flex flex-col items-center justify-between py-4 px-2"
         >
-          <AppButton
-            label="Submit Exam"
-            leftIcon="fa-solid fa-check text-green-600"
-            theme="variant"
-            class="rounded-2xl! px-5! py-3! gap-4!"
-            to="/monitoring-results"
-            @click="handleSubmitExam"
-          />
-          <div class="flex flex-col items-center gap-4">
+          <div class="w-full grid gap-6">
+            <AppButton
+              label="Submit Exam"
+              leftIcon="fa-solid fa-check text-green-600"
+              theme="variant"
+              class="rounded-2xl! px-5! py-3! gap-4! m-auto"
+              to="/monitoring-results"
+              @click="handleSubmitExam"
+            />
+            <RouterLink :to="`/student/${examID}`" class="w-full">
+              <i
+                class="fa-solid fa-angle-left w-full text-orange-400 text-4xl text-right"
+              ></i>
+            </RouterLink>
+          </div>
+
+          <div class="flex flex-col items-center gap-4 w-full">
             <p class="text-gray-400 text-2xl">{{ examID }}</p>
             <div class="flex gap-4 justify-between text-white">
               <p class="text-white text-2xl">
@@ -104,7 +112,7 @@ import AppEditor from "../../components/AppEditor.vue";
 import AppButton from "../../components/AppButton.vue";
 import AppToast from "../../components/AppToast.vue";
 import { clearNewExamData } from "../../utils/functions";
-import { useRoute } from "vue-router";
+import { useRoute, RouterLink } from "vue-router";
 import { useExamStore } from "../../store/ExamStore";
 
 const newExamStore = useNewExamStore();
