@@ -9,6 +9,7 @@ import ExamConfig from "../pages/NewExam/ExamConfig.vue";
 import Preview from "../pages/Preview/Preview.vue";
 import NotFound from "../pages/NotFound.vue";
 import MonitoringResults from "../pages/MonitoringResults/MonitoringResults.vue";
+import Student from "../pages/Student/Student.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,6 +60,11 @@ const router = createRouter({
       path: "/preview/:id",
       name: "preview",
       component: Preview,
+    },
+    {
+      path: "/student/:id?",
+      name: "student",
+      component: Student,
     },
 
     // Always leave this as last one,

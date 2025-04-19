@@ -11,50 +11,33 @@
           <div></div>
           <h1 class="text-[18px] md:text-[20px] tracking-wide">MBA</h1>
           <div class="flex gap-3 text-[18px] md:text-[20px] font-semibold">
-            <i class="fa-solid fa-gears text-white"></i>
-            <i class="fa-solid fa-angle-down text-white"></i>
-            <i class="fa-solid fa-caret-down text-white"></i>
+            <i class="fa-solid fa-gears text-white cursor-pointer"></i>
+            <i class="fa-solid fa-angle-down text-white cursor-pointer"></i>
+            <i class="fa-solid fa-caret-down text-white cursor-pointer"></i>
           </div>
         </div>
         <template v-if="examStore.exams.length > 0">
-          <div class="bg-blue-950 py-2 px-4 text-gray-400 flex gap-4 text-2xl">
+          <div
+            :class="`bg-blue-950 py-2 px-4 ${selectedRowsInTable.length !== 0 ? 'text-white' : 'text-gray-400'} flex gap-4 text-2xl`"
+          >
             <i
-              class="fa-solid fa-lock"
-              title="Close Marked Exams"
+              v-for="action in iconActions"
+              :key="action.title"
+              :class="`${action.class} ${
+                selectedRowsInTable.length
+                  ? 'cursor-pointer'
+                  : 'cursor-not-allowed'
+              }`"
+              :title="action.title"
               role="button"
-            ></i>
-            <i
-              class="fa-solid fa-lock-open"
-              title="Open Marked Exams"
-              role="button"
-            ></i>
-            <i
-              class="fa-solid fa-trash"
-              title="Delete Selected Exams"
-              role="button"
-            ></i>
-            <i
-              class="fa-solid fa-box-archive"
-              title="Acrhive Selected Exams"
-              role="button"
-            ></i>
-            <i
-              class="fa-solid fa-paintbrush"
-              title="Tag Selected Exams with a color"
-              role="button"
-            ></i>
-            <i
-              class="fa-solid fa-people-group"
-              title="Give Teacher access to selected exam"
-              role="button"
-            ></i>
-            <i
-              class="fa-solid fa-circle-right"
-              title="Move Selected Exam to group"
-              role="button"
-            ></i>
+            />
           </div>
-          <AppTable :columns="columns" :rows="rows" :selectable="true">
+          <AppTable
+            :columns="columns"
+            :rows="rows"
+            :selectable="true"
+            @selection-change="onSelectionChange"
+          >
             <template #row="{ row }">
               <td class="tracking-wide p-2">
                 <p>
@@ -136,7 +119,7 @@
                         :class="`${action.label === 'Delete the exam' ? 'text-red-500' : ''} w-full flex items-center gap-2 px-2 py-3 text-left! cursor-pointer text-nowrap hover:bg-gray-200`"
                       >
                         <i :class="action.icon"></i>
-                        {{ action.label }}
+                        {{ action.label }}exam
                       </button>
                     </Menuitem>
                   </Menu>
@@ -231,7 +214,6 @@ const rows = ref(
     key: exam.examKey,
   })),
 );
-
 const examActionMenu = [
   {
     label: "Give Another teacher Access",
@@ -266,6 +248,19 @@ const examActionMenu = [
     icon: "fa-solid fa-trash",
   },
 ];
+const iconActions = ref([
+  { title: "Close Marked Exams", class: "fa-solid fa-lock" },
+  { title: "Open Marked Exams", class: "fa-solid fa-lock-open" },
+  { title: "Delete Selected Exams", class: "fa-solid fa-trash" },
+  { title: "Archive Selected Exams", class: "fa-solid fa-box-archive" },
+  { title: "Tag Selected Exams with a color", class: "fa-solid fa-paintbrush" },
+  {
+    title: "Give Teacher access to selected exam",
+    class: "fa-solid fa-people-group",
+  },
+  { title: "Move Selected Exam to group", class: "fa-solid fa-circle-right" },
+]);
+const selectedRowsInTable = ref([]);
 
 function copyKey(key: string) {
   navigator.clipboard
@@ -280,6 +275,10 @@ function copyKey(key: string) {
 
 function zoom(row) {
   console.log("Zoom in on", row);
+}
+
+function onSelectionChange(selectedRows) {
+  selectedRowsInTable.value = selectedRows;
 }
 </script>
 
