@@ -7,6 +7,7 @@ import {
 } from "../../utils/types";
 import { AxiosError } from "axios";
 import { axiosInstance } from "../../utils/axiosConfig";
+import { toast } from "vue3-toastify";
 
 interface DocumentStore extends BaseState {
   result: string;
@@ -78,16 +79,15 @@ export const useDocumentStore = defineStore("documents", {
 
         this.success = true;
         this.result = output;
-        this.loading = false;
+        toast.error("File Uploaded");
       } catch (error: any) {
+       this.success = false;
+        const errorMessage =
+          error.response?.data?.message || error.message || "Network Error";
+        toast.error(errorMessage);
+        throw new Error(errorMessage); 
+      } finally {
         this.loading = false;
-        this.success = false;
-        if (error instanceof AxiosError) {
-          const requestError = error?.response?.data as ErrorResponse;
-          this.error = requestError?.message;
-        } else {
-          this.error = error?.message || error;
-        }
       }
     },
   },
