@@ -116,10 +116,31 @@
                     <i class="fa-solid fa-binoculars text-black"></i>
                   </AppButton>
                 </div>
-                <i
-                  class="fa-solid fa-ellipsis-vertical text-black text-xl cursor-pointer"
-                  role="button"
-                ></i>
+                <Context #default="{ triggerProps, triggerRef, menuRef }">
+                  <i
+                    class="fa-solid fa-ellipsis-vertical text-black text-xl cursor-pointer"
+                    role="button"
+                    v-bind="triggerProps"
+                    :ref="triggerRef"
+                  ></i>
+                  <Menu
+                    :ref="menuRef"
+                    class="bg-white overflow-hidden rounded-xl flex flex-col shadow-xl"
+                  >
+                    <Menuitem
+                      v-for="(action, index) in examActionMenu"
+                      :key="index"
+                    >
+                      <button
+                        type="button"
+                        :class="`${action.label === 'Delete the exam' ? 'text-red-500' : ''} w-full flex items-center gap-2 px-2 py-3 text-left! cursor-pointer text-nowrap hover:bg-gray-200`"
+                      >
+                        <i :class="action.icon"></i>
+                        {{ action.label }}
+                      </button>
+                    </Menuitem>
+                  </Menu>
+                </Context>
               </td>
             </template>
           </AppTable>
@@ -160,6 +181,7 @@ import { useExamStore } from "../../store/ExamStore";
 import AppTable from "../../components/AppTable.vue";
 import { ref } from "vue";
 import { toast } from "vue3-toastify";
+import { Context, Menu, Menuitem } from "@tomoeed/vue-menu";
 
 const examStore = useExamStore();
 const columns = [
@@ -212,30 +234,38 @@ const rows = ref(
 
 const examActionMenu = [
   {
-    label: "Give Another teacher Access"
+    label: "Give Another teacher Access",
+    icon: "fa-solid fa-people-group",
   },
   {
-    label: "Reveal student identities"
+    label: "Reveal student identities",
+    icon: "fa-solid fa-id-card",
   },
   {
-    label: "Duplicate the exam"
+    label: "Duplicate the exam",
+    icon: "fa-solid fa-copy",
   },
   {
-    label: "Share exam template via link"
+    label: "Share exam template via link",
+    icon: "fa-solid fa-link",
   },
   {
-    label: "Tag exam with a color"
+    label: "Tag exam with a color",
+    icon: "fa-solid fa-paintbrush",
   },
   {
-    label: "Move to group"
+    label: "Move to group",
+    icon: "fa-solid fa-circle-right",
   },
   {
-    label: "Archive the exam"
+    label: "Archive the exam",
+    icon: "fa-solid fa-box-archive",
   },
   {
-    label: "Delete the exam"
+    label: "Delete the exam",
+    icon: "fa-solid fa-trash",
   },
-]
+];
 
 function copyKey(key: string) {
   navigator.clipboard

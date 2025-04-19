@@ -12,6 +12,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-vue": "^7.3.0",
     "@tailwindcss/vite": "^4.0.12",
+    "@tomoeed/vue-menu": "^1.0.1",
     "axios": "^1.8.4",
     "ckeditor5": "^44.3.0",
     "pinia": "^3.0.1",

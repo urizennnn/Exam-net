@@ -81,11 +81,11 @@ export const useDocumentStore = defineStore("documents", {
         this.result = output;
         toast.error("File Uploaded");
       } catch (error: any) {
-       this.success = false;
+        this.success = false;
         const errorMessage =
           error.response?.data?.message || error.message || "Network Error";
         toast.error(errorMessage);
-        throw new Error(errorMessage); 
+        throw new Error(errorMessage);
       } finally {
         this.loading = false;
       }
