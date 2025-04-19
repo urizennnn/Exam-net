@@ -18,13 +18,41 @@
         </div>
         <template v-if="examStore.exams.length > 0">
           <div class="bg-blue-950 py-2 px-4 text-gray-400 flex gap-4 text-2xl">
-            <i class="fa-solid fa-lock"></i>
-            <i class="fa-solid fa-lock-open"></i>
-            <i class="fa-solid fa-trash"></i>
-            <i class="fa-solid fa-box-archive"></i>
-            <i class="fa-solid fa-paintbrush"></i>
-            <i class="fa-solid fa-people-group"></i>
-            <i class="fa-solid fa-circle-right"></i>
+            <i
+              class="fa-solid fa-lock"
+              title="Close Marked Exams"
+              role="button"
+            ></i>
+            <i
+              class="fa-solid fa-lock-open"
+              title="Open Marked Exams"
+              role="button"
+            ></i>
+            <i
+              class="fa-solid fa-trash"
+              title="Delete Selected Exams"
+              role="button"
+            ></i>
+            <i
+              class="fa-solid fa-box-archive"
+              title="Acrhive Selected Exams"
+              role="button"
+            ></i>
+            <i
+              class="fa-solid fa-paintbrush"
+              title="Tag Selected Exams with a color"
+              role="button"
+            ></i>
+            <i
+              class="fa-solid fa-people-group"
+              title="Give Teacher access to selected exam"
+              role="button"
+            ></i>
+            <i
+              class="fa-solid fa-circle-right"
+              title="Move Selected Exam to group"
+              role="button"
+            ></i>
           </div>
           <AppTable :columns="columns" :rows="rows" :selectable="true">
             <template #row="{ row }">
@@ -181,6 +209,33 @@ const rows = ref(
     key: exam.examKey,
   })),
 );
+
+const examActionMenu = [
+  {
+    label: "Give Another teacher Access"
+  },
+  {
+    label: "Reveal student identities"
+  },
+  {
+    label: "Duplicate the exam"
+  },
+  {
+    label: "Share exam template via link"
+  },
+  {
+    label: "Tag exam with a color"
+  },
+  {
+    label: "Move to group"
+  },
+  {
+    label: "Archive the exam"
+  },
+  {
+    label: "Delete the exam"
+  },
+]
 
 function copyKey(key: string) {
   navigator.clipboard
