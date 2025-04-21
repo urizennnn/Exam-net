@@ -114,6 +114,7 @@ import { storeToRefs } from "pinia";
 import AppInput from "../../components/AppInput.vue";
 
 const newExamStore = useNewExamStore();
+const documentStore = useDocumentStore();
 const { uploadDocument } = useDocumentStore();
 const { increaseFormStepTwoCounter } = useNewExamStore();
 const {
