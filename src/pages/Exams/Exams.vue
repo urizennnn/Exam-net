@@ -1,6 +1,6 @@
 <template>
   <section
-    class="relative w-full bg-zinc-300 flex items-center justify-center"
+    class="relative w-full bg-zinc-300 flex items-center justify-center text-black"
     id="section"
   >
     <div class="section-container-width">
@@ -99,31 +99,21 @@
                     <i class="fa-solid fa-binoculars text-black"></i>
                   </AppButton>
                 </div>
-                <Context #default="{ triggerProps, triggerRef, menuRef }">
-                  <i
-                    class="fa-solid fa-ellipsis-vertical text-black text-xl cursor-pointer"
-                    role="button"
-                    v-bind="triggerProps"
-                    :ref="triggerRef"
-                  ></i>
-                  <Menu
-                    :ref="menuRef"
-                    class="bg-white overflow-hidden rounded-xl flex flex-col shadow-xl"
-                  >
-                    <Menuitem
-                      v-for="(action, index) in examActionMenu"
-                      :key="index"
-                    >
-                      <button
-                        type="button"
-                        :class="`${action.label === 'Delete the exam' ? 'text-red-500' : ''} w-full flex items-center gap-2 px-2 py-3 text-left! cursor-pointer text-nowrap hover:bg-gray-200`"
-                      >
-                        <i :class="action.icon"></i>
-                        {{ action.label }}
-                      </button>
-                    </Menuitem>
-                  </Menu>
-                </Context>
+                <UDropdownMenu
+                  :items="examActionMenu"
+                  :content="{
+                    align: 'start',
+                  }"
+                  :ui="{
+                    content: 'bg-white shadow',
+                    item: 'text-black hover:bg-black rounded',
+                  }"
+                >
+                  <UIcon
+                    name="i-lucide-ellipsis-vertical"
+                    class="size-6 cursor-pointer"
+                  />
+                </UDropdownMenu>
               </td>
             </template>
           </AppTable>
@@ -158,13 +148,11 @@
 </template>
 
 <script setup lang="ts">
-import AppButton from "../../components/AppButton.vue";
 import { clearNewExamData } from "../../utils/functions";
 import { useExamStore } from "../../store/ExamStore";
-import AppTable from "../../components/AppTable.vue";
 import { ref } from "vue";
 import { toast } from "vue3-toastify";
-import { Context, Menu, Menuitem } from "@tomoeed/vue-menu";
+import { DropdownMenuItem } from "@nuxt/ui";
 
 const examStore = useExamStore();
 const columns = [
@@ -214,38 +202,39 @@ const rows = ref(
     key: exam.examKey,
   })),
 );
-const examActionMenu = [
+const examActionMenu: DropdownMenuItem[] = [
   {
     label: "Give Another teacher Access",
-    icon: "fa-solid fa-people-group",
+    icon: "i-lucide-users",
   },
   {
     label: "Reveal student identities",
-    icon: "fa-solid fa-id-card",
+    icon: "i-lucide-id-card",
   },
   {
     label: "Duplicate the exam",
-    icon: "fa-solid fa-copy",
+    icon: "i-lucide-copy",
   },
   {
     label: "Share exam template via link",
-    icon: "fa-solid fa-link",
+    icon: "i-lucide-link",
   },
   {
     label: "Tag exam with a color",
-    icon: "fa-solid fa-paintbrush",
+    icon: "i-lucide-paintbrush",
   },
   {
     label: "Move to group",
-    icon: "fa-solid fa-circle-right",
+    icon: "i-lucide-circle-arrow-right",
   },
   {
     label: "Archive the exam",
-    icon: "fa-solid fa-box-archive",
+    icon: "i-lucide-archive",
   },
   {
     label: "Delete the exam",
-    icon: "fa-solid fa-trash",
+    icon: "i-lucide-trash",
+    color: "error",
   },
 ];
 const iconActions = ref([

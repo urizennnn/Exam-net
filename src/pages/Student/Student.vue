@@ -2,7 +2,7 @@
   <AppToast
     text="This is a preview of how this exam will appear to the students."
   />
-  <section class="w-full h-[100dvh] flex overflow-auto">
+  <section class="w-full h-[100dvh] flex overflow-auto text-black">
     <!-- Sidebar -->
     <aside class="h-full w-full max-w-[300px]">
       <div
@@ -128,14 +128,11 @@
 </template>
 
 <script lang="ts" setup>
-import AppButton from "../../components/AppButton.vue";
-import AppToast from "../../components/AppToast.vue";
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useNewExamStore } from "../../store/NewExamStore";
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
 import { fileSize } from "../../utils/variables";
-import AppEditor from "../../components/AppEditor.vue";
 import { clearNewExamData } from "../../utils/functions";
 import { useExamStore } from "../../store/ExamStore";
 import { useRoute, RouterLink } from "vue-router";

@@ -1,5 +1,9 @@
 <script setup></script>
 
 <template>
-  <RouterView />
+  <Transition>
+    <UApp>
+      <RouterView />
+    </UApp>
+  </Transition>
 </template>

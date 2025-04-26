@@ -2,7 +2,7 @@
   <Header />
   <section
     id="section"
-    class="relative w-full bg-zinc-300 flex items-center justify-center"
+    class="relative w-full bg-zinc-300 flex items-center justify-center text-black"
   >
     <div class="section-container-width">
       <div class="w-full flex flex-col rounded-2xl shadow-xl overflow-hidden">
@@ -58,10 +58,7 @@
   </section>
 </template>
 
-<script setup>
-import Header from "../../components/Header.vue";
-import AppButton from "../../components/AppButton.vue";
-</script>
+<script setup></script>
 
 <style scoped>
 #section {

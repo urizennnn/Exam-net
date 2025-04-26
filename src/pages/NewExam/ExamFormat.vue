@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-white w-full p-5">
+  <section class="bg-white w-full p-5 text-black">
     <h1
       class="text-2xl md:text-3xl text-center font-sans text-gray-800 font-medium tracking-wide"
     >
@@ -60,13 +60,9 @@
 </template>
 
 <script setup>
-import AppCardRadio from "../../components/NewExam/AppCardRadio.vue";
 import { useNewExamStore } from "../../store/NewExamStore";
 import { useDocumentStore } from "../../store/server/document";
 import { ref, onMounted, watch } from "vue";
-import AppModal from "../../components/AppModal.vue";
-import AppInput from "../../components/AppInput.vue";
-import AppButton from "../../components/AppButton.vue";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 

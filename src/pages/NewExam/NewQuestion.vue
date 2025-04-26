@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-white w-full flex">
+  <section class="bg-white w-full flex text-black">
     <div
       v-if="newExamStore.formStepTwoCounter === 1"
       class="flex md:flex-row flex-col"
@@ -103,15 +103,8 @@
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useNewExamStore } from "../../store/NewExamStore";
 import { useDocumentStore } from "../../store/server/document";
-import AppNewExamSideBar from "../../components/NewExam/AppNewExamSideBar.vue";
-import AppAnswerType from "../../components/NewExam/AppAnswerType.vue";
-import AppButton from "../../components/AppButton.vue";
 import { hasTrueValue } from "../../utils/functions";
-import AppContentType from "../../components/NewExam/AppContentType.vue";
-import AppEditor from "../../components/AppEditor.vue";
-import AppModal from "../../components/AppModal.vue";
 import { storeToRefs } from "pinia";
-import AppInput from "../../components/AppInput.vue";
 
 const newExamStore = useNewExamStore();
 const documentStore = useDocumentStore();

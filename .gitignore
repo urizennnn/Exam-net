@@ -42,3 +42,7 @@ vendor/
 # Ignore venv
 myenv/
 venv/
+# Auto-generated type declarations
+auto-imports.d.ts
+components.d.ts
+

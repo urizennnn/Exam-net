@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-zinc-300" id="section">
+  <section class="bg-zinc-300 text-black" id="section">
     <div class="section-container-width">
       <p
         class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer"
@@ -240,14 +240,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from "vue";
-import AppInput from "../../components/AppInput.vue";
-import AppToggleButton from "../../components/AppToggleButton.vue";
-import AppSelect from "../../components/AppSelect.vue";
-import AppButton from "../../components/AppButton.vue";
-import AppTab from "../../components/AppTab.vue";
 import { TabsType } from "../../utils/types";
-import AppTable from "../../components/AppTable.vue";
-import AppModal from "../../components/AppModal.vue";
 
 const systemNotification = ref(false);
 const allAvailableExams = ref([

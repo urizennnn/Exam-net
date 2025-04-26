@@ -17,7 +17,7 @@
     </section>
 
     <!-- Main page -->
-    <main class="px-8 pt-12 pb-6">
+    <main class="px-8 pt-12 pb-6 text-black">
       <section>
         <h1 id="general" class="font-bold tracking-wide text-2xl">General</h1>
         <div
@@ -75,8 +75,6 @@
 <script lang="ts" setup>
 import { watch, onMounted, ref } from "vue";
 import { useNewExamStore } from "../../store/NewExamStore";
-import AppToggleButton from "../../components/AppToggleButton.vue";
-import AppInput from "../../components/AppInput.vue";
 
 const newExamStore = useNewExamStore();
 const configOptionsTabs = ref([
@@ -188,32 +186,32 @@ watch(
 </script>
 
 <style scoped>
-li.active {
-  position: relative;
-}
-
-li.active:after {
-  content: "";
-  position: absolute;
-  top: 120%;
-  left: 38%;
-  transform: translateY(-50%) rotate(90deg);
-  border-width: 10px 0 10px 10px;
-  border-style: solid;
-  border-color: transparent transparent transparent #2d3541;
-}
-
-@media (min-width: 48rem) {
-  li.active:after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: -10px;
-    left: 100%;
-    transform: translateY(-50%);
-    border-width: 10px 0 10px 10px;
-    border-style: solid;
-    border-color: transparent transparent transparent #2d3541;
-  }
-}
+/* li.active { */
+/*   position: relative; */
+/* } */
+/**/
+/* li.active:after { */
+/*   content: ""; */
+/*   position: absolute; */
+/*   top: 120%; */
+/*   left: 38%; */
+/*   transform: translateY(-50%) rotate(90deg); */
+/*   border-width: 10px 0 10px 10px; */
+/*   border-style: solid; */
+/*   border-color: transparent transparent transparent #2d3541; */
+/* } */
+/**/
+/* @media (min-width: 48rem) { */
+/*   li.active:after { */
+/*     content: ""; */
+/*     position: absolute; */
+/*     top: 50%; */
+/*     right: -10px; */
+/*     left: 100%; */
+/*     transform: translateY(-50%); */
+/*     border-width: 10px 0 10px 10px; */
+/*     border-style: solid; */
+/*     border-color: transparent transparent transparent #2d3541; */
+/*   } */
+/* } */
 </style>
