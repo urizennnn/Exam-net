@@ -9,11 +9,17 @@
           class="bg-blue-950 text-white p-3 rounded-t-lg flex justify-between items-center"
         >
           <div></div>
-          <h1 class="text-[18px] md:text-[20px] tracking-wide">MBA</h1>
-          <div class="flex gap-3 text-[18px] md:text-[20px] font-semibold">
-            <i class="fa-solid fa-gears text-white cursor-pointer"></i>
-            <i class="fa-solid fa-angle-down text-white cursor-pointer"></i>
-            <i class="fa-solid fa-caret-down text-white cursor-pointer"></i>
+          <h1 class="text-[18px] md:text-[20px] tracking-wide">Exams</h1>
+          <div class="flex gap-1 items-center">
+            <UButton icon="i-lucide-cog" class="text-white cursor-pointer" />
+            <UButton
+              icon="i-lucide-chevron-down"
+              class="text-white cursor-pointer"
+            />
+            <UButton
+              icon="i-lucide-arrow-big-down-dash"
+              class="text-white cursor-pointer"
+            />
           </div>
         </div>
         <template v-if="examStore.exams.length > 0">

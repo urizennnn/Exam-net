@@ -10,10 +10,22 @@ import Preview from "../pages/Preview/Preview.vue";
 import NotFound from "../pages/NotFound.vue";
 import MonitoringResults from "../pages/MonitoringResults/MonitoringResults.vue";
 import Student from "../pages/Student/Student.vue";
+import Register from "../pages/Auth/Register.vue";
+import Login from "../pages/Auth/Login.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: "/",
+      name: "login",
+      component: Login,
+    },
+    {
+      path: "/signup",
+      name: "register",
+      component: Register,
+    },
     {
       path: "/",
       component: MainLayout,

@@ -52,25 +52,6 @@ export interface UploadDocumentResponse {
   data: string[] | string;
 }
 
-export interface ErrorResponse {
-  statusCode: number;
-  timestamp: string;
-  path: string;
-  message: string;
-  error:
-    | {
-        response: {
-          message: string;
-          success: boolean;
-        };
-        status: number;
-        options: any;
-        message: string;
-        name: string;
-      }
-    | string;
-}
-
 export interface TabsType {
   isActive: boolean;
   label: string;

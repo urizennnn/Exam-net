@@ -1,13 +1,11 @@
 import { defineStore } from "pinia";
 import {
   UploadDocumentPayload,
-  ErrorResponse,
   BaseState,
   UploadDocumentResponse,
 } from "../../utils/types";
-import { AxiosError } from "axios";
 import { axiosInstance } from "../../utils/axiosConfig";
-import { toast } from "vue3-toastify";
+import { successToast, errorToast } from "../../utils/toast";
 
 interface DocumentStore extends BaseState {
   result: string;
@@ -79,12 +77,12 @@ export const useDocumentStore = defineStore("documents", {
 
         this.success = true;
         this.result = output;
-        toast.success("File Uploaded");
+        successToast("File Uploaded");
       } catch (error: any) {
         this.success = false;
         const errorMessage =
           error.response?.data?.message || error.message || "Network Error";
-        toast.error(errorMessage);
+        errorToast(errorMessage);
         throw new Error(errorMessage);
       } finally {
         this.loading = false;

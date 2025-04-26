@@ -30,7 +30,11 @@
           <i class="fa-solid fa-circle-exclamation"></i>
         </div>
       </RouterLink>
-      <i class="fa-solid fa-right-from-bracket text-white"></i>
+      <i
+        class="fa-solid fa-right-from-bracket text-white"
+        role="button"
+        @click="logout"
+      ></i>
     </nav>
 
     <!-- Mobile Nav Bar -->
@@ -55,7 +59,12 @@
       </RouterLink>
       <i
         class="fa-solid fa-right-from-bracket text-white px-3 py-[1.22rem]"
-        @click="toggleMenuOpen"
+        @click="
+          () => {
+            toggleMenuOpen();
+            logout();
+          }
+        "
       ></i>
     </nav>
   </section>
@@ -63,7 +72,9 @@
 
 <script setup>
 import { ref } from "vue";
+import { useAuthStore } from "../store/server/auth";
 
+const { logout } = useAuthStore();
 const menuOpen = ref(false);
 const navLinks = [
   {
