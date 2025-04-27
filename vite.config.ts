@@ -9,7 +9,6 @@ export default defineConfig({
     ui({
       ui: {
         colors: {
-          primary: "white",
           neutral: "neutral",
         },
       },

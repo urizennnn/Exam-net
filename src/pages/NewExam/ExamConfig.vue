@@ -184,34 +184,3 @@ watch(
   },
 );
 </script>
-
-<style scoped>
-/* li.active { */
-/*   position: relative; */
-/* } */
-/**/
-/* li.active:after { */
-/*   content: ""; */
-/*   position: absolute; */
-/*   top: 120%; */
-/*   left: 38%; */
-/*   transform: translateY(-50%) rotate(90deg); */
-/*   border-width: 10px 0 10px 10px; */
-/*   border-style: solid; */
-/*   border-color: transparent transparent transparent #2d3541; */
-/* } */
-/**/
-/* @media (min-width: 48rem) { */
-/*   li.active:after { */
-/*     content: ""; */
-/*     position: absolute; */
-/*     top: 50%; */
-/*     right: -10px; */
-/*     left: 100%; */
-/*     transform: translateY(-50%); */
-/*     border-width: 10px 0 10px 10px; */
-/*     border-style: solid; */
-/*     border-color: transparent transparent transparent #2d3541; */
-/*   } */
-/* } */
-</style>

@@ -79,8 +79,9 @@
         theme="secondary"
         leftIcon="fa-regular fa-floppy-disk"
         class="w-full! items-center justify-center p-3! mt-3"
-        :to="`/preview/${newExamStore.examId}`"
-        :disabled="!newExamStore.examName"
+        @click="submitExam"
+        :disabled="!newExamStore.examName || examServerLoading"
+        :loading="examServerLoading"
       />
     </template>
   </AppModal>
@@ -90,9 +91,9 @@
 import { watch, ref, computed } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import { useNewExamStore } from "../store/NewExamStore";
-import AppButton from "../components/AppButton.vue";
-import AppInput from "../components/AppInput.vue";
-import AppModal from "../components/AppModal.vue";
+import { useExamServerStore } from "../store/server/exam";
+import { getTrueKeys } from "../utils/functions";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
 const newExamStore = useNewExamStore();
@@ -109,6 +110,9 @@ const formVerifier = computed(() => [
   },
 ]);
 const showNameExamModal = ref(false);
+const { createExam } = useExamServerStore();
+const { loading: examServerLoading, success: examServerSuccess } =
+  storeToRefs(useExamServerStore());
 
 function toggleShowNameExamModal() {
   showNameExamModal.value = !showNameExamModal.value;
@@ -116,8 +120,31 @@ function toggleShowNameExamModal() {
   if (!showNameExamModal.value) {
     newExamStore.examName = "";
     newExamStore.examId = "";
-  } else {
-    generateExamKey();
+  }
+}
+
+async function submitExam() {
+  generateExamKey();
+  await createExam({
+    examKey: newExamStore.examId,
+    examName: newExamStore.examName,
+    access: "open",
+    question: newExamStore.editorContent,
+    format: getTrueKeys(newExamStore.formStepTwo),
+    settings: {
+      general: {
+        anonymous: newExamStore.configOptions.anonymizeExam,
+        timeLimit: newExamStore.configOptions.setTime,
+      },
+      examType: {
+        hidePoints: newExamStore.configOptions.hidePoints,
+        showResults: newExamStore.configOptions.showExamResult,
+      },
+    },
+  });
+
+  if (examServerSuccess.value) {
+    router.push(`/preview/${newExamStore.examId}`);
   }
 }
 

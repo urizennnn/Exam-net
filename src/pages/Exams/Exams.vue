@@ -11,130 +11,90 @@
           <div></div>
           <h1 class="text-[18px] md:text-[20px] tracking-wide">Exams</h1>
           <div class="flex gap-1 items-center">
-            <UButton icon="i-lucide-cog" class="text-white cursor-pointer" />
+            <UButton
+              icon="i-lucide-cog"
+              color="neutral"
+              variant="link"
+              class="text-white cursor-pointer"
+            />
             <UButton
               icon="i-lucide-chevron-down"
               class="text-white cursor-pointer"
+              color="neutral"
+              variant="link"
             />
             <UButton
               icon="i-lucide-arrow-big-down-dash"
               class="text-white cursor-pointer"
+              color="neutral"
+              variant="link"
             />
           </div>
         </div>
-        <template v-if="examStore.exams.length > 0">
-          <div
-            :class="`bg-blue-950 py-2 px-4 ${selectedRowsInTable.length !== 0 ? 'text-white' : 'text-gray-400'} flex gap-4 text-2xl`"
-          >
-            <i
+        <template v-if="exams.length > 0">
+          <div :class="`bg-blue-950 px-2 py-1 flex gaitems-center`">
+            <UButton
+              color="neutral"
+              class="cursor-pointer size-9 text-white"
+              size="xl"
+              variant="link"
+              :icon="action.icon"
               v-for="action in iconActions"
               :key="action.title"
-              :class="`${action.class} ${
-                selectedRowsInTable.length
-                  ? 'cursor-pointer'
-                  : 'cursor-not-allowed'
-              }`"
+              :disabled="selectedRowsInTable.length === 0"
               :title="action.title"
-              role="button"
             />
           </div>
+        </template>
+        <template v-if="exams.length > 0 || examServerLoading">
           <AppTable
+            v-model:row-selection="selectedRowsInTable"
             :columns="columns"
             :rows="rows"
-            :selectable="true"
-            @selection-change="onSelectionChange"
+            :loading="examServerLoading"
           >
             <template #row="{ row }">
-              <td class="tracking-wide p-2">
-                <p>
-                  {{ row.name }}
-                </p>
-              </td>
-              <td
-                class="relative group text-center p-2 flex items-center justify-center gap-2"
+              <p>
+                {{ row.original.name }}
+              </p>
+              <p>
+                {{ row.original.createdAt }}
+              </p>
+              <p>
+                {{ row.original.access }}
+              </p>
+            </template>
+            <template #action-cell="{ row }">
+              <UDropdownMenu
+                :items="getExamDropdownActions(row.original)"
+                :content="{
+                  align: 'start',
+                }"
+                :ui="{
+                  content: 'bg-white shadow',
+                  item: 'cursor-pointer text-black hover:bg-black rounded',
+                }"
+                :disabled="examServerLoading"
               >
-                <p class="bg-gray-200 p-1.5 rounded-lg">
-                  {{ row.key }}
-                </p>
-                <div
-                  class="flex flex-col gap-1 text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-                >
-                  <i
-                    role="button"
-                    class="fa-solid fa-magnifying-glass-plus cursor-pointer"
-                    @click="zoom(row)"
-                  ></i>
-
-                  <i
-                    role="button"
-                    class="fa-solid fa-copy cursor-pointer"
-                    @click="copyKey(row.key)"
-                  ></i>
-                </div>
-              </td>
-
-              <td class="p-2">
-                {{ row.createdAt }}
-              </td>
-              <td class="p-2 flex gap-1 items-center">
-                <i class="fa-regular fa-compass"></i>
-                <i class="fa-solid fa-user-secret"></i>
-                <i class="fa-solid fa-check"></i>
-              </td>
-              <td class="p-2">
-                <select v-model="row.access">
-                  <option value="open">Open</option>
-                  <option value="closed">Closed</option>
-                  <option value="discoverable">Discoverable</option>
-                  <option value="scheduled">Scheduled</option>
-                </select>
-              </td>
-              <td class="p-2 flex items-center gap-0.5 justify-between">
-                <div class="flex gap-1">
-                  <AppButton
-                    class="py-1 px-2 rounded-4xl! border-black! border-2! text-md!"
-                    ><i class="fa-solid fa-pencil text-black"></i>
-                  </AppButton>
-                  <AppButton
-                    class="py-1 px-2 rounded-4xl! border-black! border-2! text-md!"
-                    ><i class="fa-solid fa-tv text-black"></i>
-                  </AppButton>
-                  <AppButton
-                    class="py-1 px-2 rounded-4xl! border-black! border-2! text-md!"
-                  >
-                    <i class="fa-solid fa-binoculars text-black"></i>
-                  </AppButton>
-                </div>
-                <UDropdownMenu
-                  :items="examActionMenu"
-                  :content="{
-                    align: 'start',
-                  }"
-                  :ui="{
-                    content: 'bg-white shadow',
-                    item: 'text-black hover:bg-black rounded',
-                  }"
-                >
-                  <UIcon
-                    name="i-lucide-ellipsis-vertical"
-                    class="size-6 cursor-pointer"
-                  />
-                </UDropdownMenu>
-              </td>
+                <UIcon
+                  name="i-lucide-ellipsis-vertical"
+                  class="size-6 cursor-pointer"
+                />
+              </UDropdownMenu>
             </template>
           </AppTable>
         </template>
         <div
           class="w-full h-full flex gap-3 items-center justify-center bg-white flex-col px-4 py-4"
         >
-          <template v-if="examStore.exams.length === 0">
+          <template v-if="exams.length === 0 && !examServerLoading">
             <i class="fa-solid fa-file text-5xl text-gray-700"></i>
             <p class="font-semibold text-gray-700 text-[16px]">
               No exams in this group yet
             </p>
           </template>
           <AppButton
-            :leftIcon="`${examStore.exams.length === 0 ? 'fa-solid fa-plus text-white' : ''}`"
+            :leftIcon="`${exams.length === 0 ? 'fa-solid fa-plus text-white' : ''}`"
             label="New Exam"
             theme="secondary"
             class="bg-gray-700 py-2 px-4"
@@ -155,53 +115,75 @@
 
 <script setup lang="ts">
 import { clearNewExamData } from "../../utils/functions";
-import { useExamStore } from "../../store/ExamStore";
-import { ref } from "vue";
-import { toast } from "vue3-toastify";
-import { DropdownMenuItem } from "@nuxt/ui";
+import { ref, resolveComponent, h } from "vue";
+import { DropdownMenuItem, TableColumn } from "@nuxt/ui";
+import { useExamServerStore } from "../../store/server/exam";
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { computed } from "vue";
 
-const examStore = useExamStore();
-const columns = [
+const { getExams, deleteExam } = useExamServerStore();
+const { exams, loading: examServerLoading } = storeToRefs(useExamServerStore());
+const UCheckbox = resolveComponent("UCheckbox");
+const pTag = resolveComponent("p");
+const columns: TableColumn<any>[] = [
   {
-    label: "Exam name",
-    field: "name",
-    sortable: true,
-    align: "left",
+    id: "select",
+    header: ({ table }) =>
+      h(UCheckbox, {
+        modelValue: table.getIsSomePageRowsSelected()
+          ? "indeterminate"
+          : table.getIsAllPageRowsSelected(),
+        "onUpdate:modelValue": (value: boolean | "indeterminate") =>
+          table.toggleAllPageRowsSelected(!!value),
+        "aria-label": "Select all",
+        ui: {
+          indicator: "bg-blue-800 text-white", // ← use “indicator”!
+        },
+      }),
+    cell: ({ row }) =>
+      h(UCheckbox, {
+        modelValue: row.getIsSelected(),
+        "onUpdate:modelValue": (value: boolean | "indeterminate") =>
+          row.toggleSelected(!!value),
+        "aria-label": "Select row",
+        ui: {
+          indicator: "bg-blue-800 text-white", // ← use “indicator”!
+        },
+      }),
   },
   {
-    label: "Exam key",
-    field: "key",
-    sortable: true,
-    align: "left",
+    accessorKey: "name",
+    header: "Exam name",
   },
   {
-    label: "Created",
-    field: "createdAt",
-    sortable: true,
-    align: "center",
+    accessorKey: "key",
+    header: "Exam Key",
+    cell: ({ row }) =>
+      h(pTag, {
+        class: "bg-gray-300 p-3 w-fit rounded",
+        html: String(row.original.key),
+      }),
   },
   {
-    label: "Status",
-    field: "status",
-    sortable: false,
-    align: "center",
+    accessorKey: "createdAt",
+    header: "Created",
   },
   {
-    label: "Access",
-    field: "access",
-    sortable: false,
-    align: "center",
+    id: "status",
+    header: "Status",
   },
   {
-    label: "",
-    field: "actions",
-    sortable: false,
-    align: "center",
+    accessorKey: "access",
+    header: "Access",
+  },
+  {
+    id: "action",
   },
 ];
-
-const rows = ref(
-  examStore.exams.map((exam) => ({
+const rows = computed(() =>
+  exams.value.map((exam) => ({
+    id: exam._id,
     name: exam.examName,
     createdAt: exam.createdAt,
     access: exam.access,
@@ -241,21 +223,91 @@ const examActionMenu: DropdownMenuItem[] = [
     label: "Delete the exam",
     icon: "i-lucide-trash",
     color: "error",
+    onSelect() {
+      handleExamDelete();
+    },
   },
 ];
 const iconActions = ref([
-  { title: "Close Marked Exams", class: "fa-solid fa-lock" },
-  { title: "Open Marked Exams", class: "fa-solid fa-lock-open" },
-  { title: "Delete Selected Exams", class: "fa-solid fa-trash" },
-  { title: "Archive Selected Exams", class: "fa-solid fa-box-archive" },
-  { title: "Tag Selected Exams with a color", class: "fa-solid fa-paintbrush" },
+  {
+    title: "Close Marked Exams",
+    icon: "i-lucide-lock",
+  },
+  {
+    title: "Open Marked Exams",
+    icon: "i-lucide-lock-open",
+  },
+  {
+    title: "Delete Selected Exams",
+    icon: "i-lucide-trash",
+  },
+  {
+    title: "Archive Selected Exams",
+    icon: "i-lucide-archive",
+  },
+  {
+    title: "Tag Selected Exams with a color",
+    icon: "i-lucide-paintbrush",
+  },
   {
     title: "Give Teacher access to selected exam",
-    class: "fa-solid fa-people-group",
+    icon: "i-lucide-users",
   },
-  { title: "Move Selected Exam to group", class: "fa-solid fa-circle-right" },
+  {
+    title: "Move Selected Exam to group",
+    icon: "i-lucide-circle-arrow-right",
+  },
 ]);
 const selectedRowsInTable = ref([]);
+
+/**
+ * Returns a grouped dropdown menu for a given exam.
+ */
+function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
+  return [
+    [
+      {
+        label: "Give Another Teacher Access",
+        icon: "i-lucide-users",
+      },
+      {
+        label: "Reveal Student Identities",
+        icon: "i-lucide-id-card",
+      },
+      {
+        label: "Duplicate the Exam",
+        icon: "i-lucide-copy",
+      },
+      {
+        label: "Share Exam Template via Link",
+        icon: "i-lucide-link",
+      },
+    ],
+    [
+      {
+        label: "Tag Exam with a Color",
+        icon: "i-lucide-paintbrush",
+      },
+      {
+        label: "Move to Group",
+        icon: "i-lucide-circle-arrow-right",
+      },
+      {
+        label: "Archive the Exam",
+        icon: "i-lucide-archive",
+      },
+    ],
+    [
+      {
+        label: "Delete the Exam",
+        icon: "i-lucide-trash",
+        color: "error",
+        onSelect: () => handleExamDelete(exam.id),
+      },
+    ],
+  ];
+}
+
 
 function copyKey(key: string) {
   navigator.clipboard
@@ -271,10 +323,16 @@ function copyKey(key: string) {
 function zoom(row) {
   console.log("Zoom in on", row);
 }
-
-function onSelectionChange(selectedRows) {
-  selectedRowsInTable.value = selectedRows;
+async function handleExamDelete(id: string) {
+  await deleteExam({
+    id,
+  });
+  await getExams();
 }
+
+onMounted(async () => {
+  await getExams();
+});
 </script>
 
 <style scoped>

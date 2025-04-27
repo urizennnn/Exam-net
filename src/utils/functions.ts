@@ -33,3 +33,9 @@ export function clearNewExamData() {
   sessionStorage.removeItem("examName");
   sessionStorage.removeItem("examId");
 }
+
+export function getTrueKeys<T extends Record<string, boolean>>(
+  obj: T,
+): Array<keyof T> {
+  return (Object.keys(obj) as Array<keyof T>).filter((key) => obj[key]);
+}
