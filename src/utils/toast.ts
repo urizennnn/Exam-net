@@ -8,6 +8,7 @@ export function successToast(message: string) {
     ui: {
       root: "bg-white",
       title: "text-black",
+      description: "text-gray-900",
     },
   });
 }
@@ -20,6 +21,7 @@ export function errorToast(message: string) {
     ui: {
       root: "bg-white",
       title: "text-black",
+      description: "text-gray-900",
     },
   });
 }

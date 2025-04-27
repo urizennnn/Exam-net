@@ -26,8 +26,14 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async login(payload: LoginPayload) {
       try {
+        this.success = false;
+        this.loading = true;
         const { data } = await axiosInstance.post("/users/login", payload);
-        console.log(data);
+        const { access_token } = data;
+        this.access = access_token;
+        this.setAccessToken(access_token);
+        successToast("Login Successful");
+        this.success = true;
       } catch (error: any) {
         this.success = false;
         const errorMessage =
@@ -40,8 +46,12 @@ export const useAuthStore = defineStore("auth", {
     },
     async register(payload: RegisterPayload) {
       try {
+        this.success = false;
+        this.loading = true;
         const { data } = await axiosInstance.post("/users/signup", payload);
-        console.log(data);
+        const { message } = data;
+        this.success = true;
+        successToast(message);
       } catch (error: any) {
         this.success = false;
         const errorMessage =

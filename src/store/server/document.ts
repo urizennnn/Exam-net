@@ -26,7 +26,7 @@ export const useDocumentStore = defineStore("documents", {
         const formData = new FormData();
         formData.append("file", payload.file);
 
-        const { data } = await axiosInstance.post("/api/process", formData, {
+        const { data } = await axiosInstance.post("/process", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

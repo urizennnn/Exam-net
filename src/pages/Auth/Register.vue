@@ -1,10 +1,15 @@
 <template>
-  <section class="w-full h-screen bg-white flex">
+  <section class="w-full h-auto bg-white flex">
     <section class="bg-gray-800 w-full h-screen relative p-4 hidden lg:block">
       <img src="../../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]" />
+      <img
+        src="../../assets/images/Humaaans.png"
+        alt="background"
+        class="w-full h-[80dvh] mt-4 object-center object-fill"
+      />
     </section>
     <section
-      class="w-full flex flex-col items-center h-screen justify-center m-4"
+      class="w-full flex flex-col items-center h-screen justify-center p-4"
     >
       <AppForm :state="registerForm" title="Register" @submit="onSubmit">
         <UFormField label="Name" name="name" :ui="FormFieldUI">
@@ -83,8 +88,10 @@
         <UButton
           type="submit"
           class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400"
-          :disabled="!isFormComplete"
+          :disabled="!isFormComplete || authLoading"
           :loading-auto="authLoading"
+          :loading="authLoading"
+          @click="onSubmit"
         >
           Register
         </UButton>
@@ -140,7 +147,7 @@ const isFormComplete = computed(() => {
   );
 });
 const router = useRouter();
-const { login } = useAuthStore();
+const { register } = useAuthStore();
 const { success: authSuccess, loading: authLoading } =
   storeToRefs(useAuthStore());
 
@@ -159,10 +166,10 @@ function checkStrength(str: string) {
 }
 
 async function onSubmit() {
-  await login(registerForm);
+  await register(registerForm);
 
   if (authSuccess.value) {
-    router.push({ name: "license" });
+    router.push({ name: "login" });
   }
 }
 </script>
