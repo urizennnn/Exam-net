@@ -108,7 +108,7 @@
 import { reactive, ref, computed } from "vue";
 import { useAuthStore } from "../../store/server/auth";
 import { storeToRefs } from "pinia";
-import { RouterLink, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 
 const registerForm = reactive({
   name: "",

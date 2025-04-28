@@ -65,10 +65,10 @@
                         >{{ teacher.name[0].toUpperCase() }}</i
                       >
                       <AppButton
-                        class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-4 rounded-full! bg-white"
-                      >
-                        <i class="fa-solid fa-share-nodes"></i>
-                      </AppButton>
+                        class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5 rounded-full! bg-white"
+                        icon="i-lucide-share-2"
+                        size="xl"
+                      />
                     </div>
                   </div>
                   <div class="mt-4">
@@ -117,10 +117,10 @@
                     >{{ teacher.name[0].toUpperCase() }}</i
                   >
                   <AppButton
-                    class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-4 rounded-full! bg-white"
-                  >
-                    <i class="fa-solid fa-share-nodes"></i>
-                  </AppButton>
+                    class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5 rounded-full! bg-white"
+                    icon="i-lucide-share-2"
+                    size="xl"
+                  />
                 </div>
               </div>
               <div class="w-full px-4 flex gap-4">
@@ -143,21 +143,16 @@
                   activeClass="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer"
                 />
               </div>
-              <AppTable :columns="columns" :rows="rows"></AppTable>
+              <AppTable :columns="columns" :rows="rows" />
             </template>
           </main>
         </div>
       </section>
     </div>
   </section>
-  <AppModal
-    title="Send exam back to student"
-    :isVisible="sendModal"
-    @onClose="toggleSendModal"
-    theme="secondary"
-  >
+  <AppModal title="Send exam back to student" v-model="sendModal">
     <template #body>
-      <p class="text-center my-3 text-gray-600">
+      <p class="text-center mb-3 text-gray-600">
         This will send a link to the student which can be used to see the
         answers and the marking. For Students that don't have an email address
         set you can copy the link and send it manually
@@ -241,6 +236,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { TabsType } from "../../utils/types";
+import { TableColumn } from "@nuxt/ui";
 
 const systemNotification = ref(false);
 const allAvailableExams = ref([
@@ -378,21 +374,18 @@ const resultsTab = ref<TabsType[]>([
   },
 ]);
 const selectedResultTab = ref(resultsTab.value[0].value);
-const columns = [
+const columns: TableColumn<any>[] = [
   {
-    label: "Student",
-    field: "student",
-    sortable: true,
+    accessorKey: "student",
+    header: "Student",
   },
   {
-    label: "Points",
-    field: "points",
-    sortable: true,
+    id: "points",
+    header: "Points",
   },
   {
-    label: "Submission Time",
-    field: "submissionTime",
-    sortable: true,
+    accessorKey: "submissionTime",
+    header: "Submission Time",
   },
 ];
 const rows = [];

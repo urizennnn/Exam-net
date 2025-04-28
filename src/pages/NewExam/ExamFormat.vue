@@ -33,12 +33,7 @@
       <i class="fa-solid fa-angles-right"></i>
     </div>
   </section>
-  <AppModal
-    :isVisible="showUploadDocumentModal"
-    @onClose="toggleShowUploadDocumentModal"
-    title="Upload a Document"
-    :loading="documentLoading"
-  >
+  <AppModal v-model="showUploadDocumentModal" title="Upload a Document">
     <template #body>
       <div class="flex flex-col gap-1">
         <label for="">Choose a File: </label>
@@ -54,6 +49,7 @@
         theme="secondary"
         :disabled="!fileUpload"
         @click="submitUploadDocumentForm"
+        :loading="documentLoading"
       />
     </template>
   </AppModal>

@@ -90,7 +90,7 @@ export const useExamServerStore = defineStore("exam-server", {
         this.success = false;
         this.loading = true;
         const { data } = await axiosInstance.delete(`/exams/${payload.id}`);
-        
+
         const { message } = data;
         this.success = true;
         successToast(message);

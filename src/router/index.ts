@@ -31,7 +31,7 @@ const router = createRouter({
       component: MainLayout,
       children: [
         {
-          path: "",
+          path: "license",
           name: "license",
           component: License,
         },

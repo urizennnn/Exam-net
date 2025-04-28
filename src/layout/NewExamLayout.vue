@@ -2,16 +2,16 @@
   <section class="w-full bg-zinc-300" id="section">
     <div class="section-container-width">
       <div
-        class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-[#cacaca] px-4 bg-[#e6e6e6] shadow-md gap-4"
+        class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-neutral-400 px-4 bg-neutral-200 shadow-md gap-4"
       >
         <AppInput placeholder="Enter the Exam Name" />
         <div class="flex items-center md:gap-2 gap-4">
           <AppButton
             @click="decreaseCounter"
             v-if="newExamStore.counter > 1"
-            class="border-none! text-lg! font-semibold! text-[#464646]!"
+            class="border-none! text-lg! font-semibold! text-black"
             label="Back"
-            leftIcon="fa-solid fa-arrow-left"
+            leftIcon="i-lucide-arrow-left"
           />
           <div class="flex items-center gap-1">
             <template v-for="(_, index) in steps" :key="index">
@@ -47,7 +47,7 @@
                 @click="increaseCounter"
                 label="Next"
                 theme="secondary"
-                rightIcon="fa-solid fa-arrow-right"
+                rightIcon="i-lucide-arrow-right"
               />
             </template>
           </template>
@@ -55,7 +55,7 @@
             <AppButton
               label="Save"
               theme="secondary"
-              leftIcon="fa-regular fa-floppy-disk"
+              leftIcon="i-lucide-save"
               @click="toggleShowNameExamModal"
             />
           </template>
@@ -67,11 +67,7 @@
       </main>
     </div>
   </section>
-  <AppModal
-    title="Give your exam a name"
-    :isVisible="showNameExamModal"
-    @onClose="toggleShowNameExamModal"
-  >
+  <AppModal title="Give your exam a name" v-model="showNameExamModal">
     <template #body>
       <AppInput placeholder="Enter the name" v-model="newExamStore.examName" />
       <AppButton

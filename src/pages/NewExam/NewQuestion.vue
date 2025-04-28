@@ -43,7 +43,7 @@
             :disabled="!hasTrueValue(newExamStore.formStepTwo)"
             @click="saveAnswerType"
             label="Import questions"
-            leftIcon="fa-solid fa-circle-arrow-down"
+            leftIcon="i-lucide-circle-arrow-down"
           />
         </div>
       </section>
@@ -73,12 +73,7 @@
       <AppEditor v-model="newExamStore.editorContent" />
     </div>
   </section>
-  <AppModal
-    :isVisible="uploadExamQuestionsModal"
-    @onClose="toggleUploadExamQuestionsModal"
-    title="Upload PDF file"
-    :loading="documentLoading"
-  >
+  <AppModal v-model="uploadExamQuestionsModal" title="Upload PDF file">
     <template #body>
       <div class="flex flex-col gap-1">
         <label for="">Choose a File: </label>
@@ -93,6 +88,7 @@
         class="mt-3 w-full py-4! font-semibold rounded-md flex justify-center! items-center! uppercase"
         theme="secondary"
         :disabled="!fileUpload"
+        :loading="documentLoading"
         @click="submitUploadDocumentForm"
       />
     </template>

@@ -97,7 +97,7 @@ const navLinks = [
   },
   {
     label: "School",
-    to: "/",
+    to: "/license",
     icon: "fa-solid fa-house",
     notification: true,
   },

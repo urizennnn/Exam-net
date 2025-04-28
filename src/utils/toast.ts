@@ -6,7 +6,7 @@ export function successToast(message: string) {
     description: message,
     color: "success",
     ui: {
-      root: "bg-white",
+      root: "bg-white z-[1000]",
       title: "text-black",
       description: "text-gray-900",
     },
@@ -19,7 +19,7 @@ export function errorToast(message: string) {
     description: message,
     color: "error",
     ui: {
-      root: "bg-white",
+      root: "bg-white z-[1000]",
       title: "text-black",
       description: "text-gray-900",
     },

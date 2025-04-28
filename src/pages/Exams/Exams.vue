@@ -190,44 +190,6 @@ const rows = computed(() =>
     key: exam.examKey,
   })),
 );
-const examActionMenu: DropdownMenuItem[] = [
-  {
-    label: "Give Another teacher Access",
-    icon: "i-lucide-users",
-  },
-  {
-    label: "Reveal student identities",
-    icon: "i-lucide-id-card",
-  },
-  {
-    label: "Duplicate the exam",
-    icon: "i-lucide-copy",
-  },
-  {
-    label: "Share exam template via link",
-    icon: "i-lucide-link",
-  },
-  {
-    label: "Tag exam with a color",
-    icon: "i-lucide-paintbrush",
-  },
-  {
-    label: "Move to group",
-    icon: "i-lucide-circle-arrow-right",
-  },
-  {
-    label: "Archive the exam",
-    icon: "i-lucide-archive",
-  },
-  {
-    label: "Delete the exam",
-    icon: "i-lucide-trash",
-    color: "error",
-    onSelect() {
-      handleExamDelete();
-    },
-  },
-];
 const iconActions = ref([
   {
     title: "Close Marked Exams",
@@ -260,9 +222,6 @@ const iconActions = ref([
 ]);
 const selectedRowsInTable = ref([]);
 
-/**
- * Returns a grouped dropdown menu for a given exam.
- */
 function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
   return [
     [
@@ -307,7 +266,6 @@ function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
     ],
   ];
 }
-
 
 function copyKey(key: string) {
   navigator.clipboard

@@ -25,16 +25,21 @@
           <div class="w-full grid gap-6">
             <AppButton
               label="Submit Exam"
-              leftIcon="fa-solid fa-check text-green-600"
+              leftIcon="i-lucide-check"
               theme="variant"
               class="rounded-2xl! px-5! py-3! gap-4! m-auto"
               to="/monitoring-results"
               @click="handleSubmitExam"
             />
-            <RouterLink :to="`/preview/${examID}`" class="w-full">
-              <i
-                class="fa-solid fa-angle-left w-full text-orange-400 text-4xl text-right"
-              ></i>
+            <RouterLink
+              :to="`/preview/${examID}`"
+              class="w-full flex items-center justify-between"
+            >
+              <div></div>
+              <UIcon
+                name="i-lucide-step-back"
+                class="w-fit text-orange-400 text-4xl"
+              />
             </RouterLink>
           </div>
 
@@ -85,16 +90,16 @@
       >
         <h1>Preview</h1>
         <div class="flex items-center gap-4">
-          <i
-            :class="`${fileDirectionHorizontal ? 'text-orange-400' : ''} fa-solid fa-table-columns cursor-pointer rotate-270`"
-            role="button"
+          <AppButton
+            :class="`${fileDirectionHorizontal ? 'hover:text-orange-400 text-orange-400' : 'text-white hover:text-white'}`"
             @click="fileDirectionHorizontal = true"
-          ></i>
-          <i
-            :class="`${!fileDirectionHorizontal ? 'text-orange-400' : ''} fa-solid fa-table-columns cursor-pointer`"
-            role="button"
+            icon="i-lucide-rows-2"
+          />
+          <AppButton
+            :class="`${!fileDirectionHorizontal ? 'hover:text-orange-400 text-orange-400' : 'text-white hover:text-white'}`"
             @click="fileDirectionHorizontal = false"
-          ></i>
+            icon="i-lucide-columns-2"
+          />
         </div>
       </div>
       <Splitpanes
