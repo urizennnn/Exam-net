@@ -16,6 +16,7 @@
           <UInput
             v-model="loginForm.email"
             placeholder="Enter your email"
+            color="info"
             type="email"
             :ui="inputUI"
           />
@@ -24,6 +25,7 @@
           <UInput
             v-model="loginForm.password"
             placeholder="Enter your password"
+            color="info"
             :type="showPassword ? 'text' : 'password'"
             :ui="inputUI"
           >

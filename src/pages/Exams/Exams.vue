@@ -41,8 +41,9 @@
               :icon="action.icon"
               v-for="action in iconActions"
               :key="action.title"
-              :disabled="selectedRowsInTable.length === 0"
+              :disabled="selectedRowsInTable[0]?.original.length === 0"
               :title="action.title"
+              @click="action.onClick"
             />
           </div>
         </template>
@@ -65,22 +66,39 @@
               </p>
             </template>
             <template #action-cell="{ row }">
-              <UDropdownMenu
-                :items="getExamDropdownActions(row.original)"
-                :content="{
-                  align: 'start',
-                }"
-                :ui="{
-                  content: 'bg-white shadow',
-                  item: 'cursor-pointer text-black hover:bg-black rounded',
-                }"
-                :disabled="examServerLoading"
-              >
-                <UIcon
-                  name="i-lucide-ellipsis-vertical"
-                  class="size-6 cursor-pointer"
+              <div class="flex gap-2 items-center">
+                <AppButton
+                  left-icon="i-lucide-pencil"
+                  theme="primary"
+                  class="border-black border-2! rounded-4xl!"
                 />
-              </UDropdownMenu>
+                <AppButton
+                  left-icon="i-lucide-monitor-check"
+                  theme="primary"
+                  class="border-black border-2! rounded-4xl!"
+                />
+                <AppButton
+                  left-icon="i-lucide-binoculars"
+                  theme="primary"
+                  class="border-black border-2! rounded-4xl!"
+                />
+                <UDropdownMenu
+                  :items="getExamDropdownActions(row.original)"
+                  :content="{
+                    align: 'start',
+                  }"
+                  :ui="{
+                    content: 'bg-white shadow cursor-pointer',
+                    item: 'cursor-pointer text-black hover:bg-black rounded',
+                  }"
+                  :disabled="examServerLoading"
+                >
+                  <UIcon
+                    name="i-lucide-ellipsis-vertical"
+                    class="size-6 cursor-pointer"
+                  />
+                </UDropdownMenu>
+              </div>
             </template>
           </AppTable>
         </template>
@@ -88,13 +106,13 @@
           class="w-full h-full flex gap-3 items-center justify-center bg-white flex-col px-4 py-4"
         >
           <template v-if="exams.length === 0 && !examServerLoading">
-            <i class="fa-solid fa-file text-5xl text-gray-700"></i>
+            <UIcon name="i-lucide-file" class="text-gray-700 size-12" />
             <p class="font-semibold text-gray-700 text-[16px]">
               No exams in this group yet
             </p>
           </template>
           <AppButton
-            :leftIcon="`${exams.length === 0 ? 'fa-solid fa-plus text-white' : ''}`"
+            :leftIcon="`${exams.length === 0 ? 'i-lucide-plus' : ''}`"
             label="New Exam"
             theme="secondary"
             class="bg-gray-700 py-2 px-4"
@@ -115,18 +133,18 @@
 
 <script setup lang="ts">
 import { clearNewExamData } from "../../utils/functions";
-import { ref, resolveComponent, h } from "vue";
+import { ref, resolveComponent, h, computed } from "vue";
 import { DropdownMenuItem, TableColumn } from "@nuxt/ui";
 import { useExamServerStore } from "../../store/server/exam";
 import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
-import { computed } from "vue";
+import { errorToast, successToast } from "../../utils/toast";
 
-const { getExams, deleteExam } = useExamServerStore();
+const { getExams, deleteExam, deleteExams } = useExamServerStore();
 const { exams, loading: examServerLoading } = storeToRefs(useExamServerStore());
 const UCheckbox = resolveComponent("UCheckbox");
-const pTag = resolveComponent("p");
-const columns: TableColumn<any>[] = [
+const USelect = resolveComponent("USelect");
+const columns = computed<TableColumn<any>[]>(() => [
   {
     id: "select",
     header: ({ table }) =>
@@ -140,6 +158,7 @@ const columns: TableColumn<any>[] = [
         ui: {
           indicator: "bg-blue-800 text-white", // ← use “indicator”!
         },
+        disabled: exams.value.length === 0,
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
@@ -160,10 +179,11 @@ const columns: TableColumn<any>[] = [
     accessorKey: "key",
     header: "Exam Key",
     cell: ({ row }) =>
-      h(pTag, {
-        class: "bg-gray-300 p-3 w-fit rounded",
-        html: String(row.original.key),
-      }),
+      h(
+        "p",
+        { class: "bg-gray-200 p-2 w-fit rounded" },
+        String(row.original.key),
+      ),
   },
   {
     accessorKey: "createdAt",
@@ -176,16 +196,55 @@ const columns: TableColumn<any>[] = [
   {
     accessorKey: "access",
     header: "Access",
+    cell: ({ row }) => {
+      const predefinedOptions = [
+        [
+          { value: "open", label: "Open", chip: { color: "success" } },
+          { value: "closed", label: "Closed", chip: { color: "error" } },
+          {
+            value: "discoverable",
+            label: "Discoverable",
+            chip: { color: "info" },
+          },
+        ],
+        [
+          {
+            value: "scheduled",
+            label: "Scheduled",
+            icon: "i-lucide-calendar-days",
+          },
+        ],
+      ];
+
+      const currentValue = row.original.access;
+
+      // Ensure the current value is included in the options
+      const options = predefinedOptions.map((options) =>
+        options.some((option) => option.value === currentValue),
+      )
+        ? predefinedOptions
+        : [{ value: currentValue, label: currentValue }, ...predefinedOptions];
+
+      return h(USelect, {
+        modelValue: currentValue,
+        items: options,
+        class: "w-40 outline-none bg-inherit text-black",
+        color: "info",
+        ui: {
+          content: "bg-inherit",
+        },
+      });
+    },
   },
   {
     id: "action",
   },
-];
+]);
 const rows = computed(() =>
   exams.value.map((exam) => ({
     id: exam._id,
     name: exam.examName,
-    createdAt: exam.createdAt,
+    createdAt: new Date(exam.createdAt).toLocaleDateString(),
     access: exam.access,
     key: exam.examKey,
   })),
@@ -202,6 +261,7 @@ const iconActions = ref([
   {
     title: "Delete Selected Exams",
     icon: "i-lucide-trash",
+    onClick: handleExamsDelete,
   },
   {
     title: "Archive Selected Exams",
@@ -271,10 +331,10 @@ function copyKey(key: string) {
   navigator.clipboard
     .writeText(key)
     .then(() => {
-      toast.success("Copied");
+      successToast("Copied");
     })
     .catch((err) => {
-      toast.error("Copy Failed");
+      errorToast("Copy Failed");
     });
 }
 
@@ -285,6 +345,12 @@ async function handleExamDelete(id: string) {
   await deleteExam({
     id,
   });
+  await getExams();
+}
+
+async function handleExamsDelete() {
+  const payload = selectedRowsInTable.value[0]?.original;
+  await deleteExams(payload);
   await getExams();
 }
 

@@ -43,6 +43,7 @@
             :disabled="!hasTrueValue(newExamStore.formStepTwo)"
             @click="saveAnswerType"
             label="Import questions"
+            theme="primary"
             leftIcon="i-lucide-circle-arrow-down"
           />
         </div>

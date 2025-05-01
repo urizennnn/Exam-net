@@ -4,11 +4,11 @@
     :class="[
       'cursor-pointer',
       theme === 'primary'
-        ? 'text-gray-700 py-2 gap-2 hover:text-gray-900 hover:border:border-gray-900 border border-gray-400 px-2 bg-inherit! disable:bg-gray-200 rounded-lg!'
+        ? 'text-gray-700 py-2 gap-2 hover:text-gray-900 hover:border:border-gray-900 border border-gray-400 px-2 bg-inherit! disable:bg-gray-200 rounded-lg'
         : '',
       props.class,
       theme === 'secondary'
-        ? 'bg-black hover:bg-neutral-800 text-white font-semibold py-1 px-3 disabled:bg-[#38383858]'
+        ? 'bg-black rounded-3xl hover:bg-neutral-800 text-white font-semibold py-1 px-3 disabled:bg-[#38383858]'
         : '',
       theme === 'variant'
         ? 'bg-white text-black! hover:bg-slate-200 disabled:bg-[#38383858]'

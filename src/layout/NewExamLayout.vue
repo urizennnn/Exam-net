@@ -4,7 +4,10 @@
       <div
         class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-neutral-400 px-4 bg-neutral-200 shadow-md gap-4"
       >
-        <AppInput placeholder="Enter the Exam Name" />
+        <AppInput
+          placeholder="Enter the Exam Name"
+          baseClass="ring-2 ring-neutral-400 bg-white"
+        />
         <div class="flex items-center md:gap-2 gap-4">
           <AppButton
             @click="decreaseCounter"
@@ -32,11 +35,11 @@
             </template>
           </div>
           <AppButton
+            left-icon="i-lucide-binoculars"
+            theme="primary"
+            class="border-black border-2! rounded-4xl!"
             v-if="newExamStore.counter > 1"
-            class="py-1 px-4 rounded-4xl! border-black! border-2! text-lg!"
-          >
-            <i class="fa-solid fa-binoculars text-black"></i>
-          </AppButton>
+          />
         </div>
         <div class="flex gap-1">
           <template v-if="newExamStore.counter != steps.length">

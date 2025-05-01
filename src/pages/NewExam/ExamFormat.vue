@@ -26,12 +26,12 @@
       />
     </div>
 
-    <div
-      class="flex flex-row justify-center mt-10 items-center gap-1 font-sans text-[#464646] font-medium text-sm md:text-base"
-    >
-      <p>Neither, skip digital questions</p>
-      <i class="fa-solid fa-angles-right"></i>
-    </div>
+    <!-- <div -->
+    <!--   class="flex flex-row justify-center mt-10 items-center gap-1 font-sans text-[#464646] font-medium text-sm md:text-base" -->
+    <!-- > -->
+    <!--   <p>Neither, skip digital questions</p> -->
+    <!--   <i class="fa-solid fa-angles-right"></i> -->
+    <!-- </div> -->
   </section>
   <AppModal v-model="showUploadDocumentModal" title="Upload a Document">
     <template #body>

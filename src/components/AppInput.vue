@@ -1,41 +1,19 @@
 <template>
-  <div
-    :class="`${label ? 'grid grid-cols-2 gap-4' : ''} w-full items-center m-0`"
-  >
-    <input
-      v-if="type !== 'file'"
-      :type="type"
-      v-model="model"
-      :placeholder="placeholder"
-      :class="[
-        props.class,
-        theme === 'primary'
-          ? 'bg-white border-2 border-gray-300'
-          : theme === 'secondary'
-            ? 'bg-gray-100 border-1 border-gray-200'
-            : '',
-        'outline-none w-full p-2 rounded-md placeholder:text-gray-400 font-semibold m-0',
-      ]"
-      :max="max"
-      :min="min"
-    />
-    <input
-      v-else
-      type="file"
-      :class="[
-        props.class,
-        theme === 'primary'
-          ? 'bg-white border-2 border-gray-300'
-          : theme === 'secondary'
-            ? 'bg-gray-100 border-1 border-gray-200'
-            : '',
-        'outline-none w-full p-2 rounded-md placeholder:text-gray-400 font-semibold m-0',
-      ]"
-      v-bind="props.accept ? { accept } : {}"
-      @change="onFileChange"
-    />
-    <p class="text-sm">{{ label }}</p>
-  </div>
+  <UInput
+    :type="type"
+    v-model="model"
+    :placeholder="placeholder"
+    :class="[props.class]"
+    :max="max"
+    :min="min"
+    v-bind="props.accept ? { accept } : {}"
+    color="info"
+    :ui="{
+      trailing: 'pe-1',
+      root: `w-full ${rootClass}`,
+      base: `p-4 bg-inherit text-black ${baseClass}`,
+    }"
+  />
 </template>
 
 <script setup lang="ts">
@@ -71,20 +49,18 @@ const props = defineProps({
   accept: {
     type: String,
   },
+  baseClass: {
+    type: String,
+    default: "",
+  },
+  rootClass: {
+    type: String,
+    default: "",
+  },
 });
 
-const model = defineModel();
+const model = defineModel<any>();
 const emit = defineEmits(["update:modelValue"]);
-
-function onFileChange(event: Event) {
-  const target = event.target as HTMLInputElement;
-  const files = target.files;
-  if (files && files.length > 0) {
-    emit("update:modelValue", files[0]);
-  } else {
-    emit("update:modelValue", null);
-  }
-}
 </script>
 
 <style scoped>

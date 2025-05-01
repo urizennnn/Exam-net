@@ -10,7 +10,7 @@
     }"
     ref="table"
     :loading="loading"
-    :loadingColor="loadingColor"
+    loadingColor="info"
     loadingAnimation="carousel"
   >
     <template #name-cell="{ row }">

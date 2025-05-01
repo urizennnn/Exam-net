@@ -106,11 +106,13 @@ export const useExamServerStore = defineStore("exam-server", {
     },
     async deleteExams(payload: UploadExamPayload[]) {
       try {
-        const { data } = await axiosInstance.delete(
+        const { data } = await axiosInstance.patch(
           `/exams/delete/many`,
           payload,
         );
-        console.log(data);
+        const { message } = data;
+        this.success = true;
+        successToast(message);
       } catch (error: any) {
         this.success = false;
         const errorMessage =

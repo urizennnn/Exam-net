@@ -15,6 +15,7 @@
         <UFormField label="Name" name="name" :ui="FormFieldUI">
           <UInput
             v-model="registerForm.name"
+            color="info"
             placeholder="Enter your name"
             type="text"
             :ui="inputUI"
@@ -23,6 +24,7 @@
         <UFormField label="Email" name="email" :ui="FormFieldUI">
           <UInput
             v-model="registerForm.email"
+            color="info"
             placeholder="Enter your email"
             type="email"
             :ui="inputUI"
@@ -31,6 +33,7 @@
         <UFormField label="Password" name="password" :ui="FormFieldUI">
           <UInput
             v-model="registerForm.password"
+            color="info"
             placeholder="Enter your password"
             :type="showPassword ? 'text' : 'password'"
             :ui="inputUI"
