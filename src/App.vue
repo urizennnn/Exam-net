@@ -1,9 +1,18 @@
 <script setup></script>
 
 <template>
-  <Transition>
-    <UApp>
-      <RouterView />
-    </UApp>
-  </Transition>
+  <UApp>
+    <RouterView />
+  </UApp>
 </template>
+
+<script setup>
+import { Cloudinary } from "@cloudinary/url-gen";
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName:
+      "cloudinary://98744186858335:HelAut7EHo7HiDX_ht5LlLLHUJk@dt9mahfbl",
+  },
+});
+</script>

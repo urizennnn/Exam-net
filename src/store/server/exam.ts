@@ -1,31 +1,11 @@
 import { defineStore } from "pinia";
-import { BaseState } from "../../utils/types";
+import { BaseState, Exam } from "../../utils/types";
 import { errorToast, successToast } from "../../utils/toast";
 import { axiosInstance } from "../../utils/axiosConfig";
 
 interface ExamServerState extends BaseState {
-  exams: UploadExamPayload[];
-}
-
-interface UploadExamPayload {
-  _id?: string;
-  access: string;
-  createdAt: string;
-  examKey: string;
-  examName: string;
-  lecturer: string;
-  question: string;
-  settings: {
-    examType: {
-      hidePoints: boolean;
-      showResults: boolean;
-    };
-    general: {
-      anonymous: boolean;
-      timeLimit: number;
-    };
-  };
-  format: any[];
+  exams: Exam[];
+  exam: Exam;
 }
 
 export const useExamServerStore = defineStore("exam-server", {
@@ -33,9 +13,10 @@ export const useExamServerStore = defineStore("exam-server", {
     loading: false,
     success: false,
     exams: [],
+    exam: null,
   }),
   actions: {
-    async createExam(payload: UploadExamPayload) {
+    async createExam(payload: Exam) {
       try {
         this.success = false;
         this.loading = true;
@@ -74,7 +55,7 @@ export const useExamServerStore = defineStore("exam-server", {
     async getExam(payload: { id: string }) {
       try {
         const { data } = await axiosInstance.get(`/exams/${payload.id}`);
-        console.log(data);
+        this.exam = data;
       } catch (error: any) {
         this.success = false;
         const errorMessage =
@@ -104,7 +85,7 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
-    async deleteExams(payload: UploadExamPayload[]) {
+    async deleteExams(payload: Exam[]) {
       try {
         const { data } = await axiosInstance.patch(
           `/exams/delete/many`,

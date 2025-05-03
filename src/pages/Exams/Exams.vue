@@ -41,7 +41,7 @@
               :icon="action.icon"
               v-for="action in iconActions"
               :key="action.title"
-              :disabled="selectedRowsInTable[0]?.original.length === 0"
+              :disabled="selectedRows.length === 0"
               :title="action.title"
               @click="action.onClick"
             />
@@ -49,7 +49,7 @@
         </template>
         <template v-if="exams.length > 0 || examServerLoading">
           <AppTable
-            v-model:row-selection="selectedRowsInTable"
+            @update:rowSelection="onRowSelection"
             :columns="columns"
             :rows="rows"
             :loading="examServerLoading"
@@ -71,6 +71,7 @@
                   left-icon="i-lucide-pencil"
                   theme="primary"
                   class="border-black border-2! rounded-4xl!"
+                  @click="handleGetExam(row.original.id)"
                 />
                 <AppButton
                   left-icon="i-lucide-monitor-check"
@@ -140,8 +141,12 @@ import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { errorToast, successToast } from "../../utils/toast";
 
-const { getExams, deleteExam, deleteExams } = useExamServerStore();
-const { exams, loading: examServerLoading } = storeToRefs(useExamServerStore());
+const { getExams, deleteExam, deleteExams, getExam } = useExamServerStore();
+const {
+  exams,
+  loading: examServerLoading,
+  success: examServerSuccess,
+} = storeToRefs(useExamServerStore());
 const UCheckbox = resolveComponent("UCheckbox");
 const USelect = resolveComponent("USelect");
 const columns = computed<TableColumn<any>[]>(() => [
@@ -167,7 +172,7 @@ const columns = computed<TableColumn<any>[]>(() => [
           row.toggleSelected(!!value),
         "aria-label": "Select row",
         ui: {
-          indicator: "bg-blue-800 text-white", // ← use “indicator”!
+          indicator: "bg-blue-800 text-white",
         },
       }),
   },
@@ -181,7 +186,10 @@ const columns = computed<TableColumn<any>[]>(() => [
     cell: ({ row }) =>
       h(
         "p",
-        { class: "bg-gray-200 p-2 w-fit rounded" },
+        {
+          class: "bg-gray-200 p-2 w-fit rounded cursor-pointer select-none",
+          onClick: () => copyKey(row.original.key),
+        },
         String(row.original.key),
       ),
   },
@@ -231,7 +239,8 @@ const columns = computed<TableColumn<any>[]>(() => [
         class: "w-40 outline-none bg-inherit text-black",
         color: "info",
         ui: {
-          content: "bg-inherit",
+          content: "bg-white text-black",
+          item: "text-black",
         },
       });
     },
@@ -280,7 +289,11 @@ const iconActions = ref([
     icon: "i-lucide-circle-arrow-right",
   },
 ]);
-const selectedRowsInTable = ref([]);
+const selectedRows = ref<any[]>([]);
+
+function onRowSelection(items: any[]) {
+  selectedRows.value = items;
+}
 
 function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
   return [
@@ -333,14 +346,11 @@ function copyKey(key: string) {
     .then(() => {
       successToast("Copied");
     })
-    .catch((err) => {
+    .catch(() => {
       errorToast("Copy Failed");
     });
 }
 
-function zoom(row) {
-  console.log("Zoom in on", row);
-}
 async function handleExamDelete(id: string) {
   await deleteExam({
     id,
@@ -349,9 +359,18 @@ async function handleExamDelete(id: string) {
 }
 
 async function handleExamsDelete() {
-  const payload = selectedRowsInTable.value[0]?.original;
+  const payload = selectedRows.value.map((item) => item.id);
   await deleteExams(payload);
   await getExams();
+}
+
+async function handleGetExam(id: string) {
+  await getExam({
+    id,
+  });
+
+  if (examServerSuccess.value) {
+  }
 }
 
 onMounted(async () => {

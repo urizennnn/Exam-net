@@ -79,8 +79,10 @@
         leftIcon="fa-regular fa-floppy-disk"
         class="w-full! items-center justify-center p-3! mt-3"
         @click="submitExam"
-        :disabled="!newExamStore.examName || examServerLoading"
-        :loading="examServerLoading"
+        :disabled="
+          !newExamStore.examName || examServerLoading || documentLoading
+        "
+        :loading="examServerLoading || documentLoading"
       />
     </template>
   </AppModal>
@@ -93,6 +95,7 @@ import { useNewExamStore } from "../store/NewExamStore";
 import { useExamServerStore } from "../store/server/exam";
 import { getTrueKeys } from "../utils/functions";
 import { storeToRefs } from "pinia";
+import { useDocumentStore } from "../store/server/document";
 
 const router = useRouter();
 const newExamStore = useNewExamStore();
@@ -112,6 +115,10 @@ const showNameExamModal = ref(false);
 const { createExam } = useExamServerStore();
 const { loading: examServerLoading, success: examServerSuccess } =
   storeToRefs(useExamServerStore());
+const { uploadPdfToCloudinary, uploadDocument, generatePdfBlob } =
+  useDocumentStore();
+const { loading: documentLoading, success: documentSuccess } =
+  storeToRefs(useDocumentStore());
 
 function toggleShowNameExamModal() {
   showNameExamModal.value = !showNameExamModal.value;
@@ -124,11 +131,14 @@ function toggleShowNameExamModal() {
 
 async function submitExam() {
   generateExamKey();
+  examServerLoading.value = true;
+  const file = await generatePdfBlob(newExamStore.editorContent);
+  const { url } = await uploadPdfToCloudinary(file);
   await createExam({
     examKey: newExamStore.examId,
     examName: newExamStore.examName,
     access: "open",
-    question: newExamStore.editorContent,
+    question: url,
     format: getTrueKeys(newExamStore.formStepTwo),
     settings: {
       general: {
@@ -141,8 +151,11 @@ async function submitExam() {
       },
     },
   });
+  await uploadDocument({
+    file: file,
+  });
 
-  if (examServerSuccess.value) {
+  if (examServerSuccess.value && documentSuccess.value) {
     router.push(`/preview/${newExamStore.examId}`);
   }
 }

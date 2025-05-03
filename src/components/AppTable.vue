@@ -2,11 +2,11 @@
   <UTable
     :data="rowsComputed"
     :columns="columnsComputed"
+    :rowSelection="{ mode: 'multiple' }"
     :ui="{
       base: 'bg-white',
       th: 'text-black!',
       td: 'text-black!',
-      loading: 'after:border-blue-950 after:py-3',
     }"
     ref="table"
     :loading="loading"
@@ -25,14 +25,12 @@
     v-if="!loading"
     class="bg-white text-black px-4 py-2 border-t border-accented text-sm"
   >
-    {{ table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0 }} of
-    {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s)
-    selected.
+    {{ selectedItems.length }} of {{ rowsComputed.length }} row(s) selected.
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, useTemplateRef, watch } from "vue";
+import { computed, watch, useTemplateRef } from "vue";
 
 const props = defineProps({
   columns: {
@@ -46,23 +44,32 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
-    required: false,
   },
   loadingColor: {
     type: String,
-    dafault: "info",
+    default: "info",
   },
 });
-const emits = defineEmits(["update:rowSelection"]);
+
+const emit = defineEmits<{
+  (e: "update:rowSelection", payload: any[]): void;
+}>();
 
 const rowsComputed = computed(() => props.rows);
 const columnsComputed = computed(() => props.columns);
 const table = useTemplateRef("table");
-const rowSelection = computed(
-  () => table.value?.tableApi?.getFilteredSelectedRowModel().rows,
-);
 
-watch(rowSelection, (v) => emits("update:rowSelection", v), {
-  deep: true,
+const selectedItems = computed(() => {
+  const selRows =
+    table.value?.tableApi.getFilteredSelectedRowModel().rows ?? [];
+  return selRows.map((r) => r.original);
 });
+
+watch(
+  selectedItems,
+  (items) => {
+    emit("update:rowSelection", items);
+  },
+  { immediate: true },
+);
 </script>

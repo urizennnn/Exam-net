@@ -43,16 +43,13 @@
             <template v-if="selectSelectedTab === 'monitoring'">
               <section class="flex gap-6 mt-4">
                 <div class="flex flex-col gap-2 w-full max-w-[350px]">
-                  <template
+                  <AppSelect
                     v-for="(details, index) in examDetails"
                     :key="index"
-                  >
-                    <AppSelect
-                      :label="details.label"
-                      :options="details.options"
-                      v-model="details.value"
-                    />
-                  </template>
+                    :label="details.label"
+                    :options="details.options"
+                    v-model="details.value"
+                  />
                   <div
                     class="flex gap-6 items-center font-light text-black text-xl justify-between"
                   >

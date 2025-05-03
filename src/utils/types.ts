@@ -57,3 +57,24 @@ export interface TabsType {
   label: string;
   value: string;
 }
+
+export interface Exam {
+  _id?: string;
+  access: string;
+  createdAt: string;
+  examKey: string;
+  examName: string;
+  lecturer: string;
+  question: string;
+  settings: {
+    examType: {
+      hidePoints: boolean;
+      showResults: boolean;
+    };
+    general: {
+      anonymous: boolean;
+      timeLimit: number;
+    };
+  };
+  format: any[];
+}
