@@ -93,7 +93,7 @@ import { watch, ref, computed } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import { useNewExamStore } from "../store/NewExamStore";
 import { useExamServerStore } from "../store/server/exam";
-import { getTrueKeys } from "../utils/functions";
+import { clearNewExamData, getTrueKeys } from "../utils/functions";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../store/server/document";
 
@@ -117,8 +117,11 @@ const { loading: examServerLoading, success: examServerSuccess } =
   storeToRefs(useExamServerStore());
 const { uploadPdfToCloudinary, uploadDocument, generatePdfBlob } =
   useDocumentStore();
-const { loading: documentLoading, success: documentSuccess } =
-  storeToRefs(useDocumentStore());
+const {
+  loading: documentLoading,
+  success: documentSuccess,
+  result: documentResult,
+} = storeToRefs(useDocumentStore());
 
 function toggleShowNameExamModal() {
   showNameExamModal.value = !showNameExamModal.value;
@@ -151,11 +154,15 @@ async function submitExam() {
       },
     },
   });
-  await uploadDocument({
-    file: file,
-  });
+  if (documentResult.value) {
+    await uploadDocument({
+      file: file,
+    });
+  }
 
   if (examServerSuccess.value && documentSuccess.value) {
+    clearNewExamData();
+    localStorage.setItem("examPreview", JSON.stringify(documentResult.value));
     router.push(`/preview/${newExamStore.examId}`);
   }
 }

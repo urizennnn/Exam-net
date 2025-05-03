@@ -22,7 +22,9 @@ export const useDocumentStore = defineStore("documents", {
   state: (): DocumentStore => ({
     loading: false,
     success: false,
-    result: [],
+    result: localStorage.getItem("examPreview")
+      ? JSON.parse(localStorage.getItem("examPreview"))
+      : [],
   }),
   actions: {
     async uploadDocument(payload: UploadDocumentPayload) {

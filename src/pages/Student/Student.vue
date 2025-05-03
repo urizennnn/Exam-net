@@ -44,29 +44,34 @@
           </div>
 
           <div class="flex flex-col items-center gap-4 w-full p-3">
-            <i
-              class="fa-solid fa-gear cursor-pointer text-lg shadow-white shadow-sm text-white bg-gray-500 p-1 rounded"
-            ></i>
+            <AppButton
+              leftIcon="i-lucide-settings"
+              class="text-white text-2xl"
+            />
             <div
               class="flex w-full items-center flex-wrap gap-4 justify-between pb-6 text-white border-b border-b-gray-500"
             >
-              <time class="text-white text-xl" :datetime="isoTime">
-                <i class="fa-regular fa-clock" aria-hidden="true"></i>
+              <time
+                class="text-white text-xl flex gap-2 items-center"
+                :datetime="isoTime"
+              >
+                <UIcon name="i-lucide-clock" />
                 {{ formattedTime }}
               </time>
-              <p class="text-white text-xl">
-                <i class="fa-solid fa-plug"></i> 100%
+              <p class="text-white text-xl flex gap-1 items-center">
+                <UIcon name="i-lucide-plug" />
+                100%
               </p>
             </div>
             <div
               class="flex items-center justify-between w-full text-white font-bold text-xl"
             >
               <p>Time Limit</p>
-              <i
-                :class="`cursor-pointer fa-solid ${showTimeLimit ? 'fa-eye-slash' : 'fa-eye'}`"
-                role="button"
+              <AppButton
+                :left-icon="`i-lucide-${showTimeLimit ? 'eye' : 'eye-off'}`"
                 @click="toggleShowTimeLimit"
-              ></i>
+                class="size-7"
+              />
             </div>
             <div
               v-if="showTimeLimit"
@@ -89,45 +94,33 @@
         class="bg-gray-900 text-white p-3 font-extrabold text-2xl flex justify-between items-center"
       >
         <h1>Preview</h1>
-        <div class="flex items-center gap-4">
-          <AppButton
-            :class="`${fileDirectionHorizontal ? 'hover:text-orange-400 text-orange-400' : 'text-white hover:text-white'}`"
-            @click="fileDirectionHorizontal = true"
-            icon="i-lucide-rows-2"
-          />
-          <AppButton
-            :class="`${!fileDirectionHorizontal ? 'hover:text-orange-400 text-orange-400' : 'text-white hover:text-white'}`"
-            @click="fileDirectionHorizontal = false"
-            icon="i-lucide-columns-2"
-          />
-        </div>
       </div>
-      <Splitpanes
-        style="height: calc(100dvh - 57px)"
-        class="default-theme splitpane"
-        :horizontal="fileDirectionHorizontal"
-      >
-        <Pane
-          :min-size="fileSize.min_size"
-          :max-size="fileSize.max_size"
-          :size="fileSize.min_size"
-        >
-          <section class="w-full h-full overflow-auto">
-            <div
-              class="text-xl p-3 bg-white shadow-md font-bold"
-              ref="questionSection"
-              id="questionSection"
-            >
-              {{ newExamStore.editorContent }}
-            </div>
-          </section>
-        </Pane>
-        <Pane>
-          <section class="w-full h-full overflow-auto">
-            <AppEditor />
-          </section>
-        </Pane>
-      </Splitpanes>
+      <section class="w-full overflow-auto">
+        <div class="text-xl p-3 bg-white shadow-md flex flex-col gap-4">
+          <div
+            v-for="(q, idx) in documentResult"
+            :key="idx"
+            class="select-none"
+          >
+            <p class="font-semibold">{{ idx + 1 }}. {{ q.question }}</p>
+            <AppRadio
+              v-model="answers[idx]"
+              :items="q.options"
+              v-if="q.type === 'multiple-choice'"
+              class="mt-2 pl-5"
+            />
+            <AppTextarea
+              v-else
+              class="mt-2 pl-5"
+              v-model="answers[idx]"
+              placeholder="Type your answer here…"
+              baseClass="bg-gray-200 ring-0 inset-shadow-md"
+              autoresize
+              :rows="4"
+            />
+          </div>
+        </div>
+      </section>
     </section>
   </section>
 </template>
@@ -135,12 +128,10 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useNewExamStore } from "../../store/NewExamStore";
-import { Splitpanes, Pane } from "splitpanes";
-import "splitpanes/dist/splitpanes.css";
-import { fileSize } from "../../utils/variables";
 import { clearNewExamData } from "../../utils/functions";
-import { useExamStore } from "../../store/ExamStore";
-import { useRoute, RouterLink } from "vue-router";
+import { useRoute } from "vue-router";
+import { storeToRefs } from "pinia";
+import { useDocumentStore } from "../../store/server/document";
 
 const now = ref(new Date());
 let timer = null;
@@ -152,30 +143,23 @@ const formattedTime = computed(() => {
 const isoTime = computed(() => now.value.toISOString().slice(0, 16));
 const showTimeLimit = ref(true);
 const newExamStore = useNewExamStore();
-const fileDirectionHorizontal = ref(false);
-const questionSection = ref(null);
-const examStore = useExamStore();
 const routes = useRoute();
 const examID = computed(() => routes.params.id);
 const timerValue = ref(newExamStore.configOptions.setTime);
+const { result: documentResult } = storeToRefs(useDocumentStore());
+const answers = ref<Array<string | null>>(
+  documentResult.value?.map(() => null),
+);
 
 function toggleShowTimeLimit() {
   showTimeLimit.value = !showTimeLimit.value;
 }
 
 function handleSubmitExam() {
-  examStore.exams.push({
-    examName: newExamStore.examName,
-    examKey: newExamStore.examId,
-    createdAt: new Date().toLocaleDateString(),
-    access: "open",
-  });
-  localStorage.setItem("exams", JSON.stringify(examStore.exams));
   clearNewExamData();
 }
 
 onMounted(() => {
-  questionSection.value.innerHTML = `${newExamStore.editorContent}`;
   const msUntilNextMinute = (60 - now.value.getSeconds()) * 1000;
   timer = setTimeout(() => {
     now.value = new Date();
@@ -189,14 +173,5 @@ onUnmounted(() => clearTimeout(timer) || clearInterval(timer));
 <style scoped>
 #SideBarMain {
   height: calc(100% - 112px);
-}
-
-#questionSection * {
-  list-style: auto;
-  list-style-position: inside;
-}
-
-#questionSection *:not(:last-of-type) {
-  margin-bottom: 2rem;
 }
 </style>

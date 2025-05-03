@@ -92,9 +92,7 @@
               class="text-xl p-3 bg-white shadow-md font-bold"
               ref="questionSection"
               id="questionSection"
-            >
-              {{ newExamStore.editorContent }}
-            </div>
+            ></div>
           </section>
         </Pane>
         <Pane>
@@ -113,10 +111,12 @@ import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
 import { ref, onMounted, computed } from "vue";
 import { fileSize } from "../../utils/variables";
-import { clearNewExamData } from "../../utils/functions";
+import { clearNewExamData, questionFormatTeacher } from "../../utils/functions";
 import { useRoute, RouterLink } from "vue-router";
 import { useExamStore } from "../../store/ExamStore";
 import AppButton from "../../components/AppButton.vue";
+import { storeToRefs } from "pinia";
+import { useDocumentStore } from "../../store/server/document";
 
 const newExamStore = useNewExamStore();
 const timerValue = ref(newExamStore.configOptions.setTime);
@@ -124,35 +124,20 @@ const fileDirectionHorizontal = ref(false);
 const questionSection = ref(null);
 const routes = useRoute();
 const examID = computed(() => routes.params.id);
-const examStore = useExamStore();
+const { result: documentResult } = storeToRefs(useDocumentStore());
 
 function handleSubmitExam() {
-  examStore.exams.push({
-    examName: newExamStore.examName,
-    examKey: newExamStore.examId,
-    createdAt: new Date().toLocaleDateString(),
-    access: "open",
-  });
-  localStorage.setItem("exams", JSON.stringify(examStore.exams));
   clearNewExamData();
 }
 
 onMounted(() => {
-  questionSection.value.innerHTML = `${newExamStore.editorContent}`;
+  questionSection.value.innerHTML = questionFormatTeacher(documentResult.value);
 });
 </script>
 
 <style scoped>
 #SideBarMain {
   height: calc(100% - 112px);
-}
-
-#questionSection * {
-  list-style: auto;
-  list-style-position: inside;
-}
-
-#questionSection *:not(:last-of-type) {
-  margin-bottom: 2rem;
+  width: 100%;
 }
 </style>

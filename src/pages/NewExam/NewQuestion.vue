@@ -100,7 +100,7 @@
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useNewExamStore } from "../../store/NewExamStore";
 import { useDocumentStore } from "../../store/server/document";
-import { hasTrueValue } from "../../utils/functions";
+import { hasTrueValue, questionFormatTeacher } from "../../utils/functions";
 import { storeToRefs } from "pinia";
 
 const newExamStore = useNewExamStore();
@@ -206,7 +206,7 @@ async function submitUploadDocumentForm() {
   if (documentSuccess.value) {
     toggleUploadExamQuestionsModal();
     newExamStore.increaseFormStepTwoCounter();
-    newExamStore.editorContent = documentResult.value;
+    newExamStore.editorContent = questionFormatTeacher(documentResult.value);
   } else {
     fileUpload.value = null;
   }
@@ -227,10 +227,10 @@ onMounted(() => {
     newExamStore.form.examFormat != "question"
   ) {
     newExamStore.formStepTwoCounter = 3;
-    const content = documentStore.result;
+    const content = questionFormatTeacher(documentStore.result);
     if (content) {
       newExamStore.editorContent = content;
-      localStorage.setItem("editorContent", `${content}`);
+      sessionStorage.setItem("editorContent", `${content}`);
     }
   }
 });
@@ -239,7 +239,7 @@ onUnmounted(() => {
   if (newExamStore.counter == 1 && newExamStore.form.examFormat === "") {
     newExamStore.formStepTwoCounter = 1;
     newExamStore.editorContent = "";
-    localStorage.setItem("editorContent", "");
+    sessionStorage.setItem("editorContent", "");
   }
 });
 

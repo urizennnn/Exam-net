@@ -8,7 +8,6 @@ export function hasTrueValue(obj: any): boolean {
 
 export function clearData() {
   sessionStorage.clear();
-  localStorage.clear();
 }
 
 export function clearNewExamData() {
@@ -23,7 +22,7 @@ export function clearNewExamData() {
   sessionStorage.removeItem("grid");
   sessionStorage.removeItem("freeText");
   sessionStorage.removeItem("attachment");
-  localStorage.removeItem("editorContent");
+  sessionStorage.removeItem("editorContent");
   sessionStorage.removeItem("anonymizeExam");
   sessionStorage.removeItem("setTimeLimit");
   sessionStorage.removeItem("setTime");
@@ -40,47 +39,56 @@ export function getTrueKeys<T extends Record<string, boolean>>(
   return (Object.keys(obj) as Array<keyof T>).filter((key) => obj[key]);
 }
 
-export function formatQuestion(question: any) {
-  let output = "";
-  question.forEach((chunk) => {
-    if (typeof chunk === "string") {
-      const cleanedStr = chunk
-        .replace(/,\s*\n/g, "\n")
-        .replace(/,\s*$/, "")
-        .replace(/\n,\s*/g, "\n")
-        .trim();
-      output += `<p>${cleanedStr}</p>`;
-    } else if (Array.isArray(chunk)) {
-      const question = String(chunk[0] || "")
-        .replace(/,\s*\n/g, "\n")
-        .replace(/,\s*$/, "")
-        .replace(/\n,\s*/g, "\n")
-        .trim();
-
-      const answerList = Array.isArray(chunk[1])
-        ? chunk[1].map((item) =>
-            String(item)
-              .replace(/,\s*\n/g, "\n")
-              .replace(/,\s*$/, "")
-              .replace(/\n,\s*/g, "\n")
-              .trim(),
-          )
-        : [];
-
-      const answerText = String(chunk[2] || "")
-        .replace(/,\s*\n/g, "\n")
-        .replace(/,\s*$/, "")
-        .replace(/\n,\s*/g, "\n")
-        .trim();
-
-      output += `
-              <p>${question}</p>
-              <ul>
-                ${answerList.map((item) => `<li>${item}</li>`).join("")}
-              </ul>
-              <p>${answerText}</p>
-            `;
-    }
-  });
-  return output;
+function escapeHtml(raw: string): string {
+  return raw
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
+
+export function questionFormatTeacher(
+  questions: Array<{
+    question: string;
+    options?: string[];
+    answer?: string | null;
+  }>,
+): string {
+  return `
+    <ol class="questions-list">
+      ${questions
+        .map((q) => {
+          const questionText = escapeHtml(q.question);
+          const opts =
+            Array.isArray(q.options) && q.options.length
+              ? `<ul class="options-list">
+                 ${q.options
+                   .map((opt) => `<li>${escapeHtml(opt)}</li>`)
+                   .join("")}
+               </ul>`
+              : "";
+          const answer = q.answer
+            ? `<p class="answer"><strong>Answer:</strong> ${escapeHtml(q.answer)}</p>`
+            : "";
+
+          return `
+            <li class="question-block">
+              <h2 class="question-text">${questionText}</h2>
+              ${opts}
+              ${answer}
+            </li>
+          `;
+        })
+        .join("")}
+    </ol>
+  `.trim();
+}
+
+export function questionFormatStudent(
+  questions: Array<{
+    question: string;
+    options?: string[];
+    answer?: string | null;
+  }>,
+): string {}

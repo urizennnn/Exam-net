@@ -41,8 +41,8 @@ export const useNewExamStore = defineStore("newExams", {
         ? JSON.parse(sessionStorage.getItem("attachment"))
         : false,
     },
-    editorContent: localStorage.getItem("editorContent")
-      ? localStorage.getItem("editorContent")
+    editorContent: sessionStorage.getItem("editorContent")
+      ? sessionStorage.getItem("editorContent")
       : "",
     configOptions: {
       anonymizeExam: sessionStorage.getItem("anonymizeExam")
