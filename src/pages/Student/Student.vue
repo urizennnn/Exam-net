@@ -128,7 +128,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useNewExamStore } from "../../store/NewExamStore";
-import { clearNewExamData } from "../../utils/functions";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../../store/server/document";
@@ -156,7 +155,7 @@ function toggleShowTimeLimit() {
 }
 
 function handleSubmitExam() {
-  clearNewExamData();
+  localStorage.removeItem("examPreview");
 }
 
 onMounted(() => {

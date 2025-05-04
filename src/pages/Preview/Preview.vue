@@ -118,7 +118,6 @@ import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
 import { ref, computed } from "vue";
 import { fileSize } from "../../utils/variables";
-import { clearNewExamData } from "../../utils/functions";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../../store/server/document";
@@ -132,7 +131,7 @@ const examID = computed(() => routes.params.id);
 const { result: documentResult } = storeToRefs(useDocumentStore());
 
 function handleSubmitExam() {
-  clearNewExamData();
+  localStorage.removeItem("examPreview");
 }
 </script>
 

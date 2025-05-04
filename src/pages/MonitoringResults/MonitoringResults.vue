@@ -5,32 +5,29 @@
         class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer"
         @click="toggleSystemNotification"
       >
-        <i
-          :class="`${systemNotification ? 'fa-solid' : 'fa-regular'} fa-bell text-2xl`"
-        ></i>
+        <UIcon
+          :name="`i-lucide-${systemNotification ? 'bell' : 'bell-off'}`"
+          class="size-6"
+        />
         System Notification: {{ systemNotification ? "On" : "Off" }}
       </p>
       <!-- Side tab -->
       <section class="mt-4 w-full flex gap-3">
         <aside class="w-full max-w-[300px]">
-          <select
-            class="outline-none p-3 font-bold tracking-wider w-full"
+          <AppSelectMenu
+            :items="allAvailableExams"
             v-model="examTitle"
-          >
-            <option
-              v-for="(exam, index) in allAvailableExams"
-              :key="index"
-              :value="exam.title"
-              class="w-full text-wrap"
-            >
-              {{ exam.title }}
-            </option>
-          </select>
+            :loading="examServerLoading"
+          />
           <h1 class="font-bold py-2 px-3 w-full bg-zinc-400 rounded-md mt-3">
             <i class="fa-solid fa-house"></i>
             Overview
           </h1>
-          <AppInput placeholder="Search name" class="mt-4" />
+          <AppInput
+            placeholder="Search name"
+            class="mt-4"
+            base-class="bg-white"
+          />
           <AppToggleButton id="showName" label="Show names" class="mt-3" />
         </aside>
         <div class="bg-white rounded-md w-full">
@@ -38,7 +35,10 @@
           <AppTab :tabs="tabs" v-model="selectSelectedTab" />
           <!-- main section -->
           <main class="py-8 px-4">
-            <h1 class="text-black text-5xl font-bold">{{ examTitle }}</h1>
+            <USkeleton v-if="examServerLoading" class="w-[350px] h-12" />
+            <h1 class="text-black text-5xl font-bold" v-else>
+              {{ examTitle }}
+            </h1>
             <!-- Monitoring section -->
             <template v-if="selectSelectedTab === 'monitoring'">
               <section class="flex gap-6 mt-4">
@@ -231,20 +231,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import { TabsType } from "../../utils/types";
 import { TableColumn } from "@nuxt/ui";
+import { useExamServerStore } from "../../store/server/exam";
+import { storeToRefs } from "pinia";
+import { onMounted } from "vue";
 
+const { getExams } = useExamServerStore();
+const { loading: examServerLoading, exams } = storeToRefs(useExamServerStore());
 const systemNotification = ref(false);
-const allAvailableExams = ref([
-  {
-    title: "BIT 906- DIGITAL INNOVATION BUSINESS STRATEGY",
-  },
-  {
-    title: "Intro AI (MBA)",
-  },
-]);
-const examTitle = ref(allAvailableExams.value[0].title);
+const allAvailableExams = computed(() =>
+  exams.value.map((exam) => exam.examName),
+);
+const examTitle = ref(allAvailableExams.value[0]);
 const tabs = ref<TabsType[]>([
   {
     label: "monitoring",
@@ -422,6 +422,11 @@ function toggleSendModal() {
 function toggleViewOptionShow() {
   viewOptionShow.value = !viewOptionShow.value;
 }
+
+onMounted(async () => {
+  await getExams();
+  examTitle.value = allAvailableExams.value[0];
+});
 </script>
 
 <style scoped>

@@ -13,10 +13,8 @@
     "@ckeditor/ckeditor5-vue": "^7.3.0",
     "@cloudinary/url-gen": "^1.21.0",
     "@cloudinary/vue": "^1.13.1",
-    "@iconify-json/fa": "^1.2.1",
     "@nuxt/ui": "^3.1.0",
     "@tailwindcss/vite": "^4.0.12",
-    "@tomoeed/vue-menu": "^1.0.1",
     "axios": "^1.8.4",
     "ckeditor5": "^44.3.0",
     "html2canvas-pro": "^1.5.10",
@@ -27,8 +25,7 @@
     "tailwindcss": "^4.0.12",
     "uid": "^2.0.2",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0",
-    "vue3-toastify": "^0.2.8"
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.12",
