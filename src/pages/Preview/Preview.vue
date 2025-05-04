@@ -152,6 +152,7 @@ const { loading: examServerLoading, exam } = storeToRefs(useExamServerStore());
 
 function handleSubmitExam() {
   localStorage.removeItem("examPreview");
+  documentResult.value = [];
 }
 
 onMounted(async () => {

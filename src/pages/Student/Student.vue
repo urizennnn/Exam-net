@@ -156,6 +156,7 @@ function toggleShowTimeLimit() {
 
 function handleSubmitExam() {
   localStorage.removeItem("examPreview");
+  documentResult.value = [];
 }
 
 onMounted(() => {

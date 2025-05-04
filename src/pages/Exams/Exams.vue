@@ -241,8 +241,8 @@ const columns = computed<TableColumn<any>[]>(() => [
         class: "w-40 outline-none bg-inherit text-black",
         color: "info",
         ui: {
-          content: "bg-white text-black",
-          item: "text-black",
+          content: "bg-white",
+          item: "text-black hover:text-black",
         },
       });
     },
