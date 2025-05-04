@@ -54,8 +54,11 @@ export const useExamServerStore = defineStore("exam-server", {
     },
     async getExam(payload: { id: string }) {
       try {
+        this.success = false;
+        this.loading = true;
         const { data } = await axiosInstance.get(`/exams/${payload.id}`);
         this.exam = data;
+        this.success = true;
       } catch (error: any) {
         this.success = false;
         const errorMessage =

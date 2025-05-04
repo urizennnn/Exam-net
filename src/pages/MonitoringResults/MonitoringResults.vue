@@ -19,8 +19,10 @@
             v-model="examTitle"
             :loading="examServerLoading"
           />
-          <h1 class="font-bold py-2 px-3 w-full bg-zinc-400 rounded-md mt-3">
-            <i class="fa-solid fa-house"></i>
+          <h1
+            class="flex items-center gap-1 font-bold py-2 px-3 w-full bg-zinc-400 rounded-md mt-3"
+          >
+            <UIcon name="i-lucide-house" class="size-5" />
             Overview
           </h1>
           <AppInput
@@ -42,13 +44,19 @@
             <!-- Monitoring section -->
             <template v-if="selectSelectedTab === 'monitoring'">
               <section class="flex gap-6 mt-4">
-                <div class="flex flex-col gap-2 w-full max-w-[350px]">
+                <div class="flex flex-col gap-3 w-full max-w-[350px]">
+                  <div
+                    class="flex gap-6 items-center w-full justify-between text-black text-xl"
+                  >
+                    <p class="font-light">Exam key</p>
+                    <USkeleton class="w-20 h-10" v-if="examServerLoading" />
+                    <p v-else>{{ currentExam?.examKey }}</p>
+                  </div>
                   <AppSelect
-                    v-for="(details, index) in examDetails"
-                    :key="index"
-                    :label="details.label"
-                    :options="details.options"
-                    v-model="details.value"
+                    label="Acesss"
+                    :loading="examServerLoading"
+                    :items="accessOptions"
+                    v-model="accessValue"
                   />
                   <div
                     class="flex gap-6 items-center font-light text-black text-xl justify-between"
@@ -65,6 +73,7 @@
                         class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5 rounded-full! bg-white"
                         icon="i-lucide-share-2"
                         size="xl"
+                        theme="primary"
                       />
                     </div>
                   </div>
@@ -95,7 +104,10 @@
                     :key="index"
                     :label="button.label"
                     :leftIcon="button.leftIcon"
+                    :loading="examServerLoading"
+                    theme="primary"
                     class="w-full! items-center justify-center rounded-3xl!"
+                    :to="button.to"
                   />
                 </div>
               </section>
@@ -117,6 +129,7 @@
                     class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5 rounded-full! bg-white"
                     icon="i-lucide-share-2"
                     size="xl"
+                    theme="primary"
                   />
                 </div>
               </div>
@@ -129,6 +142,7 @@
                   :rightIcon="button.rightIcon"
                   class="w-full! items-center justify-center rounded-3xl!"
                   @click="button.clickAction"
+                  theme="primary"
                 />
               </div>
               <div class="mt-4">
@@ -231,7 +245,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import { TabsType } from "../../utils/types";
 import { TableColumn } from "@nuxt/ui";
 import { useExamServerStore } from "../../store/server/exam";
@@ -245,6 +259,9 @@ const allAvailableExams = computed(() =>
   exams.value.map((exam) => exam.examName),
 );
 const examTitle = ref(allAvailableExams.value[0]);
+const currentExam = computed(() =>
+  exams.value.find((exam) => exam.examName === examTitle.value),
+);
 const tabs = ref<TabsType[]>([
   {
     label: "monitoring",
@@ -258,24 +275,6 @@ const tabs = ref<TabsType[]>([
   },
 ]);
 const selectSelectedTab = ref(tabs.value[0].value);
-const examDetails = ref([
-  {
-    label: "Exam key",
-    options: [{ title: "PZp2oh", value: "PZp2oh" }],
-    value: "PZp2oh",
-  },
-  {
-    label: "Access",
-    value: "open",
-    options: [
-      { title: "Open", value: "open" },
-      { title: "Closed", value: "closed" },
-      { title: "Discoverable", value: "discoverable" },
-      { title: "Scheduled", value: "scheduled" },
-    ],
-  },
-]);
-
 const studentStatus = ref([
   {
     done: 0,
@@ -290,54 +289,52 @@ const studentStatus = ref([
     borderBottom: "border-green-300",
   },
 ]);
-
-const buttonList = ref([
+const buttonList = computed(() => [
   {
     label: "End the exam for students",
-    leftIcon: "fa-solid fa-right-from-bracket",
+    leftIcon: "i-lucide-step-forward",
   },
   {
     label: "Set a timer for the students",
-    leftIcon: "fa-regular fa-clock",
+    leftIcon: "i-lucide-clock",
   },
-  {
-    label: "Individual exam keys",
-    leftIcon: "fa-solid fa-key",
-  },
+  // {
+  //   label: "Individual exam keys",
+  //   leftIcon: "i-lucide-key",
+  // },
   {
     label: "Preview exam",
-    leftIcon: "fa-solid fa-binoculars",
+    leftIcon: "i-lucide-binoculars",
+    to: `/preview/${currentExam.value?._id}`,
   },
   {
     label: "Anonymous identities",
-    leftIcon: "fa-regular fa-eye-slash",
+    leftIcon: "i-lucide-eye-off",
   },
 ]);
-
 const buttonListTwo = ref([
   {
     label: "Export",
-    leftIcon: "fa-solid fa-file-export",
-    rightIcon: "fa-solid fa-caret-down text-md",
+    leftIcon: "i-lucide-file-down",
+    rightIcon: "i-lucide-chevron-down",
   },
   {
     label: "Download",
-    leftIcon: "fa-solid fa-file-arrow-down",
-    rightIcon: "fa-solid fa-caret-down text-md",
+    leftIcon: "i-lucide-arrow-down",
+    rightIcon: "i-lucide-chevron-down",
   },
   {
     label: "Print",
-    leftIcon: "fa-solid fa-print",
-    rightIcon: "fa-solid fa-caret-down text-md",
+    leftIcon: "i-lucide-printer",
+    rightIcon: "i-lucide-chevron-down",
   },
   {
     label: "Send",
-    leftIcon: "fa-solid fa-envelope",
-    rightIcon: "fa-solid fa-caret-down text-md",
+    leftIcon: "i-lucide-mail",
+    rightIcon: "i-lucide-chevron-down",
     clickAction: toggleSendModal,
   },
 ]);
-
 const teachersList = ref([
   {
     name: "Damian",
@@ -352,7 +349,6 @@ const teachersList = ref([
     name: "Fara",
   },
 ]);
-
 const resultsTab = ref<TabsType[]>([
   {
     isActive: true,
@@ -406,6 +402,25 @@ const sendModelViewOption = ref([
     value: false,
   },
 ]);
+const accessValue = ref(currentExam.value?.access);
+const accessOptions = ref([
+  [
+    { value: "open", label: "Open", chip: { color: "success" } },
+    { value: "closed", label: "Closed", chip: { color: "error" } },
+    {
+      value: "discoverable",
+      label: "Discoverable",
+      chip: { color: "info" },
+    },
+  ],
+  [
+    {
+      value: "scheduled",
+      label: "Scheduled",
+      icon: "i-lucide-calendar-days",
+    },
+  ],
+]);
 
 function toggleSystemNotification() {
   systemNotification.value = !systemNotification.value;
@@ -427,6 +442,16 @@ onMounted(async () => {
   await getExams();
   examTitle.value = allAvailableExams.value[0];
 });
+
+watch(
+  () => currentExam,
+  (n) => {
+    accessValue.value = n.value?.access;
+  },
+  {
+    deep: true,
+  },
+);
 </script>
 
 <style scoped>

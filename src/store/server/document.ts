@@ -27,7 +27,7 @@ export const useDocumentStore = defineStore("documents", {
       : [],
   }),
   actions: {
-    async uploadDocument(payload: UploadDocumentPayload) {
+    async uploadDocument(payload: UploadDocumentPayload, alert: boolean) {
       try {
         this.success = false;
         this.loading = true;
@@ -44,7 +44,9 @@ export const useDocumentStore = defineStore("documents", {
 
         this.success = true;
         this.result = result;
-        successToast("File Uploaded");
+        if (alert) {
+          successToast("File Uploaded");
+        }
       } catch (error: any) {
         this.success = false;
         const errorMessage =
@@ -114,6 +116,31 @@ export const useDocumentStore = defineStore("documents", {
       } catch (error) {
         console.error("Error uploading PDF:", error);
         return null;
+      } finally {
+        this.loading = false;
+      }
+    },
+    async fetchPdfBlobWithState(pdfUrl: string): Promise<Blob> {
+      try {
+        this.success = false;
+        this.loading = true;
+
+        const res = await fetch(pdfUrl, { method: "GET" });
+        if (!res.ok) {
+          throw new Error(
+            `Failed to fetch PDF: ${res.status} ${res.statusText}`,
+          );
+        }
+        const blob = await res.blob();
+
+        // mark success
+        this.success = true;
+        return blob;
+      } catch (error: any) {
+        this.success = false;
+        const errorMessage = error.message || "Network Error";
+        errorToast(errorMessage);
+        throw new Error(errorMessage);
       } finally {
         this.loading = false;
       }

@@ -138,9 +138,12 @@ async function submitExam() {
   const file = await generatePdfBlob(newExamStore.editorContent);
   const { url } = await uploadPdfToCloudinary(file);
   if (!documentResult.value) {
-    await uploadDocument({
-      file: file,
-    });
+    await uploadDocument(
+      {
+        file: file,
+      },
+      false,
+    );
   }
   await createExam({
     examKey: newExamStore.examId,

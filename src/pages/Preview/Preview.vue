@@ -44,7 +44,11 @@
           </div>
 
           <div class="flex flex-col items-center gap-4 w-full">
-            <p class="text-gray-400 text-2xl">{{ examID }}</p>
+            <p
+              class="text-gray-400 text-2xl w-[200px] text-ellipsis text-nowrap overflow-hidden"
+            >
+              {{ examID }}
+            </p>
             <div class="flex gap-4 justify-between text-white">
               <p class="text-white text-2xl">
                 <i class="fa-regular fa-clock"></i> {{ timerValue }}:00
@@ -89,6 +93,16 @@
         >
           <section class="w-full h-full overflow-auto">
             <div
+              v-if="examServerLoading || documentLoading"
+              class="bg-white flex flex-col shadow-md gap-4 p-3"
+            >
+              <USkeleton class="w-full h-10" />
+              <USkeleton class="w-full h-10" />
+              <USkeleton class="w-full h-10" />
+              <USkeleton class="w-full h-10" />
+            </div>
+            <div
+              v-else
               class="text-xl p-3 bg-white shadow-md flex flex-col gap-4"
               ref="questionSection"
               id="questionSection"
@@ -121,6 +135,8 @@ import { fileSize } from "../../utils/variables";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../../store/server/document";
+import { onMounted } from "vue";
+import { useExamServerStore } from "../../store/server/exam";
 
 const newExamStore = useNewExamStore();
 const timerValue = ref(newExamStore.configOptions.setTime);
@@ -128,11 +144,30 @@ const fileDirectionHorizontal = ref(false);
 const questionSection = ref(null);
 const routes = useRoute();
 const examID = computed(() => routes.params.id);
-const { result: documentResult } = storeToRefs(useDocumentStore());
+const { result: documentResult, loading: documentLoading } =
+  storeToRefs(useDocumentStore());
+const { fetchPdfBlobWithState, uploadDocument } = useDocumentStore();
+const { getExam } = useExamServerStore();
+const { loading: examServerLoading, exam } = storeToRefs(useExamServerStore());
 
 function handleSubmitExam() {
   localStorage.removeItem("examPreview");
 }
+
+onMounted(async () => {
+  if (documentResult.value.length == 0) {
+    await getExam({
+      id: examID.value,
+    });
+    const file = await fetchPdfBlobWithState(exam.value?.question);
+    await uploadDocument(
+      {
+        file,
+      },
+      false,
+    );
+  }
+});
 </script>
 
 <style scoped>

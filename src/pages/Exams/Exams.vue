@@ -77,11 +77,13 @@
                   left-icon="i-lucide-monitor-check"
                   theme="primary"
                   class="border-black border-2! rounded-4xl!"
+                  to="/monitoring-results"
                 />
                 <AppButton
                   left-icon="i-lucide-binoculars"
                   theme="primary"
                   class="border-black border-2! rounded-4xl!"
+                  :to="`/preview/${row.original.id}`"
                 />
                 <UDropdownMenu
                   :items="getExamDropdownActions(row.original)"
@@ -161,7 +163,7 @@ const columns = computed<TableColumn<any>[]>(() => [
           table.toggleAllPageRowsSelected(!!value),
         "aria-label": "Select all",
         ui: {
-          indicator: "bg-blue-800 text-white", // ← use “indicator”!
+          indicator: "bg-blue-800 text-white",
         },
         disabled: exams.value.length === 0,
       }),

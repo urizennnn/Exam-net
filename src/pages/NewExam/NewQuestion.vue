@@ -199,9 +199,12 @@ function toggleUploadExamQuestionsModal() {
 }
 
 async function submitUploadDocumentForm() {
-  await uploadDocument({
-    file: fileUpload.value,
-  });
+  await uploadDocument(
+    {
+      file: fileUpload.value,
+    },
+    true,
+  );
 
   if (documentSuccess.value) {
     toggleUploadExamQuestionsModal();

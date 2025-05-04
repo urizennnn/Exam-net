@@ -14,6 +14,7 @@
       },
     }"
     :loading="loading"
+    color="info"
   />
 </template>
 
