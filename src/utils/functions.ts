@@ -56,24 +56,24 @@ export function questionFormatTeacher(
   }>,
 ): string {
   return `
-    <ol class="questions-list">
+    <ol>
       ${questions
         .map((q) => {
           const questionText = escapeHtml(q.question);
           const opts =
             Array.isArray(q.options) && q.options.length
-              ? `<ul class="options-list">
+              ? `<ul>
                  ${q.options
                    .map((opt) => `<li>${escapeHtml(opt)}</li>`)
                    .join("")}
                </ul>`
               : "";
           const answer = q.answer
-            ? `<p class="answer"><strong>Answer:</strong> ${escapeHtml(q.answer)}</p>`
+            ? `<p><strong>Answer:</strong> ${escapeHtml(q.answer)}</p>`
             : "";
 
           return `
-            <li class="question-block">
+            <li>
               <h2 class="question-text">${questionText}</h2>
               ${opts}
               ${answer}
@@ -84,11 +84,3 @@ export function questionFormatTeacher(
     </ol>
   `.trim();
 }
-
-export function questionFormatStudent(
-  questions: Array<{
-    question: string;
-    options?: string[];
-    answer?: string | null;
-  }>,
-): string {}

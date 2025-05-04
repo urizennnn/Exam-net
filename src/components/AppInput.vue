@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
   modelValue: {
@@ -52,7 +52,7 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
-const model = ref<any>(props.modelValue);
+const model = defineModel<any>();
 
 function onFileChange(event: Event) {
   const input = event.target as HTMLInputElement;

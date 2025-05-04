@@ -137,6 +137,11 @@ async function submitExam() {
   examServerLoading.value = true;
   const file = await generatePdfBlob(newExamStore.editorContent);
   const { url } = await uploadPdfToCloudinary(file);
+  if (!documentResult.value) {
+    await uploadDocument({
+      file: file,
+    });
+  }
   await createExam({
     examKey: newExamStore.examId,
     examName: newExamStore.examName,
@@ -154,13 +159,8 @@ async function submitExam() {
       },
     },
   });
-  if (documentResult.value) {
-    await uploadDocument({
-      file: file,
-    });
-  }
 
-  if (examServerSuccess.value && documentSuccess.value) {
+  if (examServerSuccess.value) {
     clearNewExamData();
     localStorage.setItem("examPreview", JSON.stringify(documentResult.value));
     router.push(`/preview/${newExamStore.examId}`);

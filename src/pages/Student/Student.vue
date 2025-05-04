@@ -2,7 +2,7 @@
   <AppToast
     text="This is a preview of how this exam will appear to the students."
   />
-  <section class="w-full h-[100dvh] flex overflow-auto text-black">
+  <section class="w-full h-[100dvh] flex overflow-auto text-black bg-gray-800">
     <!-- Sidebar -->
     <aside class="h-full w-full max-w-[300px]">
       <div
@@ -100,18 +100,18 @@
           <div
             v-for="(q, idx) in documentResult"
             :key="idx"
-            class="select-none"
+            class="select-none flex flex-col gap-1"
           >
             <p class="font-semibold">{{ idx + 1 }}. {{ q.question }}</p>
             <AppRadio
               v-model="answers[idx]"
               :items="q.options"
               v-if="q.type === 'multiple-choice'"
-              class="mt-2 pl-5"
+              class="pl-5"
             />
             <AppTextarea
               v-else
-              class="mt-2 pl-5"
+              class="pl-5"
               v-model="answers[idx]"
               placeholder="Type your answer here…"
               baseClass="bg-gray-200 ring-0 inset-shadow-md"

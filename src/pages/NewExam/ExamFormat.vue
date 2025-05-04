@@ -65,8 +65,11 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const newExamStore = useNewExamStore();
 const documentStore = useDocumentStore();
-const { loading: documentLoading, success: documentSuccess } =
-  storeToRefs(documentStore);
+const {
+  loading: documentLoading,
+  success: documentSuccess,
+  result: documentResult,
+} = storeToRefs(documentStore);
 const { uploadDocument } = documentStore;
 const showUploadDocumentModal = ref(false);
 const radioOptions = [
@@ -113,6 +116,13 @@ watch(
   () => newExamStore.form.examFormat,
   (n) => {
     sessionStorage.setItem("examFormat", n);
+  },
+);
+
+watch(
+  () => documentResult,
+  (n) => {
+    localStorage.setItem("examPreview", JSON.stringify(n.value));
   },
 );
 </script>

@@ -13,7 +13,7 @@ interface DocumentStore extends BaseState {
   result: {
     type: string;
     question: string;
-    option: string[];
+    options: string[];
     answer: string;
   }[];
 }
@@ -108,7 +108,6 @@ export const useDocumentStore = defineStore("documents", {
         }
 
         const data = await response.json();
-        console.log(data, data.secure_url);
         return {
           url: data.secure_url,
         };

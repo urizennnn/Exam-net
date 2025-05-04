@@ -269,4 +269,11 @@ watch(
     localStorage.setItem("editorContent", `${n}`);
   },
 );
+
+watch(
+  () => documentResult,
+  (n) => {
+    localStorage.setItem("examPreview", JSON.stringify(n.value));
+  },
+);
 </script>

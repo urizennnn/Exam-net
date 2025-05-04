@@ -2,7 +2,7 @@
   <AppToast
     text="This is a preview of how this exam will appear to the students."
   />
-  <section class="w-full h-[100dvh] flex overflow-auto text-black">
+  <section class="w-full h-[100dvh] flex overflow-auto text-black bg-gray-800">
     <!-- Sidebar -->
     <aside class="h-full w-full max-w-[300px]">
       <div
@@ -89,10 +89,17 @@
         >
           <section class="w-full h-full overflow-auto">
             <div
-              class="text-xl p-3 bg-white shadow-md font-bold"
+              class="text-xl p-3 bg-white shadow-md flex flex-col gap-4"
               ref="questionSection"
               id="questionSection"
-            ></div>
+            >
+              <div v-for="(q, idx) in documentResult" :key="idx">
+                <p class="font-semibold">{{ idx + 1 }}. {{ q.question }}</p>
+                <ul class="list-disc list-inside pl-6">
+                  <li v-for="opt in q.options" :key="opt">{{ opt }}</li>
+                </ul>
+              </div>
+            </div>
           </section>
         </Pane>
         <Pane>
@@ -109,12 +116,10 @@
 import { useNewExamStore } from "../../store/NewExamStore";
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import { fileSize } from "../../utils/variables";
-import { clearNewExamData, questionFormatTeacher } from "../../utils/functions";
-import { useRoute, RouterLink } from "vue-router";
-import { useExamStore } from "../../store/ExamStore";
-import AppButton from "../../components/AppButton.vue";
+import { clearNewExamData } from "../../utils/functions";
+import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../../store/server/document";
 
@@ -129,10 +134,6 @@ const { result: documentResult } = storeToRefs(useDocumentStore());
 function handleSubmitExam() {
   clearNewExamData();
 }
-
-onMounted(() => {
-  questionSection.value.innerHTML = questionFormatTeacher(documentResult.value);
-});
 </script>
 
 <style scoped>
