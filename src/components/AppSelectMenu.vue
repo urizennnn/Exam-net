@@ -4,8 +4,8 @@
     :items="items"
     class="w-full"
     :ui="{
-      base: 'bg-inherit text-black! p-3',
-      item: 'bg-white text-black! hover:text-black! cursor-pointer',
+      base: `bg-inherit text-black! p-3 ${baseClass}`,
+      item: `bg-white text-black! hover:text-black! cursor-pointer ${itemClass}`,
       content: 'bg-white',
     }"
     :searchInput="{
@@ -22,6 +22,8 @@
 defineProps({
   items: Array,
   loading: Boolean,
+  baseClass: String,
+  itemClass: String,
 });
 
 const model = defineModel();

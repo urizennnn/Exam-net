@@ -45,7 +45,7 @@
 
           <div class="flex flex-col items-center gap-4 w-full">
             <p
-              class="text-gray-400 text-2xl w-[200px] text-ellipsis text-nowrap overflow-hidden"
+              class="text-gray-400 text-2xl w-[200px] text-center text-ellipsis text-nowrap overflow-hidden"
             >
               {{ examID }}
             </p>

@@ -2,7 +2,7 @@
   <section class="bg-zinc-300 text-black" id="section">
     <div class="section-container-width">
       <p
-        class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer"
+        class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer select-none"
         @click="toggleSystemNotification"
       >
         <UIcon
@@ -18,6 +18,7 @@
             :items="allAvailableExams"
             v-model="examTitle"
             :loading="examServerLoading"
+            baseClass="ring-0 text-2xl"
           />
           <h1
             class="flex items-center gap-1 font-bold py-2 px-3 w-full bg-zinc-400 rounded-md mt-3"
@@ -70,7 +71,7 @@
                         >{{ teacher.name[0].toUpperCase() }}</i
                       >
                       <AppButton
-                        class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5 rounded-full! bg-white"
+                        class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5! rounded-full! bg-white"
                         icon="i-lucide-share-2"
                         size="xl"
                         theme="primary"
@@ -108,6 +109,8 @@
                     theme="primary"
                     class="w-full! items-center justify-center rounded-3xl!"
                     :to="button.to"
+                    :class="button.class"
+                    @click="button.click"
                   />
                 </div>
               </section>
@@ -126,7 +129,7 @@
                     >{{ teacher.name[0].toUpperCase() }}</i
                   >
                   <AppButton
-                    class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5 rounded-full! bg-white"
+                    class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5! rounded-full! bg-white"
                     icon="i-lucide-share-2"
                     size="xl"
                     theme="primary"
@@ -161,12 +164,44 @@
       </section>
     </div>
   </section>
+  <AppModal title="Invite Student to Take Exam" v-model="showInviteStudent">
+    <template #body>
+      <p class="text-center mb-3 text-gray-600">
+        This will send a link to the student which can be used take the exam.
+      </p>
+      <section class="">
+        <div class="rounded-lg">
+          <AppInput
+            placeholder="Enter Students Email"
+            v-model="studentEmail"
+            @keyup.enter="addStudentEmail(studentEmail)"
+          />
+          <h1 class="p-2 bg-blue-500 text-white mt-4 font-bold rounded-t-lg">
+            Students
+          </h1>
+          <ul
+            class="h-full max-h-[250px] p-4 flex flex-col gap-3 w-full overflow-y-scroll overflow-x-hidden"
+          >
+            <li v-for="student in studentsEmail" :key="student">
+              {{ student }}
+            </li>
+          </ul>
+        </div>
+      </section>
+    </template>
+    <template #footer>
+      <AppButton
+        label="Send"
+        @click="toggleShowInviteStudent"
+        class="w-fit! px-8"
+      />
+    </template>
+  </AppModal>
   <AppModal title="Send exam back to student" v-model="sendModal">
     <template #body>
       <p class="text-center mb-3 text-gray-600">
         This will send a link to the student which can be used to see the
-        answers and the marking. For Students that don't have an email address
-        set you can copy the link and send it manually
+        answers and the marking.
       </p>
       <section class="grid gap-6 grid-cols-2">
         <div>
@@ -291,17 +326,20 @@ const studentStatus = ref([
 ]);
 const buttonList = computed(() => [
   {
+    label: "Send Exam to Student",
+    leftIcon: "i-lucide-share-2",
+    class: "bg-gray-400! hover:bg-gray-900! hover:text-white!",
+    click: toggleShowInviteStudent,
+  },
+  {
     label: "End the exam for students",
     leftIcon: "i-lucide-step-forward",
+    class: "bg-gray-400! hover:bg-gray-900! hover:text-white!",
   },
   {
     label: "Set a timer for the students",
     leftIcon: "i-lucide-clock",
   },
-  // {
-  //   label: "Individual exam keys",
-  //   leftIcon: "i-lucide-key",
-  // },
   {
     label: "Preview exam",
     leftIcon: "i-lucide-binoculars",
@@ -421,6 +459,9 @@ const accessOptions = ref([
     },
   ],
 ]);
+const showInviteStudent = ref(false);
+const studentEmail = ref();
+const studentsEmail = ref([]);
 
 function toggleSystemNotification() {
   systemNotification.value = !systemNotification.value;
@@ -434,8 +475,21 @@ function toggleSendModal() {
   }
 }
 
+function toggleShowInviteStudent() {
+  showInviteStudent.value = !showInviteStudent.value;
+
+  if (!sendModal.value) {
+    studentsEmail.value = [];
+  }
+}
+
 function toggleViewOptionShow() {
   viewOptionShow.value = !viewOptionShow.value;
+}
+
+function addStudentEmail(email: string) {
+  studentsEmail.value.push(email);
+  studentEmail.value = "";
 }
 
 onMounted(async () => {

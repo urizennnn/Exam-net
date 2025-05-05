@@ -26,6 +26,7 @@
       root: `w-full ${rootClass}`,
       base: `p-4 bg-inherit text-black ${baseClass}`,
     }"
+    @keyup="onKeyup"
   />
 </template>
 
@@ -33,10 +34,6 @@
 import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
-  modelValue: {
-    type: File,
-    default: null,
-  },
   type: {
     type: String,
     default: "text",
@@ -50,7 +47,7 @@ const props = defineProps({
   rootClass: String,
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "keyup"]);
 
 const model = defineModel<any>();
 
@@ -58,5 +55,9 @@ function onFileChange(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0] ?? null;
   emit("update:modelValue", file);
+}
+
+function onKeyup(e: KeyboardEvent) {
+  emit("keyup", e);
 }
 </script>

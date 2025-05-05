@@ -6,8 +6,7 @@ import {
 } from "../../utils/types";
 import { axiosInstance } from "../../utils/axiosConfig";
 import { successToast, errorToast } from "../../utils/toast";
-import html2canvas from "html2canvas-pro";
-import jsPDF from "jspdf";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 interface DocumentStore extends BaseState {
   result: {
@@ -57,38 +56,74 @@ export const useDocumentStore = defineStore("documents", {
         this.loading = false;
       }
     },
-    async generatePdfBlob(htmlContent: string) {
-      const container = document.createElement("div");
-      container.innerHTML = htmlContent;
-      container.style.padding = "20px";
-      container.style.backgroundColor = "white";
-      container.style.color = "black";
-      container.style.width = "210mm";
-      container.style.minHeight = "297mm";
-      container.style.boxSizing = "border-box";
-      container.style.fontFamily = "Arial, sans-serif";
-      container.style.fontSize = "12pt";
-      container.style.lineHeight = "1.5";
-      container.style.margin = "0 auto";
+    async generatePdfBlob(htmlContent: string): Promise<Blob> {
+      // 1) Create PDF + load font
+      const pdfDoc = await PDFDocument.create();
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-      document.body.appendChild(container);
+      // 2) Turn HTML into plain text
+      const temp = document.createElement("div");
+      temp.innerHTML = htmlContent;
+      const fullText = temp.innerText || ""; // strips out all tags
 
-      const canvas = await html2canvas(container, { scale: 2 });
+      // 3) Layout settings
+      const fontSize = 10;
+      const lineHeight = fontSize * 1.2;
+      const margin = 15;
+      const pageWidth = 595.28;
+      const pageHeight = 841.89;
+      const maxWidth = pageWidth - margin * 2;
 
-      const imgData = canvas.toDataURL("image/jpeg", 0.98);
+      // 4) Helper: wrap a single paragraph into lines
+      function wrapText(text: string): string[] {
+        const words = text.split(/\s+/);
+        const lines: string[] = [];
+        let line = "";
 
-      const pdf = new jsPDF("p", "mm", "a4");
+        for (const word of words) {
+          const test = line ? `${line} ${word}` : word;
+          const w = font.widthOfTextAtSize(test, fontSize);
+          if (w <= maxWidth) {
+            line = test;
+          } else {
+            if (line) lines.push(line);
+            line = word;
+          }
+        }
+        if (line) lines.push(line);
+        return lines;
+      }
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      // 5) Split full text into paragraphs, wrap each
+      const paragraphs = fullText.split(/\n+/);
+      const allLines: string[] = [];
+      for (const para of paragraphs) {
+        allLines.push(...wrapText(para), ""); // blank line after each paragraph
+      }
 
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      // 6) Draw lines across pages
+      let page = pdfDoc.addPage([pageWidth, pageHeight]);
+      let y = pageHeight - margin;
+      for (const line of allLines) {
+        if (y < margin) {
+          page = pdfDoc.addPage([pageWidth, pageHeight]);
+          y = pageHeight - margin;
+        }
+        page.drawText(line, {
+          x: margin,
+          y,
+          size: fontSize,
+          font,
+          color: rgb(0, 0, 0),
+        });
+        y -= lineHeight;
+      }
 
-      document.body.removeChild(container);
-
-      return pdf.output("blob");
+      // 7) Persist to Blob
+      const pdfBytes = await pdfDoc.save();
+      return new Blob([pdfBytes], { type: "application/pdf" });
     },
-    async uploadPdfToCloudinary(pdfBlob) {
+    async uploadPdfToCloudinary(pdfBlob: any) {
       try {
         this.success = false;
         this.loading = true;
@@ -133,8 +168,8 @@ export const useDocumentStore = defineStore("documents", {
         }
         const blob = await res.blob();
 
-        // mark success
         this.success = true;
+        console.log(blob.text);
         return blob;
       } catch (error: any) {
         this.success = false;

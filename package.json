@@ -19,6 +19,7 @@
     "ckeditor5": "^44.3.0",
     "html2canvas-pro": "^1.5.10",
     "jspdf": "^3.0.1",
+    "pdf-lib": "^1.17.1",
     "pinia": "^3.0.1",
     "prettier": "^3.5.3",
     "splitpanes": "^4.0.3",

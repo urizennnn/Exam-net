@@ -33,7 +33,7 @@
         </div>
         <template v-if="exams.length > 0">
           <div :class="`bg-blue-950 px-2 py-1 flex gaitems-center`">
-            <UButton
+            <AppButton
               color="neutral"
               class="cursor-pointer size-9 text-white"
               size="xl"
@@ -44,6 +44,7 @@
               :disabled="selectedRows.length === 0"
               :title="action.title"
               @click="action.onClick"
+              :loading="examServerLoading"
             />
           </div>
         </template>
