@@ -1,6 +1,7 @@
 <template>
   <AppToast
     text="This is a preview of how this exam will appear to the students."
+    v-if="mode !== 'student'"
   />
   <section class="w-full h-[100dvh] flex overflow-auto text-black bg-gray-800">
     <!-- Sidebar -->
@@ -32,6 +33,7 @@
               @click="handleSubmitExam"
             />
             <RouterLink
+              v-if="mode !== 'student'"
               :to="`/preview/${examID}`"
               class="w-full flex items-center justify-between"
             >
@@ -96,7 +98,16 @@
         <h1>Preview</h1>
       </div>
       <section class="w-full overflow-auto">
-        <div class="text-xl p-3 bg-white shadow-md flex flex-col gap-4">
+        <div
+          v-if="examServerLoading || documentLoading"
+          class="bg-white flex flex-col shadow-md gap-4 p-3"
+        >
+          <USkeleton class="w-full h-10" />
+          <USkeleton class="w-full h-10" />
+          <USkeleton class="w-full h-10" />
+          <USkeleton class="w-full h-10" />
+        </div>
+        <div v-else class="text-xl p-3 bg-white shadow-md flex flex-col gap-4">
           <div
             v-for="(q, idx) in documentResult"
             :key="idx"
@@ -105,7 +116,7 @@
             <p class="font-semibold">{{ idx + 1 }}. {{ q.question }}</p>
             <AppRadio
               v-model="answers[idx]"
-              :items="q.options"
+              :items="q.options.map(opt => sanitize(opt))"
               v-if="q.type === 'multiple-choice'"
               class="pl-5"
             />
@@ -131,6 +142,8 @@ import { useNewExamStore } from "../../store/NewExamStore";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../../store/server/document";
+import { useExamServerStore } from "../../store/server/exam";
+import {sanitize} from '../../utils/functions'
 
 const now = ref(new Date());
 let timer = null;
@@ -144,8 +157,13 @@ const showTimeLimit = ref(true);
 const newExamStore = useNewExamStore();
 const routes = useRoute();
 const examID = computed(() => routes.params.id);
+const mode = computed(() => routes.query.mode);
 const timerValue = ref(newExamStore.configOptions.setTime);
-const { result: documentResult } = storeToRefs(useDocumentStore());
+const { result: documentResult, loading: documentLoading } =
+  storeToRefs(useDocumentStore());
+const { uploadDocument, getPdfFromCloudinary } = useDocumentStore();
+const { getExam } = useExamServerStore();
+const { exam, loading: examServerLoading } = storeToRefs(useExamServerStore());
 const answers = ref<Array<string | null>>(
   documentResult.value?.map(() => null),
 );
@@ -159,7 +177,19 @@ function handleSubmitExam() {
   documentResult.value = [];
 }
 
-onMounted(() => {
+onMounted(async () => {
+  if (mode.value === "student" || documentResult.value.length == 0) {
+    await getExam({
+      id: examID.value,
+    });
+    const file = await getPdfFromCloudinary(exam.value?.question);
+    await uploadDocument(
+      {
+        file,
+      },
+      false,
+    );
+  }
   const msUntilNextMinute = (60 - now.value.getSeconds()) * 1000;
   timer = setTimeout(() => {
     now.value = new Date();

@@ -90,16 +90,23 @@
 
 <script setup lang="ts">
 import { watch, ref, computed } from "vue";
-import { RouterView, useRouter } from "vue-router";
+import { RouterView, useRouter, useRoute } from "vue-router";
 import { useNewExamStore } from "../store/NewExamStore";
 import { useExamServerStore } from "../store/server/exam";
-import { clearNewExamData, getTrueKeys } from "../utils/functions";
+import {
+  clearNewExamData,
+  getTrueKeys,
+  questionFormatTeacher,
+} from "../utils/functions";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../store/server/document";
+import { onMounted } from "vue";
 
 const router = useRouter();
+const routes = useRoute();
+const examId = computed(() => routes.params.id);
 const newExamStore = useNewExamStore();
-const { generateExamKey } = useNewExamStore();
+const { generateExamKey, updateExamStore } = useNewExamStore();
 const { increaseCounter, decreaseCounter } = useNewExamStore();
 const steps = new Array(3).fill("");
 const firstStep = computed(() => newExamStore.form.examFormat);
@@ -113,15 +120,19 @@ const formVerifier = computed(() => [
 ]);
 const showNameExamModal = ref(false);
 const { createExam } = useExamServerStore();
-const { loading: examServerLoading, success: examServerSuccess } =
-  storeToRefs(useExamServerStore());
-const { uploadPdfToCloudinary, uploadDocument, generatePdfBlob } =
-  useDocumentStore();
 const {
-  loading: documentLoading,
-  success: documentSuccess,
-  result: documentResult,
-} = storeToRefs(useDocumentStore());
+  loading: examServerLoading,
+  success: examServerSuccess,
+  exam,
+} = storeToRefs(useExamServerStore());
+const {
+  uploadPdfToCloudinary,
+  uploadDocument,
+  generatePdfBlob,
+  getPdfFromCloudinary,
+} = useDocumentStore();
+const { loading: documentLoading, result: documentResult } =
+  storeToRefs(useDocumentStore());
 
 function toggleShowNameExamModal() {
   showNameExamModal.value = !showNameExamModal.value;
@@ -178,8 +189,10 @@ watch(
       router.push("/new-exam");
     } else if (n === 2) {
       router.push("/new-question");
+    } else if (n === 3 && examId.value) {
+      router.push(`/exam-config/${examId.value}`);
     } else if (n === 3) {
-      router.push("/exam-config");
+      router.push(`/exam-config`);
     }
   },
 );
@@ -197,6 +210,14 @@ watch(
     sessionStorage.setItem("examId", n);
   },
 );
+
+onMounted(async () => {
+  if (examId.value && exam.value) {
+    const fileBlob = await getPdfFromCloudinary(exam.value.question);
+    await uploadDocument({ file: fileBlob }, false);
+    updateExamStore(exam.value, questionFormatTeacher(documentResult.value));
+  }
+});
 </script>
 
 <style scoped>

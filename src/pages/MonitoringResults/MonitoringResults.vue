@@ -54,7 +54,7 @@
                     <p v-else>{{ currentExam?.examKey }}</p>
                   </div>
                   <AppSelect
-                    label="Acesss"
+                    label="Access"
                     :loading="examServerLoading"
                     :items="accessOptions"
                     v-model="accessValue"
@@ -192,7 +192,9 @@
     <template #footer>
       <AppButton
         label="Send"
-        @click="toggleShowInviteStudent"
+        @click="handleInviteStudent"
+        :disabled="studentsEmail.length === 0"
+        :loading="examServerLoading"
         class="w-fit! px-8"
       />
     </template>
@@ -287,8 +289,12 @@ import { useExamServerStore } from "../../store/server/exam";
 import { storeToRefs } from "pinia";
 import { onMounted } from "vue";
 
-const { getExams } = useExamServerStore();
-const { loading: examServerLoading, exams } = storeToRefs(useExamServerStore());
+const { getExams, inviteStudentToExam } = useExamServerStore();
+const {
+  loading: examServerLoading,
+  exams,
+  success: examServerSuccess,
+} = storeToRefs(useExamServerStore());
 const systemNotification = ref(false);
 const allAvailableExams = computed(() =>
   exams.value.map((exam) => exam.examName),
@@ -490,6 +496,16 @@ function toggleViewOptionShow() {
 function addStudentEmail(email: string) {
   studentsEmail.value.push(email);
   studentEmail.value = "";
+}
+
+async function handleInviteStudent() {
+  await inviteStudentToExam(currentExam.value._id, {
+    emails: studentsEmail.value,
+  });
+
+  if (examServerSuccess.value) {
+    toggleShowInviteStudent();
+  }
 }
 
 onMounted(async () => {

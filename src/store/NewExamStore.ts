@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
-import { NewExamStore } from "../utils/types";
+import { Exam, FormStepTwo, NewExamStore } from "../utils/types";
 import { uid } from "uid";
+import { formStepTwoDefaults } from "../utils/variables";
 
 export const useNewExamStore = defineStore("newExams", {
   state: (): NewExamStore => ({
@@ -15,32 +16,12 @@ export const useNewExamStore = defineStore("newExams", {
     formStepTwoCounter: sessionStorage.getItem("formStepTwoCounter")
       ? JSON.parse(sessionStorage.getItem("formStepTwoCounter"))
       : 1,
-    formStepTwo: {
-      informationBlock: sessionStorage.getItem("informationBlock")
-        ? JSON.parse(sessionStorage.getItem("informationBlock"))
-        : false,
-      multipleChoice: sessionStorage.getItem("multipleChoice")
-        ? JSON.parse(sessionStorage.getItem("multipleChoice"))
-        : true,
-      simpleAnswer: sessionStorage.getItem("simpleAnswer")
-        ? JSON.parse(sessionStorage.getItem("simpleAnswer"))
-        : true,
-      fillTheGaps: sessionStorage.getItem("fillTheGaps")
-        ? JSON.parse(sessionStorage.getItem("fillTheGaps"))
-        : true,
-      matchAnswer: sessionStorage.getItem("matchAnswer")
-        ? JSON.parse(sessionStorage.getItem("matchAnswer"))
-        : true,
-      grid: sessionStorage.getItem("grid")
-        ? JSON.parse(sessionStorage.getItem("grid"))
-        : true,
-      freeText: sessionStorage.getItem("freeText")
-        ? JSON.parse(sessionStorage.getItem("freeText"))
-        : false,
-      attachment: sessionStorage.getItem("attachment")
-        ? JSON.parse(sessionStorage.getItem("attachment"))
-        : false,
-    },
+    formStepTwo: Object.fromEntries(
+      Object.entries(formStepTwoDefaults).map(([key, def]) => {
+        const raw = sessionStorage.getItem(key);
+        return [key, raw !== null ? JSON.parse(raw) : def];
+      }),
+    ) as FormStepTwo,
     editorContent: sessionStorage.getItem("editorContent")
       ? sessionStorage.getItem("editorContent")
       : "",
@@ -75,7 +56,10 @@ export const useNewExamStore = defineStore("newExams", {
     increaseCounter() {
       this.counter += 1;
     },
-    decreaseCounter() {
+    decreaseCounter(examId: string) {
+      if (examId && this.counter === 2) {
+        this.formStepTwoCounter -= 1;
+      }
       if (this.counter == 2 && this.form.examFormat === "") {
         this.counter -= 1;
         return;
@@ -90,6 +74,24 @@ export const useNewExamStore = defineStore("newExams", {
     },
     generateExamKey() {
       this.examId = uid(7);
+    },
+    updateExamStore(exam: Exam, editorContent: string) {
+      this.editorContent = editorContent;
+      const { examName, examKey, settings, format } = exam;
+      // const { examType, general } = settings;
+      this.examName = examName;
+      this.examId = examKey;
+
+      const formatKeys = new Set(format);
+      this.formStepTwo = Object.fromEntries(
+        Object.entries(formStepTwoDefaults).map(([key, def]) => {
+          if (formatKeys.has(key)) {
+            const raw = sessionStorage.getItem(key);
+            return [key, raw !== null ? JSON.parse(raw) : def];
+          }
+          return [key, def];
+        }),
+      ) as FormStepTwo;
     },
   },
 });

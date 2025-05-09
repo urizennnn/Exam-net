@@ -143,6 +143,8 @@ import { useExamServerStore } from "../../store/server/exam";
 import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { errorToast, successToast } from "../../utils/toast";
+import { useNewExamStore } from "../../store/NewExamStore";
+import { useRouter } from "vue-router";
 
 const { getExams, deleteExam, deleteExams, getExam } = useExamServerStore();
 const {
@@ -150,6 +152,7 @@ const {
   loading: examServerLoading,
   success: examServerSuccess,
 } = storeToRefs(useExamServerStore());
+const { formStepTwoCounter } = storeToRefs(useNewExamStore());
 const UCheckbox = resolveComponent("UCheckbox");
 const USelect = resolveComponent("USelect");
 const columns = computed<TableColumn<any>[]>(() => [
@@ -163,8 +166,9 @@ const columns = computed<TableColumn<any>[]>(() => [
         "onUpdate:modelValue": (value: boolean | "indeterminate") =>
           table.toggleAllPageRowsSelected(!!value),
         "aria-label": "Select all",
+        color: "info",
         ui: {
-          indicator: "bg-blue-800 text-white",
+          indicator: "text-white",
         },
         disabled: exams.value.length === 0,
       }),
@@ -174,8 +178,9 @@ const columns = computed<TableColumn<any>[]>(() => [
         "onUpdate:modelValue": (value: boolean | "indeterminate") =>
           row.toggleSelected(!!value),
         "aria-label": "Select row",
+        color: "info",
         ui: {
-          indicator: "bg-blue-800 text-white",
+          indicator: "text-white",
         },
       }),
   },
@@ -342,6 +347,7 @@ function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
     ],
   ];
 }
+const router = useRouter();
 
 function copyKey(key: string) {
   navigator.clipboard
@@ -373,6 +379,8 @@ async function handleGetExam(id: string) {
   });
 
   if (examServerSuccess.value) {
+    formStepTwoCounter.value = 1;
+    router.push(`/new-question/${id}`);
   }
 }
 

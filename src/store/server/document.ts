@@ -155,7 +155,7 @@ export const useDocumentStore = defineStore("documents", {
         this.loading = false;
       }
     },
-    async fetchPdfBlobWithState(pdfUrl: string): Promise<Blob> {
+    async getPdfFromCloudinary(pdfUrl: string): Promise<File> {
       try {
         this.success = false;
         this.loading = true;
@@ -168,9 +168,19 @@ export const useDocumentStore = defineStore("documents", {
         }
         const blob = await res.blob();
 
+        // Derive a filename from the URL (or fallback)
+        const urlParts = pdfUrl.split("/");
+        const rawName = urlParts[urlParts.length - 1] || "download.pdf";
+        const filename = decodeURIComponent(rawName);
+
+        // Convert Blob → File
+        const file = new File([blob], filename, {
+          type: blob.type,
+          lastModified: Date.now(),
+        });
+
         this.success = true;
-        console.log(blob.text);
-        return blob;
+        return file;
       } catch (error: any) {
         this.success = false;
         const errorMessage = error.message || "Network Error";

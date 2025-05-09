@@ -48,6 +48,8 @@ function escapeHtml(raw: string): string {
     .replace(/'/g, "&#039;");
 }
 
+export const sanitize = (text: string) => text.replace(/\n/g, "");
+
 export function questionFormatTeacher(
   questions: Array<{
     question: string;
@@ -64,7 +66,7 @@ export function questionFormatTeacher(
             Array.isArray(q.options) && q.options.length
               ? `<ul>
                  ${q.options
-                   .map((opt) => `<li>${escapeHtml(opt)}</li>`)
+                   .map((opt) => `<li>${sanitize(escapeHtml(opt))}</li>`)
                    .join("")}
                </ul>`
               : "";
@@ -84,3 +86,5 @@ export function questionFormatTeacher(
     </ol>
   `.trim();
 }
+
+

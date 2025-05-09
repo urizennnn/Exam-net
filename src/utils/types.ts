@@ -78,3 +78,14 @@ export interface Exam {
   };
   format: any[];
 }
+
+export interface FormStepTwo {
+  informationBlock: boolean;
+  multipleChoice: boolean;
+  simpleAnswer: boolean;
+  fillTheGaps: boolean;
+  matchAnswer: boolean;
+  grid: boolean;
+  freeText: boolean;
+  attachment: boolean;
+}

@@ -8,6 +8,10 @@ interface ExamServerState extends BaseState {
   exam: Exam;
 }
 
+interface InviteStudentPayload {
+  emails: string[];
+}
+
 export const useExamServerStore = defineStore("exam-server", {
   state: (): ExamServerState => ({
     loading: false,
@@ -90,8 +94,31 @@ export const useExamServerStore = defineStore("exam-server", {
     },
     async deleteExams(payload: Exam[]) {
       try {
+        this.success = false;
+        this.loading = true;
         const { data } = await axiosInstance.patch(
           `/exams/delete/many`,
+          payload,
+        );
+        const { message } = data;
+        this.success = true;
+        successToast(message);
+      } catch (error: any) {
+        this.success = false;
+        const errorMessage =
+          error.response?.data?.message || error.message || "Network Error";
+        errorToast(errorMessage);
+        throw new Error(errorMessage);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async inviteStudentToExam(examId: string, payload: InviteStudentPayload) {
+      try {
+        this.success = false;
+        this.loading = true;
+        const { data } = await axiosInstance.put(
+          `/exams/invite/${examId}`,
           payload,
         );
         const { message } = data;

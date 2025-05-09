@@ -146,7 +146,7 @@ const routes = useRoute();
 const examID = computed(() => routes.params.id);
 const { result: documentResult, loading: documentLoading } =
   storeToRefs(useDocumentStore());
-const { fetchPdfBlobWithState, uploadDocument } = useDocumentStore();
+const { getPdfFromCloudinary, uploadDocument } = useDocumentStore();
 const { getExam } = useExamServerStore();
 const { loading: examServerLoading, exam } = storeToRefs(useExamServerStore());
 
@@ -160,7 +160,7 @@ onMounted(async () => {
     await getExam({
       id: examID.value,
     });
-    const file = await fetchPdfBlobWithState(exam.value?.question);
+    const file = await getPdfFromCloudinary(exam.value?.question);
     await uploadDocument(
       {
         file,
