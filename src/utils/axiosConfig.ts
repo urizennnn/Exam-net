@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "../store/server/auth";
 
 export const axiosInstance = axios.create({
-  baseURL: "http://bore.pub:21280/api",
+  baseURL: "https://exam-mode-be.onrender.com/api", 
   headers: {
     "Content-Type": "application/json",
   },
