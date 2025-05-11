@@ -20,6 +20,5 @@ const props = defineProps({
   class: String,
 });
 
-
 const model = defineModel<RadioGroupValue>();
 </script>

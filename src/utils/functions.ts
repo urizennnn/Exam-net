@@ -55,6 +55,7 @@ export function questionFormatTeacher(
     question: string;
     options?: string[];
     answer?: string | null;
+    studentAnswer?: string | null;
   }>,
 ): string {
   return `
@@ -73,12 +74,16 @@ export function questionFormatTeacher(
           const answer = q.answer
             ? `<p><strong>Answer:</strong> ${escapeHtml(q.answer)}</p>`
             : "";
+          const studentAnswer = q.studentAnswer
+            ? `<p><strong>Answer:</strong> ${escapeHtml(q.studentAnswer)}</p>`
+            : "";
 
           return `
             <li>
               <h2 class="question-text">${questionText}</h2>
               ${opts}
               ${answer}
+              ${studentAnswer}
             </li>
           `;
         })
@@ -86,5 +91,3 @@ export function questionFormatTeacher(
     </ol>
   `.trim();
 }
-
-

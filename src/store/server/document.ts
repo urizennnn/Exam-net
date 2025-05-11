@@ -14,6 +14,7 @@ interface DocumentStore extends BaseState {
     question: string;
     options: string[];
     answer: string;
+    studentAnswer?: string;
   }[];
 }
 

@@ -77,6 +77,7 @@ export interface Exam {
     };
   };
   format: any[];
+  invites?: string[];
 }
 
 export interface FormStepTwo {

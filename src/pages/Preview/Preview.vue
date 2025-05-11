@@ -50,8 +50,12 @@
               {{ examID }}
             </p>
             <div class="flex gap-4 justify-between text-white">
-              <p class="text-white text-2xl">
-                <i class="fa-regular fa-clock"></i> {{ timerValue }}:00
+              <USkeleton
+                v-if="examServerLoading || documentLoading"
+                class="w-10 h-10"
+              />
+              <p v-else class="text-white text-2xl flex gap-1 items-center">
+                <UIcon name="i-lucide-clock" /> {{ timeLimit / 60 }}:00
               </p>
               <p class="text-white text-2xl">
                 <i class="fa-solid fa-plug"></i> 100%
@@ -138,8 +142,6 @@ import { useDocumentStore } from "../../store/server/document";
 import { onMounted } from "vue";
 import { useExamServerStore } from "../../store/server/exam";
 
-const newExamStore = useNewExamStore();
-const timerValue = ref(newExamStore.configOptions.setTime);
 const fileDirectionHorizontal = ref(false);
 const questionSection = ref(null);
 const routes = useRoute();
@@ -149,6 +151,9 @@ const { result: documentResult, loading: documentLoading } =
 const { getPdfFromCloudinary, uploadDocument } = useDocumentStore();
 const { getExam } = useExamServerStore();
 const { loading: examServerLoading, exam } = storeToRefs(useExamServerStore());
+const timeLimit = computed(
+  () => exam.value?.settings?.general.timeLimit * 60 || 0,
+);
 
 function handleSubmitExam() {
   localStorage.removeItem("examPreview");
@@ -156,18 +161,16 @@ function handleSubmitExam() {
 }
 
 onMounted(async () => {
-  if (documentResult.value.length == 0) {
-    await getExam({
-      id: examID.value,
-    });
-    const file = await getPdfFromCloudinary(exam.value?.question);
-    await uploadDocument(
-      {
-        file,
-      },
-      false,
-    );
-  }
+  await getExam({
+    id: examID.value,
+  });
+  const file = await getPdfFromCloudinary(exam.value?.question);
+  await uploadDocument(
+    {
+      file,
+    },
+    false,
+  );
 });
 </script>
 

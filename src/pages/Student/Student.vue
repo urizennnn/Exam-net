@@ -25,6 +25,16 @@
         >
           <div class="w-full grid gap-6">
             <AppButton
+              v-if="mode === 'student'"
+              label="Submit Exam"
+              leftIcon="i-lucide-check"
+              theme="variant"
+              class="rounded-2xl! px-5! py-3! gap-4! m-auto"
+              @click="handleStudentExamSubmit"
+              :loading="examServerLoading || documentLoading"
+            />
+            <AppButton
+              v-else
               label="Submit Exam"
               leftIcon="i-lucide-check"
               theme="variant"
@@ -75,16 +85,47 @@
                 class="size-7"
               />
             </div>
-            <div
-              v-if="showTimeLimit"
-              class="flex gap-2 text-white font-bold items-center justify-center text-xl"
-            >
-              <p class="border border-white rounded py-1 px-2">
-                {{ timerValue }}
-              </p>
-              :
-              <p class="border border-white rounded py-1 px-2">00</p>
-            </div>
+            <template v-if="showTimeLimit">
+              <div
+                v-if="mode === 'student'"
+                class="flex gap-2 text-white font-bold items-center justify-center text-xl"
+              >
+                <template v-if="examServerLoading || documentLoading">
+                  <USkeleton class="w-10 h-10" />
+                </template>
+                <p v-else class="border border-white rounded py-1 px-2">
+                  {{ minutes }}
+                </p>
+                :
+                <template v-if="examServerLoading || documentLoading">
+                  <USkeleton class="w-10 h-10" />
+                </template>
+                <p v-else class="border border-white rounded py-1 px-2">
+                  <template v-if="String(seconds).length == 2">
+                    {{ seconds }}
+                  </template>
+                  <template v-else> 0{{ seconds }} </template>
+                </p>
+              </div>
+              <div
+                v-else
+                class="flex gap-2 text-white font-bold items-center justify-center text-xl"
+              >
+                <USkeleton
+                  v-if="examServerLoading || documentLoading"
+                  class="w-10 h-10"
+                />
+                <p v-else class="border border-white rounded py-1 px-2">
+                  {{ timeLimit / 60 }}
+                </p>
+                :
+                <USkeleton
+                  v-if="examServerLoading || documentLoading"
+                  class="w-10 h-10"
+                />
+                <p v-else class="border border-white rounded py-1 px-2">00</p>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -116,7 +157,7 @@
             <p class="font-semibold">{{ idx + 1 }}. {{ q.question }}</p>
             <AppRadio
               v-model="answers[idx]"
-              :items="q.options.map(opt => sanitize(opt))"
+              :items="q.options.map((opt) => sanitize(opt))"
               v-if="q.type === 'multiple-choice'"
               class="pl-5"
             />
@@ -137,13 +178,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed } from "vue";
-import { useNewExamStore } from "../../store/NewExamStore";
+import {
+  watch,
+  ref,
+  onMounted,
+  onUnmounted,
+  computed,
+  onBeforeUnmount,
+} from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../../store/server/document";
 import { useExamServerStore } from "../../store/server/exam";
-import {sanitize} from '../../utils/functions'
+import { questionFormatTeacher, sanitize } from "../../utils/functions";
 
 const now = ref(new Date());
 let timer = null;
@@ -154,19 +201,43 @@ const formattedTime = computed(() => {
 });
 const isoTime = computed(() => now.value.toISOString().slice(0, 16));
 const showTimeLimit = ref(true);
-const newExamStore = useNewExamStore();
 const routes = useRoute();
 const examID = computed(() => routes.params.id);
 const mode = computed(() => routes.query.mode);
-const timerValue = ref(newExamStore.configOptions.setTime);
 const { result: documentResult, loading: documentLoading } =
   storeToRefs(useDocumentStore());
-const { uploadDocument, getPdfFromCloudinary } = useDocumentStore();
+const {
+  uploadDocument,
+  getPdfFromCloudinary,
+  generatePdfBlob,
+  uploadPdfToCloudinary,
+} = useDocumentStore();
 const { getExam } = useExamServerStore();
 const { exam, loading: examServerLoading } = storeToRefs(useExamServerStore());
 const answers = ref<Array<string | null>>(
   documentResult.value?.map(() => null),
 );
+const timeLimit = computed(
+  () => exam.value?.settings?.general.timeLimit * 60 || 0,
+);
+const remainingTime = ref(timeLimit.value);
+let intervalId = null;
+const minutes = computed(() => Math.floor(remainingTime.value / 60));
+const seconds = computed(() => remainingTime.value % 60);
+const startTimer = () => {
+  if (intervalId) clearInterval(intervalId);
+  remainingTime.value = timeLimit.value;
+  intervalId = setInterval(async () => {
+    if (remainingTime.value > 0) {
+      remainingTime.value--;
+    } else {
+      clearInterval(intervalId);
+      intervalId = null;
+      alert("The time for this exam has passed");
+      await mapStudentAnswers();
+    }
+  }, 1000);
+};
 
 function toggleShowTimeLimit() {
   showTimeLimit.value = !showTimeLimit.value;
@@ -177,8 +248,24 @@ function handleSubmitExam() {
   documentResult.value = [];
 }
 
+async function mapStudentAnswers() {
+  documentResult.value.forEach((question, index) => {
+    question.studentAnswer = answers.value[index];
+  });
+  clearInterval(intervalId);
+  const content = questionFormatTeacher(documentResult.value);
+  const file = await generatePdfBlob(content);
+  const url = await uploadPdfToCloudinary(file);
+}
+
+async function handleStudentExamSubmit() {
+  if (confirm("Are you sure you want to submit?")) {
+    await mapStudentAnswers();
+  }
+}
+
 onMounted(async () => {
-  if (mode.value === "student" || documentResult.value.length == 0) {
+  if (mode.value === "student") {
     await getExam({
       id: examID.value,
     });
@@ -190,6 +277,9 @@ onMounted(async () => {
       false,
     );
   }
+  if (timeLimit.value > 0) {
+    startTimer();
+  }
   const msUntilNextMinute = (60 - now.value.getSeconds()) * 1000;
   timer = setTimeout(() => {
     now.value = new Date();
@@ -197,7 +287,17 @@ onMounted(async () => {
   }, msUntilNextMinute);
 });
 
+onBeforeUnmount(() => {
+  if (intervalId) clearInterval(intervalId);
+});
+
 onUnmounted(() => clearTimeout(timer) || clearInterval(timer));
+
+watch(timeLimit, (newTimeLimit) => {
+  if (newTimeLimit > 0 || mode.value === "student") {
+    startTimer();
+  }
+});
 </script>
 
 <style scoped>
