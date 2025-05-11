@@ -70,7 +70,11 @@
       </main>
     </div>
   </section>
-  <AppModal title="Give your exam a name" v-model="showNameExamModal">
+  <AppModal
+    :dismissible="false"
+    title="Give your exam a name"
+    v-model="showNameExamModal"
+  >
     <template #body>
       <AppInput placeholder="Enter the name" v-model="newExamStore.examName" />
       <AppButton

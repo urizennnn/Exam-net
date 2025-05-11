@@ -75,7 +75,7 @@ export function questionFormatTeacher(
             ? `<p><strong>Answer:</strong> ${escapeHtml(q.answer)}</p>`
             : "";
           const studentAnswer = q.studentAnswer
-            ? `<p><strong>Answer:</strong> ${escapeHtml(q.studentAnswer)}</p>`
+            ? `<p><strong>Student Answer:</strong> ${escapeHtml(q.studentAnswer)}</p>`
             : "";
 
           return `

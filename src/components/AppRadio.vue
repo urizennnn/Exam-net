@@ -4,6 +4,7 @@
     :items="items"
     color="info"
     :class="props.class"
+    :disabled="disabled"
     :ui="{
       label: 'text-black',
       item: 'flex items-center gap-1 text-black text-xl cursor-pointer w-fit',
@@ -18,6 +19,7 @@ import { PropType } from "vue";
 const props = defineProps({
   items: Array as PropType<RadioGroupItem[]>,
   class: String,
+  disabled: Boolean,
 });
 
 const model = defineModel<RadioGroupValue>();

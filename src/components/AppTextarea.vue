@@ -6,6 +6,7 @@
     :rows="rows"
     :class="`w-full ${props.class}`"
     color="info"
+    :disabled="disabled"
     :ui="{
       base: `bg-inherit text-black p-3 ${baseClass}`,
     }"
@@ -19,6 +20,7 @@ const props = defineProps({
   autoresize: Boolean,
   baseClass: String,
   class: String,
+  disabled: Boolean,
 });
 
 const model = defineModel<any>();

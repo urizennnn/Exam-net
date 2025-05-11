@@ -24,24 +24,43 @@
           class="bg-gray-800 h-full rounded-t-xl flex flex-col items-center justify-between py-4 px-2"
         >
           <div class="w-full grid gap-6">
-            <AppButton
-              v-if="mode === 'student'"
-              label="Submit Exam"
-              leftIcon="i-lucide-check"
-              theme="variant"
-              class="rounded-2xl! px-5! py-3! gap-4! m-auto"
-              @click="handleStudentExamSubmit"
-              :loading="examServerLoading || documentLoading"
-            />
-            <AppButton
-              v-else
-              label="Submit Exam"
-              leftIcon="i-lucide-check"
-              theme="variant"
-              class="rounded-2xl! px-5! py-3! gap-4! m-auto"
-              to="/monitoring-results"
-              @click="handleSubmitExam"
-            />
+            <template v-if="!isDoneWithExam">
+              <AppButton
+                v-if="mode === 'student'"
+                label="Submit Exam"
+                leftIcon="i-lucide-check"
+                theme="variant"
+                class="rounded-2xl! px-5! py-3! gap-4! m-auto"
+                @click="toggleSubmitExamModal"
+                :loading="examServerLoading || documentLoading"
+              />
+              <AppButton
+                v-else
+                label="Submit Exam"
+                leftIcon="i-lucide-check"
+                theme="variant"
+                class="rounded-2xl! px-5! py-3! gap-4! m-auto"
+                to="/monitoring-results"
+                @click="handleSubmitExam"
+              />
+            </template>
+            <template v-else>
+              <AppButton
+                label="Show score"
+                leftIcon="i-lucide-trophy"
+                theme="primary"
+                class="rounded-2xl! px-5! py-3! gap-4! m-auto border-white! text-white! hover:text-slate-200! hover:border-slat-200"
+                @click="toggleShowScoreModal"
+                :loading="examServerLoading || documentLoading"
+              />
+              <AppButton
+                label="Close the Exam"
+                leftIcon="i-lucide-check"
+                theme="variant"
+                class="rounded-2xl! px-5! py-3! gap-4! m-auto"
+                :loading="examServerLoading || documentLoading"
+              />
+            </template>
             <RouterLink
               v-if="mode !== 'student'"
               :to="`/preview/${examID}`"
@@ -136,7 +155,14 @@
       <div
         class="bg-gray-900 text-white p-3 font-extrabold text-2xl flex justify-between items-center"
       >
-        <h1>Preview</h1>
+        <div v-if="mode === 'student'">
+          <USkeleton
+            v-if="examServerLoading || documentLoading"
+            class="w-[200px] h-10"
+          />
+          <h1 v-else>{{ exam?.examName }}</h1>
+        </div>
+        <h1 v-else>Preview</h1>
       </div>
       <section class="w-full overflow-auto">
         <div
@@ -160,6 +186,7 @@
               :items="q.options.map((opt) => sanitize(opt))"
               v-if="q.type === 'multiple-choice'"
               class="pl-5"
+              :disabled="isDoneWithExam"
             />
             <AppTextarea
               v-else
@@ -168,12 +195,86 @@
               placeholder="Type your answer here…"
               baseClass="bg-gray-200 ring-0 inset-shadow-md"
               autoresize
+              :disabled="isDoneWithExam"
               :rows="4"
             />
           </div>
         </div>
       </section>
     </section>
+    <AppModal
+      title="Submit exam"
+      v-model="submitExamModal"
+      closeClass="hidden!"
+      titleClass="font-light! text-center!"
+      class="max-w-[300px]!"
+      :dismissible="false"
+    >
+      <template #body>
+        <h1 class="w-full text-center">
+          Are you sure you want to finish and submit the exam?
+        </h1>
+      </template>
+      <template #footer>
+        <div class="flex flex-col gap-2 w-full items-center justify-between">
+          <AppButton
+            label="Submit exam"
+            theme="secondary"
+            class="px-6! py-3!"
+            @click="handleExamSubmit"
+          />
+          <AppButton
+            label="No"
+            theme="primary"
+            @click="toggleSubmitExamModal"
+            class="px-6! rounded-4xl!"
+          />
+        </div>
+      </template>
+    </AppModal>
+    <AppModal
+      v-model="showScoreModal"
+      :dismissible="false"
+      class="max-w-[300px]"
+      closeClass="hidden"
+      variant="subtle"
+    >
+      <template #content>
+        <div class="flex flex-col gap-3 items-center p-4">
+          <h2 class="font-bold text-2xl">
+            <span class="text-orange-400 text-3xl">{{
+              documentResult.length
+            }}</span
+            >/{{ documentResult.length }}
+          </h2>
+          <UProgress
+            :max="documentResult.length"
+            v-model="documentResult.length"
+            :ui="{
+              indicator: 'bg-orange-400',
+            }"
+          />
+          <p>
+            You got
+            <span class="font-bold"
+              >{{ documentResult.length }} of {{ documentResult.length }}</span
+            >
+            points
+          </p>
+          <AppButton
+            label="Show auto-marking"
+            theme="primary"
+            class="px-6! py-3! rounded-4xl!"
+            @click="toggleShowScoreModal"
+          />
+          <AppButton
+            label="Close the exam"
+            variant="link"
+            class="text-black!"
+          />
+        </div>
+      </template>
+    </AppModal>
   </section>
 </template>
 
@@ -224,9 +325,11 @@ const remainingTime = ref(timeLimit.value);
 let intervalId = null;
 const minutes = computed(() => Math.floor(remainingTime.value / 60));
 const seconds = computed(() => remainingTime.value % 60);
-const startTimer = () => {
+const startTimer = (pauseMode: boolean = false) => {
   if (intervalId) clearInterval(intervalId);
-  remainingTime.value = timeLimit.value;
+  if (!pauseMode) {
+    remainingTime.value = timeLimit.value;
+  }
   intervalId = setInterval(async () => {
     if (remainingTime.value > 0) {
       remainingTime.value--;
@@ -234,10 +337,13 @@ const startTimer = () => {
       clearInterval(intervalId);
       intervalId = null;
       alert("The time for this exam has passed");
-      await mapStudentAnswers();
+      await handleExamSubmit();
     }
   }, 1000);
 };
+const submitExamModal = ref(false);
+const isDoneWithExam = ref(false);
+const showScoreModal = ref(false);
 
 function toggleShowTimeLimit() {
   showTimeLimit.value = !showTimeLimit.value;
@@ -248,7 +354,8 @@ function handleSubmitExam() {
   documentResult.value = [];
 }
 
-async function mapStudentAnswers() {
+async function handleExamSubmit() {
+  isDoneWithExam.value = true;
   documentResult.value.forEach((question, index) => {
     question.studentAnswer = answers.value[index];
   });
@@ -256,12 +363,24 @@ async function mapStudentAnswers() {
   const content = questionFormatTeacher(documentResult.value);
   const file = await generatePdfBlob(content);
   const url = await uploadPdfToCloudinary(file);
+
+  toggleSubmitExamModal();
+  clearInterval(intervalId);
+  intervalId = null;
 }
 
-async function handleStudentExamSubmit() {
-  if (confirm("Are you sure you want to submit?")) {
-    await mapStudentAnswers();
+function toggleSubmitExamModal() {
+  submitExamModal.value = !submitExamModal.value;
+
+  if (submitExamModal.value && !isDoneWithExam.value) {
+    clearInterval(intervalId);
+  } else {
+    startTimer(true);
   }
+}
+
+function toggleShowScoreModal() {
+  showScoreModal.value = !showScoreModal.value;
 }
 
 onMounted(async () => {
