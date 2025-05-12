@@ -1,0 +1,86 @@
+<template>
+  <section class="w-full h-screen bg-white flex">
+    <section class="bg-gray-800 w-full h-screen relative p-4 hidden lg:block">
+      <img src="../../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]" />
+      <img
+        src="../../assets/images/Humaaans.png"
+        alt="background"
+        class="w-full h-[80dvh] mt-4 object-center object-fill"
+      />
+    </section>
+    <section
+      class="w-full flex flex-col items-center h-screen justify-center p-4"
+    >
+      <AppForm :state="loginForm" title="Exam Login" @submit="onSubmit">
+        <UFormField label="Email" name="email" :ui="FormFieldUI">
+          <UInput
+            v-model="loginForm.email"
+            placeholder="Enter your email"
+            color="info"
+            type="email"
+            :ui="inputUI"
+          />
+        </UFormField>
+        <UFormField label="Exam Key" name="examKey" :ui="FormFieldUI">
+          <UInput
+            v-model="loginForm.examKey"
+            placeholder="Enter exam key"
+            color="info"
+            type="text"
+            :ui="inputUI"
+          />
+        </UFormField>
+        <UButton
+          class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400"
+          :disabled="!isFormComplete || loading"
+          :loading="loading"
+          @click="onSubmit"
+        >
+          Access Exam
+        </UButton>
+      </AppForm>
+    </section>
+  </section>
+</template>
+
+<script lang="ts" setup>
+import { reactive, ref, computed } from "vue";
+import { axiosInstance } from "../../utils/axiosConfig";
+import { errorToast } from "../../utils/toast";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const loading = ref(false);
+const loginForm = reactive({
+  email: "",
+  examKey: "",
+});
+
+const FormFieldUI = {
+  label: "text-black text-lg",
+};
+const inputUI = {
+  trailing: "pe-1",
+  root: "w-full",
+  base: "p-4 bg-inherit text-black",
+};
+const isFormComplete = computed(() => {
+  return loginForm.email !== "" && loginForm.examKey !== "";
+});
+
+async function onSubmit() {
+  try {
+    loading.value = true;
+    const { data } = await axiosInstance.post(`/exams/${loginForm.examKey}`, {
+      email: loginForm.email.toLowerCase(),
+    });
+    
+    router.push(`/student/${data._id}?mode=student`);
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || error.message || "Invalid exam access";
+    errorToast(errorMessage);
+  } finally {
+    loading.value = false;
+  }
+}
+</script>

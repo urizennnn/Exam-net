@@ -12,6 +12,7 @@ import MonitoringResults from "../pages/MonitoringResults/MonitoringResults.vue"
 import Student from "../pages/Student/Student.vue";
 import Register from "../pages/Auth/Register.vue";
 import Login from "../pages/Auth/Login.vue";
+import StudentLogin from "../pages/Auth/StudentLogin.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -78,7 +79,11 @@ const router = createRouter({
       name: "student",
       component: Student,
     },
-
+    {
+      path: "/student-login",
+      name: "student-login",
+      component: StudentLogin,
+    },
     // Always leave this as last one,
     // but you can also remove it
     {
