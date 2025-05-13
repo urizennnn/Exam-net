@@ -6,6 +6,7 @@
         <UIcon :name="`i-lucide-${systemNotification ? 'bell' : 'bell-off'}`" class="size-6" />
         System Notification: {{ systemNotification ? 'On' : 'Off' }}
       </p>
+
       <section class="mt-4 w-full flex gap-3">
         <aside class="w-full max-w-[300px]">
           <AppSelectMenu :items="allAvailableExams" v-model="examTitle" :loading="examServerLoading"
@@ -17,6 +18,7 @@
           <AppInput placeholder="Search name" class="mt-4" base-class="bg-white" />
           <AppToggleButton id="showName" label="Show names" class="mt-3" />
         </aside>
+
         <div class="bg-white rounded-md w-full">
           <AppTab :tabs="tabs" v-model="selectSelectedTab" />
           <main class="py-8 px-4">
@@ -24,6 +26,7 @@
             <h1 class="text-black text-5xl font-bold" v-else>
               {{ examTitle }}
             </h1>
+
             <template v-if="selectSelectedTab === 'monitoring'">
               <section class="flex gap-6 mt-4">
                 <div class="flex flex-col gap-3 w-full max-w-[350px]">
@@ -36,8 +39,8 @@
                   <div class="flex gap-6 items-center font-light text-black text-xl justify-between">
                     <p>Teachers</p>
                     <div class="flex">
-                      <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index"
-                        :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : ''} py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`">
+                      <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index" :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : ''
+                        } py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`">
                         {{ teacher.name[0].toUpperCase() }}
                       </i>
                       <AppButton
@@ -45,16 +48,14 @@
                         icon="i-lucide-share-2" size="xl" theme="primary" />
                     </div>
                   </div>
+
                   <div class="mt-4">
                     <h4 class="font-bold">Student Status</h4>
                     <div class="flex gap-2 w-full mt-3">
                       <div v-for="(status, index) in studentStatus" :key="index"
                         :class="`${status.borderBottom} border-b-4 p-4 flex items-center justify-center flex-col gap-3 bg-gray-100 w-full`">
                         <p class="text-xl flex items-end">
-                          <span class="font-bold text-2xl">
-                            {{ status.done }}
-                          </span>
-                          /{{ status.total }}
+                          <span class="font-bold text-2xl">{{ status.done }}</span>/{{ status.total }}
                         </p>
                         <p class="capitalize text-xl tracking-wide">
                           {{ status.title }}
@@ -63,6 +64,7 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="w-full px-4 flex flex-col gap-4">
                   <AppButton v-for="(button, index) in buttonList" :key="index" :label="button.label"
                     :leftIcon="button.leftIcon" :loading="examServerLoading" theme="primary"
@@ -70,30 +72,34 @@
                 </div>
               </section>
             </template>
+
             <template v-if="selectSelectedTab === 'results'">
               <div
                 class="w-full max-w-[350px] my-8 flex gap-6 items-center font-light text-black text-xl justify-between">
                 <p>Teachers</p>
                 <div class="flex">
-                  <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index"
-                    :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : ''} py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`">
+                  <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index" :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : ''
+                    } py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`">
                     {{ teacher.name[0].toUpperCase() }}
                   </i>
                   <AppButton class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5! rounded-full! bg-white"
                     icon="i-lucide-share-2" size="xl" theme="primary" />
                 </div>
               </div>
+
               <div class="w-full px-4 flex gap-4">
                 <AppButton v-for="(button, index) in buttonListTwo" :key="index" :label="button.label"
                   :leftIcon="button.leftIcon" :rightIcon="button.rightIcon"
                   class="w-full! items-center justify-center rounded-3xl!" @click="button.clickAction"
                   theme="primary" />
               </div>
+
               <div class="mt-4">
                 <AppTab :tabs="resultsTab" v-model="selectedResultTab" theme="variant"
                   class="py-1 tracking-wider hover:border-b-3 hover:border-zinc-800 mr-4 text-zinc-600 hover:text-zinc-800"
                   activeClass="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer" />
               </div>
+
               <AppTable :columns="columns" :rows="rows">
                 <template #name-cell="{ row }">
                   <p class="cursor-pointer text-blue-600 underline" @click="openTranscript(row.original.transcript)">
@@ -107,12 +113,13 @@
       </section>
     </div>
   </section>
+
   <AppModal title="Invite Student to Take Exam" v-model="showInviteStudent">
     <template #body>
       <p class="text-center mb-3 text-gray-600">
         This will send a link to the student which can be used take the exam.
       </p>
-      <section class="">
+      <section>
         <div class="rounded-lg">
           <AppInput placeholder="Enter Students Email" v-model="studentEmail"
             @keyup.enter="addStudentEmail(studentEmail)" />
@@ -132,6 +139,23 @@
         :loading="examServerLoading" class="w-fit! px-8" />
     </template>
   </AppModal>
+
+  <AppModal title="Invited Students" v-model="showInvitesModal">
+    <template #body>
+      <ul class="flex flex-col gap-3 max-h-[300px] overflow-y-auto">
+        <li v-for="email in currentExam?.invites || []" :key="email"
+          class="flex justify-between items-center border-b pb-1">
+          <span>{{ email }}</span>
+          <AppButton icon="i-lucide-trash" theme="primary" class="size-7" @click="handleDropInvite(email)"
+            :loading="examServerLoading" />
+        </li>
+        <li v-if="(currentExam?.invites || []).length === 0" class="text-center italic text-gray-500">
+          No invites yet
+        </li>
+      </ul>
+    </template>
+  </AppModal>
+
   <AppModal title="Send exam back to student" v-model="sendModal">
     <template #body>
       <p class="text-center mb-3 text-gray-600">
@@ -163,8 +187,8 @@
                 <i class="fa-solid fa-eye-slash"></i>
                 View options
               </h1>
-              <i :class="`cursor-pointer fa-solid ${!viewOptionShow ? 'fa-angle-down' : 'fa-angle-up'}`" role="button"
-                @click="toggleViewOptionShow"></i>
+              <i :class="`cursor-pointer fa-solid ${!viewOptionShow ? 'fa-angle-down' : 'fa-angle-up'
+                }`" role="button" @click="toggleViewOptionShow"></i>
             </div>
             <div v-show="viewOptionShow" v-for="(option, index) in sendModelViewOption" :key="index"
               class="flex flex-col gap-1">
@@ -190,147 +214,205 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted } from 'vue'
-import { TabsType } from '../../utils/types'
-import { TableColumn } from '@nuxt/ui'
-import { useExamServerStore } from '../../store/server/exam'
-import { storeToRefs } from 'pinia'
+import { ref, reactive, computed, watch, onMounted } from "vue";
+import { TabsType } from "../../utils/types";
+import { TableColumn } from "@nuxt/ui";
+import { useExamServerStore } from "../../store/server/exam";
+import { storeToRefs } from "pinia";
 
-const { getExams, inviteStudentToExam, getExam } = useExamServerStore()
+const {
+  getExams,
+  inviteStudentToExam,
+  getExam,
+  dropInviteStudent,
+} = useExamServerStore();
+
 const {
   loading: examServerLoading,
   exams,
   success: examServerSuccess,
-  exam
-} = storeToRefs(useExamServerStore())
+  exam,
+} = storeToRefs(useExamServerStore());
 
-const systemNotification = ref(false)
-const allAvailableExams = computed(() => exams.value.map((exam) => exam.examName))
-const examTitle = ref('')
-const currentExam = computed(() => exams.value.find((e) => e.examName === examTitle.value))
+const systemNotification = ref(false);
+const allAvailableExams = computed(() =>
+  exams.value.map((exam) => exam.examName)
+);
+const examTitle = ref("");
+const currentExam = computed(() =>
+  exams.value.find((e) => e.examName === examTitle.value)
+);
+
 const tabs = ref<TabsType[]>([
-  { label: 'monitoring', isActive: true, value: 'monitoring' },
-  { label: 'results', isActive: false, value: 'results' }
-])
-const selectSelectedTab = ref(tabs.value[0].value)
+  { label: "monitoring", isActive: true, value: "monitoring" },
+  { label: "results", isActive: false, value: "results" },
+]);
+const selectSelectedTab = ref(tabs.value[0].value);
+
 const studentStatus = computed(() => {
-  const invites = currentExam.value?.invites?.length ?? 0
-  const submissions = currentExam.value?.submissions?.length ?? 0
+  const invites = currentExam.value?.invites?.length ?? 0;
+  const submissions = currentExam.value?.submissions?.length ?? 0;
   return [
     {
       done: invites,
       total: invites,
-      title: 'ongoing',
-      borderBottom: 'border-blue-300'
+      title: "ongoing",
+      borderBottom: "border-blue-300",
     },
     {
       done: submissions,
       total: invites,
-      title: 'submitted',
-      borderBottom: 'border-green-300'
-    }
-  ]
-})
+      title: "submitted",
+      borderBottom: "border-green-300",
+    },
+  ];
+});
+
 const buttonList = computed(() => [
   {
-    label: 'Send Exam to Student',
-    leftIcon: 'i-lucide-share-2',
-    class: 'bg-gray-400! hover:bg-gray-900! hover:text-white!',
-    click: toggleShowInviteStudent
+    label: "Invited Students",
+    leftIcon: "i-lucide-list",
+    click: toggleShowInvitesModal,
   },
-  { label: 'End the exam for students', leftIcon: 'i-lucide-step-forward' },
-  { label: 'Set a timer for the students', leftIcon: 'i-lucide-clock' },
   {
-    label: 'Preview exam',
-    leftIcon: 'i-lucide-binoculars',
-    to: `/preview/${currentExam.value?._id}`
+    label: "Send Exam to Student",
+    leftIcon: "i-lucide-share-2",
+    click: toggleShowInviteStudent,
   },
-  { label: 'Anonymous identities', leftIcon: 'i-lucide-eye-off' }
-])
+  { label: "End the exam for students", leftIcon: "i-lucide-step-forward" },
+  { label: "Set a timer for the students", leftIcon: "i-lucide-clock" },
+  {
+    label: "Preview exam",
+    leftIcon: "i-lucide-binoculars",
+    to: `/preview/${currentExam.value?._id}`,
+  },
+  { label: "Anonymous identities", leftIcon: "i-lucide-eye-off" },
+]);
+
 const buttonListTwo = ref([
-  { label: 'Export', leftIcon: 'i-lucide-file-down', rightIcon: 'i-lucide-chevron-down' },
-  { label: 'Download', leftIcon: 'i-lucide-arrow-down', rightIcon: 'i-lucide-chevron-down' },
-  { label: 'Print', leftIcon: 'i-lucide-printer', rightIcon: 'i-lucide-chevron-down' },
-  { label: 'Send', leftIcon: 'i-lucide-mail', rightIcon: 'i-lucide-chevron-down', clickAction: toggleSendModal }
-])
-const teachersList = ref([{ name: 'Damian' }, { name: 'Fisayo' }, { name: 'Victor' }, { name: 'Fara' }])
+  { label: "Export", leftIcon: "i-lucide-file-down", rightIcon: "i-lucide-chevron-down" },
+  { label: "Download", leftIcon: "i-lucide-arrow-down", rightIcon: "i-lucide-chevron-down" },
+  { label: "Print", leftIcon: "i-lucide-printer", rightIcon: "i-lucide-chevron-down" },
+  { label: "Send", leftIcon: "i-lucide-mail", rightIcon: "i-lucide-chevron-down", clickAction: toggleSendModal },
+]);
+
+const teachersList = ref([
+  { name: "Damian" },
+  { name: "Fisayo" },
+  { name: "Victor" },
+  { name: "Fara" },
+]);
+
 const resultsTab = ref<TabsType[]>([
-  { isActive: true, label: 'Student', value: 'student' },
-  { isActive: false, label: 'Questions', value: 'question' },
-  { isActive: false, label: 'Statistics', value: 'statistics' }
-])
-const selectedResultTab = ref(resultsTab.value[0].value)
+  { isActive: true, label: "Student", value: "student" },
+  { isActive: false, label: "Questions", value: "question" },
+  { isActive: false, label: "Statistics", value: "statistics" },
+]);
+
+const selectedResultTab = ref(resultsTab.value[0].value);
+
 const columns: TableColumn<any>[] = [
-  { accessorKey: 'name', header: 'Student' },
-  { accessorKey: 'score', header: 'Points' },
-  { accessorKey: 'submissionTime', header: 'Submission Time' }
-]
+  { accessorKey: "name", header: "Student" },
+  { accessorKey: "score", header: "Points" },
+  { accessorKey: "submissionTime", header: "Submission Time" },
+];
+
 const rows = computed(() =>
   exam.value?.submissions?.map((sub: any) => ({
     id: sub.email,
     name: sub.email,
     score: sub.score,
     submissionTime: new Date(sub.timeSubmitted).toLocaleString(),
-    transcript: sub.transcript
+    transcript: sub.transcript,
   })) ?? []
-)
-const sendModal = ref(false)
-const sendExamTimeLimit = reactive({ number: 15, type: 'hours' })
-const viewOptionShow = ref(true)
-const sendModelViewOption = ref([
-  { label: 'Show all', value: true },
-  { label: 'Show points and feedback', value: false },
-  { label: 'Customize', value: false }
-])
-const accessValue = ref('')
+);
+
+const showInviteStudent = ref(false);
+const showInvitesModal = ref(false);
+const sendModal = ref(false);
+
+function toggleShowInviteStudent() {
+  showInviteStudent.value = !showInviteStudent.value;
+  if (!showInviteStudent.value) studentsEmail.value = [];
+}
+
+function toggleShowInvitesModal() {
+  showInvitesModal.value = !showInvitesModal.value;
+}
+
+function toggleSendModal() {
+  sendModal.value = !sendModal.value;
+  if (!sendModal.value) viewOptionShow.value = false;
+}
+
+function toggleViewOptionShow() {
+  viewOptionShow.value = !viewOptionShow.value;
+}
+
+const studentEmail = ref("");
+const studentsEmail = ref<string[]>([]);
+
+function addStudentEmail(email: string) {
+  studentsEmail.value.push(email);
+  studentEmail.value = "";
+}
+
+async function handleInviteStudent() {
+  await inviteStudentToExam(currentExam.value!._id, {
+    emails: studentsEmail.value,
+  });
+  if (examServerSuccess.value) {
+    toggleShowInviteStudent();
+    await getExam({ id: currentExam.value!._id });
+  }
+}
+
+async function handleDropInvite(email: string) {
+  await dropInviteStudent(currentExam.value!._id, email);
+  if (examServerSuccess.value) {
+    await getExam({ id: currentExam.value!._id });
+  }
+}
+
+function openTranscript(url: string) {
+  if (url) window.open(url, "_blank");
+}
+
+const accessValue = ref("");
 const accessOptions = ref([
   [
-    { value: 'open', label: 'Open', chip: { color: 'success' } },
-    { value: 'closed', label: 'Closed', chip: { color: 'error' } },
-    { value: 'discoverable', label: 'Discoverable', chip: { color: 'info' } }
+    { value: "open", label: "Open", chip: { color: "success" } },
+    { value: "closed", label: "Closed", chip: { color: "error" } },
+    { value: "discoverable", label: "Discoverable", chip: { color: "info" } },
   ],
-  [{ value: 'scheduled', label: 'Scheduled', icon: 'i-lucide-calendar-days' }]
-])
-const showInviteStudent = ref(false)
-const studentEmail = ref('')
-const studentsEmail = ref<string[]>([])
+  [{ value: "scheduled", label: "Scheduled", icon: "i-lucide-calendar-days" }],
+]);
 
-function toggleSystemNotification() {
-  systemNotification.value = !systemNotification.value
-}
-function toggleSendModal() {
-  sendModal.value = !sendModal.value
-  if (!sendModal.value) viewOptionShow.value = false
-}
-function toggleShowInviteStudent() {
-  showInviteStudent.value = !showInviteStudent.value
-  if (!showInviteStudent.value) studentsEmail.value = []
-}
-function toggleViewOptionShow() {
-  viewOptionShow.value = !viewOptionShow.value
-}
-function addStudentEmail(email: string) {
-  studentsEmail.value.push(email)
-  studentEmail.value = ''
-}
-async function handleInviteStudent() {
-  await inviteStudentToExam(currentExam.value!._id, { emails: studentsEmail.value })
-  if (examServerSuccess.value) toggleShowInviteStudent()
-}
-function openTranscript(url: string) {
-  if (url) window.open(url, '_blank')
-}
+const sendExamTimeLimit = reactive({ number: 15, type: "hours" });
+const viewOptionShow = ref(true);
+const sendModelViewOption = ref([
+  { label: "Show all", value: true },
+  { label: "Show points and feedback", value: false },
+  { label: "Customize", value: false },
+]);
+
 watch(currentExam, async (examDoc) => {
-  if (examDoc) await getExam({ id: examDoc._id || examDoc.examKey })
-})
-watch(() => currentExam.value, (exam) => {
-  if (exam) accessValue.value = exam.access
-})
+  if (examDoc) await getExam({ id: examDoc._id || examDoc.examKey });
+});
+watch(
+  () => currentExam.value,
+  (exam) => {
+    if (exam) accessValue.value = exam.access;
+  }
+);
+
 onMounted(async () => {
-  await getExams()
-  examTitle.value = allAvailableExams.value[0] || ''
-  if (currentExam.value) await getExam({ id: currentExam.value._id || currentExam.value.examKey })
-})
+  await getExams();
+  examTitle.value = allAvailableExams.value[0] || "";
+  if (currentExam.value) {
+    await getExam({ id: currentExam.value._id || currentExam.value.examKey });
+  }
+});
 </script>
 
 <style scoped>

@@ -39,6 +39,7 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
+
     async getExams() {
       try {
         this.success = false;
@@ -56,6 +57,7 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
+
     async getExam(payload: { id: string }) {
       try {
         this.success = false;
@@ -73,6 +75,7 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
+
     async deleteExam(payload: { id: string }) {
       try {
         this.success = false;
@@ -92,6 +95,7 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
+
     async deleteExams(payload: Exam[]) {
       try {
         this.success = false;
@@ -113,6 +117,7 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
+
     async inviteStudentToExam(examId: string, payload: InviteStudentPayload) {
       try {
         this.success = false;
@@ -134,5 +139,28 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
+
+    /* ---------- NEW  ---------- */
+    async dropInviteStudent(examId: string, email: string) {
+      try {
+        this.success = false;
+        this.loading = true;
+        const { data } = await axiosInstance.post(
+          `/exams/drop-invite/${encodeURIComponent(email)}/${examId}`,
+        );
+        const { message } = data;
+        this.success = true;
+        successToast(message);
+      } catch (error: any) {
+        this.success = false;
+        const errorMessage =
+          error.response?.data?.message || error.message || "Network Error";
+        errorToast(errorMessage);
+        throw new Error(errorMessage);
+      } finally {
+        this.loading = false;
+      }
+    },
+    /* --------------------------- */
   },
 });
