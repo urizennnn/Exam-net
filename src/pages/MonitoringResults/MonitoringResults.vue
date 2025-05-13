@@ -1,21 +1,36 @@
 <template>
   <section class="bg-zinc-300 text-black" id="section">
     <div class="section-container-width">
-      <p class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer select-none"
-        @click="toggleSystemNotification">
-        <UIcon :name="`i-lucide-${systemNotification ? 'bell' : 'bell-off'}`" class="size-6" />
-        System Notification: {{ systemNotification ? 'On' : 'Off' }}
+      <p
+        class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer select-none"
+        @click="toggleSystemNotification"
+      >
+        <UIcon
+          :name="`i-lucide-${systemNotification ? 'bell' : 'bell-off'}`"
+          class="size-6"
+        />
+        System Notification: {{ systemNotification ? "On" : "Off" }}
       </p>
 
       <section class="mt-4 w-full flex gap-3">
         <aside class="w-full max-w-[300px]">
-          <AppSelectMenu :items="allAvailableExams" v-model="examTitle" :loading="examServerLoading"
-            baseClass="ring-0 text-2xl" />
-          <h1 class="flex items-center gap-1 font-bold py-2 px-3 w-full bg-zinc-400 rounded-md mt-3">
+          <AppSelectMenu
+            :items="allAvailableExams"
+            v-model="examTitle"
+            :loading="examServerLoading"
+            baseClass="ring-0 text-2xl"
+          />
+          <h1
+            class="flex items-center gap-1 font-bold py-2 px-3 w-full bg-zinc-400 rounded-md mt-3"
+          >
             <UIcon name="i-lucide-house" class="size-5" />
             Overview
           </h1>
-          <AppInput placeholder="Search name" class="mt-4" base-class="bg-white" />
+          <AppInput
+            placeholder="Search name"
+            class="mt-4"
+            base-class="bg-white"
+          />
           <AppToggleButton id="showName" label="Show names" class="mt-3" />
         </aside>
 
@@ -30,32 +45,45 @@
             <template v-if="selectSelectedTab === 'monitoring'">
               <section class="flex gap-6 mt-4">
                 <div class="flex flex-col gap-3 w-full max-w-[350px]">
-                  <div class="flex gap-6 items-center w-full justify-between text-black text-xl">
+                  <div
+                    class="flex gap-6 items-center w-full justify-between text-black text-xl"
+                  >
                     <p class="font-light">Exam key</p>
                     <USkeleton class="w-20 h-10" v-if="examServerLoading" />
                     <p v-else>{{ currentExam?.examKey }}</p>
                   </div>
-                  <AppSelect label="Access" :loading="examServerLoading" :items="accessOptions" v-model="accessValue" />
-                  <div class="flex gap-6 items-center font-light text-black text-xl justify-between">
-                    <p>Teachers</p>
-                    <div class="flex">
-                      <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index" :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : ''
-                        } py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`">
-                        {{ teacher.name[0].toUpperCase() }}
-                      </i>
-                      <AppButton
-                        class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5! rounded-full! bg-white"
-                        icon="i-lucide-share-2" size="xl" theme="primary" />
-                    </div>
-                  </div>
+                  <AppSelect
+                    label="Access"
+                    :loading="examServerLoading"
+                    :items="accessOptions"
+                    v-model="accessValue"
+                  />
+                  <!-- <div class="flex gap-6 items-center font-light text-black text-xl justify-between"> -->
+                  <!--   <p>Teachers</p> -->
+                  <!--   <div class="flex"> -->
+                  <!--     <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index" :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : '' -->
+                  <!--       } py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`"> -->
+                  <!--       {{ teacher.name[0].toUpperCase() }} -->
+                  <!--     </i> -->
+                  <!--     <AppButton -->
+                  <!--       class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5! rounded-full! bg-white" -->
+                  <!--       icon="i-lucide-share-2" size="xl" theme="primary" /> -->
+                  <!--   </div> -->
+                  <!-- </div> -->
 
                   <div class="mt-4">
                     <h4 class="font-bold">Student Status</h4>
                     <div class="flex gap-2 w-full mt-3">
-                      <div v-for="(status, index) in studentStatus" :key="index"
-                        :class="`${status.borderBottom} border-b-4 p-4 flex items-center justify-center flex-col gap-3 bg-gray-100 w-full`">
+                      <div
+                        v-for="(status, index) in studentStatus"
+                        :key="index"
+                        :class="`${status.borderBottom} border-b-4 p-4 flex items-center justify-center flex-col gap-3 bg-gray-100 w-full`"
+                      >
                         <p class="text-xl flex items-end">
-                          <span class="font-bold text-2xl">{{ status.done }}</span>/{{ status.total }}
+                          <span class="font-bold text-2xl">{{
+                            status.done
+                          }}</span
+                          >/{{ status.total }}
                         </p>
                         <p class="capitalize text-xl tracking-wide">
                           {{ status.title }}
@@ -66,43 +94,64 @@
                 </div>
 
                 <div class="w-full px-4 flex flex-col gap-4">
-                  <AppButton v-for="(button, index) in buttonList" :key="index" :label="button.label"
-                    :leftIcon="button.leftIcon" :loading="examServerLoading" theme="primary"
-                    class="w-full! items-center justify-center rounded-3xl!" :to="button.to" @click="button.click" />
+                  <AppButton
+                    v-for="(button, index) in buttonList"
+                    :key="index"
+                    :label="button.label"
+                    :leftIcon="button.leftIcon"
+                    :loading="examServerLoading"
+                    theme="primary"
+                    class="w-full! items-center justify-center rounded-3xl!"
+                    :to="button.to"
+                    @click="button.click"
+                  />
                 </div>
               </section>
             </template>
 
             <template v-if="selectSelectedTab === 'results'">
-              <div
-                class="w-full max-w-[350px] my-8 flex gap-6 items-center font-light text-black text-xl justify-between">
-                <p>Teachers</p>
-                <div class="flex">
-                  <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index" :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : ''
-                    } py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`">
-                    {{ teacher.name[0].toUpperCase() }}
-                  </i>
-                  <AppButton class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5! rounded-full! bg-white"
-                    icon="i-lucide-share-2" size="xl" theme="primary" />
-                </div>
-              </div>
+              <!-- <div -->
+              <!--   class="w-full max-w-[350px] my-8 flex gap-6 items-center font-light text-black text-xl justify-between"> -->
+              <!--   <p>Teachers</p> -->
+              <!--   <div class="flex"> -->
+              <!--     <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index" :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : '' -->
+              <!--       } py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`"> -->
+              <!--       {{ teacher.name[0].toUpperCase() }} -->
+              <!--     </i> -->
+              <!--     <AppButton class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5! rounded-full! bg-white" -->
+              <!--       icon="i-lucide-share-2" size="xl" theme="primary" /> -->
+              <!--   </div> -->
+              <!-- </div> -->
 
-              <div class="w-full px-4 flex gap-4">
-                <AppButton v-for="(button, index) in buttonListTwo" :key="index" :label="button.label"
-                  :leftIcon="button.leftIcon" :rightIcon="button.rightIcon"
-                  class="w-full! items-center justify-center rounded-3xl!" @click="button.clickAction"
-                  theme="primary" />
+              <div class="my-8 w-full px-4 flex gap-4">
+                <AppButton
+                  v-for="(button, index) in buttonListTwo"
+                  :key="index"
+                  :label="button.label"
+                  :leftIcon="button.leftIcon"
+                  :rightIcon="button.rightIcon"
+                  class="w-full! items-center justify-center rounded-3xl!"
+                  @click="button.clickAction"
+                  theme="primary"
+                />
               </div>
 
               <div class="mt-4">
-                <AppTab :tabs="resultsTab" v-model="selectedResultTab" theme="variant"
+                <AppTab
+                  :tabs="resultsTab"
+                  v-model="selectedResultTab"
+                  theme="variant"
                   class="py-1 tracking-wider hover:border-b-3 hover:border-zinc-800 mr-4 text-zinc-600 hover:text-zinc-800"
-                  activeClass="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer" />
+                  activeClass="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer"
+                />
               </div>
 
               <AppTable :columns="columns" :rows="rows">
                 <template #name-cell="{ row }">
-                  <p class="cursor-pointer text-blue-600 underline" @click="openTranscript(row.original.transcript)">
+                  <p
+                    class="cursor-pointer text-blue-600 underline"
+                    @click="openTranscript(row.original.transcript)"
+                  >
                     {{ row.original.name }}
                   </p>
                 </template>
@@ -121,12 +170,17 @@
       </p>
       <section>
         <div class="rounded-lg">
-          <AppInput placeholder="Enter Students Email" v-model="studentEmail"
-            @keyup.enter="addStudentEmail(studentEmail)" />
+          <AppInput
+            placeholder="Enter Students Email"
+            v-model="studentEmail"
+            @keyup.enter="addStudentEmail(studentEmail)"
+          />
           <h1 class="p-2 bg-blue-500 text-white mt-4 font-bold rounded-t-lg">
             Students
           </h1>
-          <ul class="h-full max-h-[250px] p-4 flex flex-col gap-3 w-full overflow-y-scroll overflow-x-hidden">
+          <ul
+            class="h-full max-h-[250px] p-4 flex flex-col gap-3 w-full overflow-y-scroll overflow-x-hidden"
+          >
             <li v-for="student in studentsEmail" :key="student">
               {{ student }}
             </li>
@@ -135,21 +189,36 @@
       </section>
     </template>
     <template #footer>
-      <AppButton label="Send" @click="handleInviteStudent" :disabled="studentsEmail.length === 0"
-        :loading="examServerLoading" class="w-fit! px-8" />
+      <AppButton
+        label="Send"
+        @click="handleInviteStudent"
+        :disabled="studentsEmail.length === 0"
+        :loading="examServerLoading"
+        class="w-fit! px-8"
+      />
     </template>
   </AppModal>
 
   <AppModal title="Invited Students" v-model="showInvitesModal">
     <template #body>
-      <ul class="flex flex-col gap-3 max-h-[300px] overflow-y-auto">
-        <li v-for="email in currentExam?.invites || []" :key="email"
-          class="flex justify-between items-center border-b pb-1">
+      <ul class="flex flex-col gap-3 max-h-[300px] overflow-y-auto w-full">
+        <li
+          v-for="email in currentExam?.invites || []"
+          :key="email"
+          class="flex justify-between items-center border-b pb-1"
+        >
           <span>{{ email }}</span>
-          <AppButton icon="i-lucide-trash" theme="primary" class="size-7" @click="handleDropInvite(email)"
-            :loading="examServerLoading" />
+          <AppButton
+            icon="i-lucide-trash"
+            class="text-2xl text-red-600"
+            @click="handleDropInvite(email)"
+            :loading="examServerLoading"
+          />
         </li>
-        <li v-if="(currentExam?.invites || []).length === 0" class="text-center italic text-gray-500">
+        <li
+          v-if="(currentExam?.invites || []).length === 0"
+          class="text-center italic text-gray-500"
+        >
           No invites yet
         </li>
       </ul>
@@ -174,8 +243,18 @@
             </h2>
             <p>Select how long this link is valid</p>
             <div class="flex gap-3">
-              <AppInput theme="secondary" v-model="sendExamTimeLimit.number" type="number" max="60" min="15" />
-              <select value="hours" class="border-b border-b-gray-600 w-full" v-model="sendExamTimeLimit.type">
+              <AppInput
+                theme="secondary"
+                v-model="sendExamTimeLimit.number"
+                type="number"
+                max="60"
+                min="15"
+              />
+              <select
+                value="hours"
+                class="border-b border-b-gray-600 w-full"
+                v-model="sendExamTimeLimit.type"
+              >
                 <option value="hours">hours</option>
                 <option value="minutes">minutes</option>
               </select>
@@ -187,13 +266,30 @@
                 <i class="fa-solid fa-eye-slash"></i>
                 View options
               </h1>
-              <i :class="`cursor-pointer fa-solid ${!viewOptionShow ? 'fa-angle-down' : 'fa-angle-up'
-                }`" role="button" @click="toggleViewOptionShow"></i>
+              <i
+                :class="`cursor-pointer fa-solid ${
+                  !viewOptionShow ? 'fa-angle-down' : 'fa-angle-up'
+                }`"
+                role="button"
+                @click="toggleViewOptionShow"
+              ></i>
             </div>
-            <div v-show="viewOptionShow" v-for="(option, index) in sendModelViewOption" :key="index"
-              class="flex flex-col gap-1">
-              <label :for="`radio-${index}`" class="flex items-center gap-3 select-none cursor-pointer">
-                <input type="radio" name="viewOptionRadio" v-model="option.value" :id="`radio-${index}`" />
+            <div
+              v-show="viewOptionShow"
+              v-for="(option, index) in sendModelViewOption"
+              :key="index"
+              class="flex flex-col gap-1"
+            >
+              <label
+                :for="`radio-${index}`"
+                class="flex items-center gap-3 select-none cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="viewOptionRadio"
+                  v-model="option.value"
+                  :id="`radio-${index}`"
+                />
                 <p>{{ option.label }}</p>
               </label>
             </div>
@@ -220,12 +316,8 @@ import { TableColumn } from "@nuxt/ui";
 import { useExamServerStore } from "../../store/server/exam";
 import { storeToRefs } from "pinia";
 
-const {
-  getExams,
-  inviteStudentToExam,
-  getExam,
-  dropInviteStudent,
-} = useExamServerStore();
+const { getExams, inviteStudentToExam, getExam, dropInviteStudent } =
+  useExamServerStore();
 
 const {
   loading: examServerLoading,
@@ -236,12 +328,11 @@ const {
 
 const systemNotification = ref(false);
 const allAvailableExams = computed(() =>
-  exams.value.map((exam) => exam.examName)
+  exams.value.map((exam) => exam.examName),
 );
 const examTitle = ref("");
-const currentExam = computed(() =>
-  exams.value.find((e) => e.examName === examTitle.value)
-);
+const currentExam = computed(() => exam.value);
+const currentId = ref(null);
 
 const tabs = ref<TabsType[]>([
   { label: "monitoring", isActive: true, value: "monitoring" },
@@ -290,18 +381,35 @@ const buttonList = computed(() => [
 ]);
 
 const buttonListTwo = ref([
-  { label: "Export", leftIcon: "i-lucide-file-down", rightIcon: "i-lucide-chevron-down" },
-  { label: "Download", leftIcon: "i-lucide-arrow-down", rightIcon: "i-lucide-chevron-down" },
-  { label: "Print", leftIcon: "i-lucide-printer", rightIcon: "i-lucide-chevron-down" },
-  { label: "Send", leftIcon: "i-lucide-mail", rightIcon: "i-lucide-chevron-down", clickAction: toggleSendModal },
+  {
+    label: "Export",
+    leftIcon: "i-lucide-file-down",
+    rightIcon: "i-lucide-chevron-down",
+  },
+  {
+    label: "Download",
+    leftIcon: "i-lucide-arrow-down",
+    rightIcon: "i-lucide-chevron-down",
+  },
+  {
+    label: "Print",
+    leftIcon: "i-lucide-printer",
+    rightIcon: "i-lucide-chevron-down",
+  },
+  {
+    label: "Send",
+    leftIcon: "i-lucide-mail",
+    rightIcon: "i-lucide-chevron-down",
+    clickAction: toggleSendModal,
+  },
 ]);
 
-const teachersList = ref([
-  { name: "Damian" },
-  { name: "Fisayo" },
-  { name: "Victor" },
-  { name: "Fara" },
-]);
+// const teachersList = ref([
+//   { name: "Damian" },
+//   { name: "Fisayo" },
+//   { name: "Victor" },
+//   { name: "Fara" },
+// ]);
 
 const resultsTab = ref<TabsType[]>([
   { isActive: true, label: "Student", value: "student" },
@@ -317,14 +425,15 @@ const columns: TableColumn<any>[] = [
   { accessorKey: "submissionTime", header: "Submission Time" },
 ];
 
-const rows = computed(() =>
-  exam.value?.submissions?.map((sub: any) => ({
-    id: sub.email,
-    name: sub.email,
-    score: sub.score,
-    submissionTime: new Date(sub.timeSubmitted).toLocaleString(),
-    transcript: sub.transcript,
-  })) ?? []
+const rows = computed(
+  () =>
+    exam.value?.submissions?.map((sub: any) => ({
+      id: sub.email,
+      name: sub.email,
+      score: sub.score,
+      submissionTime: new Date(sub.timeSubmitted).toLocaleString(),
+      transcript: sub.transcript,
+    })) ?? [],
 );
 
 const showInviteStudent = ref(false);
@@ -396,22 +505,23 @@ const sendModelViewOption = ref([
   { label: "Customize", value: false },
 ]);
 
-watch(currentExam, async (examDoc) => {
-  if (examDoc) await getExam({ id: examDoc._id || examDoc.examKey });
-});
+watch(
+  () => examTitle.value,
+  async (newTitle) => {
+    currentId.value = exams.value.find((e) => e.examName === newTitle)._id;
+    await getExam({ id: currentId.value });
+  },
+);
 watch(
   () => currentExam.value,
   (exam) => {
     if (exam) accessValue.value = exam.access;
-  }
+  },
 );
 
 onMounted(async () => {
   await getExams();
-  examTitle.value = allAvailableExams.value[0] || "";
-  if (currentExam.value) {
-    await getExam({ id: currentExam.value._id || currentExam.value.examKey });
-  }
+  examTitle.value = exams.value[0].examName || "";
 });
 </script>
 
