@@ -64,7 +64,7 @@ const router = createRouter({
           ],
         },
         {
-          path: "/monitoring-results",
+          path: "/monitoring-results/:id?",
           name: "monitoring-results",
           component: MonitoringResults,
         },

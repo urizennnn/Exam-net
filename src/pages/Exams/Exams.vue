@@ -10,26 +10,26 @@
         >
           <div></div>
           <h1 class="text-[18px] md:text-[20px] tracking-wide">Exams</h1>
-          <div class="flex gap-1 items-center">
-            <UButton
-              icon="i-lucide-cog"
-              color="neutral"
-              variant="link"
-              class="text-white cursor-pointer"
-            />
-            <UButton
-              icon="i-lucide-chevron-down"
-              class="text-white cursor-pointer"
-              color="neutral"
-              variant="link"
-            />
-            <UButton
-              icon="i-lucide-arrow-big-down-dash"
-              class="text-white cursor-pointer"
-              color="neutral"
-              variant="link"
-            />
-          </div>
+          <!-- <div class="flex gap-1 items-center"> -->
+          <!--   <UButton -->
+          <!--     icon="i-lucide-cog" -->
+          <!--     color="neutral" -->
+          <!--     variant="link" -->
+          <!--     class="text-white cursor-pointer" -->
+          <!--   /> -->
+          <!--   <UButton -->
+          <!--     icon="i-lucide-chevron-down" -->
+          <!--     class="text-white cursor-pointer" -->
+          <!--     color="neutral" -->
+          <!--     variant="link" -->
+          <!--   /> -->
+          <!--   <UButton -->
+          <!--     icon="i-lucide-arrow-big-down-dash" -->
+          <!--     class="text-white cursor-pointer" -->
+          <!--     color="neutral" -->
+          <!--     variant="link" -->
+          <!--   /> -->
+          <!-- </div> -->
         </div>
         <template v-if="exams.length > 0">
           <div :class="`bg-blue-950 py-1 flex gaitems-center`">
@@ -73,18 +73,24 @@
                   theme="primary"
                   class="border-black border-2! rounded-4xl!"
                   @click="handleGetExam(row.original.id)"
+                  title="Edit Exam"
+                  :loading="examServerLoading"
                 />
                 <AppButton
                   left-icon="i-lucide-monitor-check"
                   theme="primary"
                   class="border-black border-2! rounded-4xl!"
-                  to="/monitoring-results"
+                  :to="`/monitoring-results/${row.original.id}`"
+                  title="Monitor Exam"
+                  :loading="examServerLoading"
                 />
                 <AppButton
                   left-icon="i-lucide-binoculars"
                   theme="primary"
                   class="border-black border-2! rounded-4xl!"
                   :to="`/preview/${row.original.id}`"
+                  title="Preview Exam"
+                  :loading="examServerLoading"
                 />
                 <UDropdownMenu
                   :items="getExamDropdownActions(row.original)"

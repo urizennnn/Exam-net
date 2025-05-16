@@ -11,7 +11,7 @@
       <!--   System Notification: {{ systemNotification ? "On" : "Off" }} -->
       <!-- </p> -->
 
-      <section class="mt-4 w-full flex gap-3">
+      <section class="pt-4 w-full flex gap-3">
         <aside class="w-full max-w-[300px]">
           <AppSelectMenu
             :items="allAvailableExams"
@@ -74,6 +74,13 @@
                     <h4 class="font-bold">Student Status</h4>
                     <div class="flex gap-2 w-full mt-3">
                       <div
+                        v-if="examServerLoading"
+                        class="w-full h-full flex items-center justify-between"
+                      >
+                        <USkeleton class="w-full h-[100px]" />
+                      </div>
+                      <div
+                        v-else
                         v-for="(status, index) in studentStatus"
                         :key="index"
                         :class="`${status.borderBottom} border-b-4 p-4 flex items-center justify-center flex-col gap-3 bg-gray-100 w-full`"
@@ -338,6 +345,7 @@ import { TableColumn } from "@nuxt/ui";
 import { useExamServerStore } from "../../store/server/exam";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../../store/server/document";
+import { useRoute, useRouter } from "vue-router";
 
 const { getExams, inviteStudentToExam, getExam, dropInviteStudent } =
   useExamServerStore();
@@ -353,7 +361,10 @@ const { getPdfFromCloudinary } = useDocumentStore();
 const { loading: documentLoading, success: documentSuccess } =
   storeToRefs(useDocumentStore());
 
-const systemNotification = ref(false);
+const routes = useRoute();
+const router = useRouter();
+
+// const systemNotification = ref(false);
 const allAvailableExams = computed(() =>
   exams.value.map((exam) => exam.examName),
 );
@@ -552,8 +563,10 @@ watch(
   async (newTitle) => {
     currentId.value = exams.value.find((e) => e.examName === newTitle)._id;
     await getExam({ id: currentId.value });
+    router.push(`/monitoring-results/${currentId.value}`);
   },
 );
+
 watch(
   () => currentExam.value,
   (exam) => {
@@ -563,7 +576,12 @@ watch(
 
 onMounted(async () => {
   await getExams();
-  examTitle.value = exams.value[0].examName || "";
+  if (routes.params.id) {
+    await getExam({ id: routes.params.id as string });
+    examTitle.value = currentExam.value.examName;
+  } else {
+    examTitle.value = exams.value[0].examName || "";
+  }
 });
 </script>
 
