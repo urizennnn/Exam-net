@@ -139,6 +139,15 @@
       <AppInput v-model="examNewName" />
     </template>
   </AppModal>
+
+  <AppModal v-model="groupsModal" title="Move exam to group">
+    <template #body>
+      <p class="text-center">No Group is created</p>
+    </template>
+    <template #footer>
+      <AppButton theme="secondary" label="Move" class="px-4! py-2!" />
+    </template>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -270,10 +279,22 @@ const rows = computed(() =>
     key: exam.examKey,
   })),
 );
+
+const groupsModal = ref(false);
+function toggleGroupModal(ids: any[] = []) {
+  groupsModal.value = !groupsModal.value;
+}
+
+const selectedRows = ref<any[]>([]);
+function onRowSelection(items: any[]) {
+  selectedRows.value = items;
+}
+
 const iconActions = ref([
   {
     title: "Move Selected Exam to group",
     icon: "i-lucide-circle-arrow-right",
+    onClick: () => toggleGroupModal(selectedRows.value),
   },
   {
     title: "Archive Selected Exams",
@@ -285,11 +306,6 @@ const iconActions = ref([
     onClick: handleExamsDelete,
   },
 ]);
-
-const selectedRows = ref<any[]>([]);
-function onRowSelection(items: any[]) {
-  selectedRows.value = items;
-}
 
 const renameExamModal = ref(false);
 const examNewName = ref("");
@@ -319,6 +335,7 @@ function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
       {
         label: "Move to Group",
         icon: "i-lucide-circle-arrow-right",
+        onSelect: () => toggleGroupModal([exam.id]),
       },
       {
         label: "Archive the Exam",

@@ -1,16 +1,15 @@
 <template>
   <section class="bg-zinc-300 text-black" id="section">
     <div class="section-container-width">
-      <p
-        class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer select-none"
-        @click="toggleSystemNotification"
-      >
-        <UIcon
-          :name="`i-lucide-${systemNotification ? 'bell' : 'bell-off'}`"
-          class="size-6"
-        />
-        System Notification: {{ systemNotification ? "On" : "Off" }}
-      </p>
+      <!-- <p -->
+      <!--   class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer select-none" -->
+      <!-- > -->
+      <!--   <UIcon -->
+      <!--     :name="`i-lucide-${systemNotification ? 'bell' : 'bell-off'}`" -->
+      <!--     class="size-6" -->
+      <!--   /> -->
+      <!--   System Notification: {{ systemNotification ? "On" : "Off" }} -->
+      <!-- </p> -->
 
       <section class="mt-4 w-full flex gap-3">
         <aside class="w-full max-w-[300px]">
