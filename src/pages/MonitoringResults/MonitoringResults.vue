@@ -155,6 +155,18 @@
                     {{ row.original.name }}
                   </p>
                 </template>
+                <template #action-cell="{ row }">
+                  <div class="flex gap-2 items-center">
+                    <AppButton
+                      leftIcon="i-lucide-file-badge"
+                      theme="primary"
+                      class="border-black border-2! rounded-4xl!"
+                      title="View Transcript"
+                      @click="toggleTranscriptModal(row.original.transcript)"
+                      :loading="documentLoading"
+                    />
+                  </div>
+                </template>
               </AppTable>
             </template>
           </main>
@@ -307,6 +319,12 @@
       <AppButton label="Send" @click="toggleSendModal" class="w-fit! px-8" />
     </template>
   </AppModal>
+
+  <AppModal v-model="transcriptModal" class="max-w-[85%]! h-[85dvh]">
+    <template #content>
+      <iframe :src="studentsTransciptUrl" width="100%" height="100%"></iframe>
+    </template>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -315,6 +333,7 @@ import { TabsType } from "../../utils/types";
 import { TableColumn } from "@nuxt/ui";
 import { useExamServerStore } from "../../store/server/exam";
 import { storeToRefs } from "pinia";
+import { useDocumentStore } from "../../store/server/document";
 
 const { getExams, inviteStudentToExam, getExam, dropInviteStudent } =
   useExamServerStore();
@@ -325,6 +344,10 @@ const {
   success: examServerSuccess,
   exam,
 } = storeToRefs(useExamServerStore());
+
+const { getPdfFromCloudinary } = useDocumentStore();
+const { loading: documentLoading, success: documentSuccess } =
+  storeToRefs(useDocumentStore());
 
 const systemNotification = ref(false);
 const allAvailableExams = computed(() =>
@@ -423,6 +446,9 @@ const columns: TableColumn<any>[] = [
   { accessorKey: "name", header: "Student" },
   { accessorKey: "score", header: "Points" },
   { accessorKey: "submissionTime", header: "Submission Time" },
+  {
+    id: "action",
+  },
 ];
 
 const rows = computed(
@@ -504,6 +530,18 @@ const sendModelViewOption = ref([
   { label: "Show points and feedback", value: false },
   { label: "Customize", value: false },
 ]);
+
+const transcriptModal = ref(false);
+const studentsTransciptUrl = ref<any>(null);
+async function toggleTranscriptModal(transcriptUrl: string) {
+  if (!transcriptUrl) return;
+
+  const file = await getPdfFromCloudinary(transcriptUrl);
+  if (!file) return;
+
+  studentsTransciptUrl.value = URL.createObjectURL(file);
+  transcriptModal.value = true;
+}
 
 watch(
   () => examTitle.value,

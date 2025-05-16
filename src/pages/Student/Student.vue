@@ -372,7 +372,7 @@ async function handleExamSubmit() {
     formData,
     { headers: { "Content-Type": "multipart/form-data" } },
   );
-  router.push(`/student/${examID.value}/done`)
+  router.push(`/student/${examID.value}/done`);
   toggleSubmitExamModal();
 }
 

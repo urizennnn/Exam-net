@@ -13,7 +13,7 @@ import Student from "../pages/Student/Student.vue";
 import Register from "../pages/Auth/Register.vue";
 import Login from "../pages/Auth/Login.vue";
 import StudentLogin from "../pages/Auth/StudentLogin.vue";
-import StudentSubmission from "../pages/Student/SubmissionNotification.vue"
+import StudentSubmission from "../pages/Student/SubmissionNotification.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
