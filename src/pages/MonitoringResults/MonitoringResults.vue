@@ -132,6 +132,7 @@
                   :rightIcon="button.rightIcon"
                   class="w-full! items-center justify-center rounded-3xl!"
                   @click="button.clickAction"
+                  :loading="examServerLoading || documentLoading"
                   theme="primary"
                 />
               </div>
@@ -146,7 +147,11 @@
                 />
               </div>
 
-              <AppTable :columns="columns" :rows="rows">
+              <AppTable
+                :columns="columns"
+                :rows="rows"
+                :loading="examServerLoading || documentLoading"
+              >
                 <template #name-cell="{ row }">
                   <p
                     class="cursor-pointer text-blue-600 underline"

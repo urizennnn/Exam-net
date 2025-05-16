@@ -32,7 +32,7 @@
           </div>
         </div>
         <template v-if="exams.length > 0">
-          <div :class="`bg-blue-950 px-2 py-1 flex gaitems-center`">
+          <div :class="`bg-blue-950 py-1 flex gaitems-center`">
             <AppButton
               color="neutral"
               class="cursor-pointer size-9 text-white"
@@ -133,6 +133,12 @@
       class="absolute right-4 bottom-4 fa-solid fa-question text-white bg-sky-400 rounded-full px-5 py-4"
     ></i>
   </section>
+
+  <AppModal v-model="renameExamModal" title="Rename Exam">
+    <template #body>
+      <AppInput v-model="examNewName" />
+    </template>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -233,8 +239,6 @@ const columns = computed<TableColumn<any>[]>(() => [
       ];
 
       const currentValue = row.original.access;
-
-      // Ensure the current value is included in the options
       const options = predefinedOptions.map((options) =>
         options.some((option) => option.value === currentValue),
       )
@@ -268,66 +272,50 @@ const rows = computed(() =>
 );
 const iconActions = ref([
   {
-    title: "Close Marked Exams",
-    icon: "i-lucide-lock",
-  },
-  {
-    title: "Open Marked Exams",
-    icon: "i-lucide-lock-open",
-  },
-  {
-    title: "Delete Selected Exams",
-    icon: "i-lucide-trash",
-    onClick: handleExamsDelete,
+    title: "Move Selected Exam to group",
+    icon: "i-lucide-circle-arrow-right",
   },
   {
     title: "Archive Selected Exams",
     icon: "i-lucide-archive",
   },
   {
-    title: "Tag Selected Exams with a color",
-    icon: "i-lucide-paintbrush",
-  },
-  {
-    title: "Give Teacher access to selected exam",
-    icon: "i-lucide-users",
-  },
-  {
-    title: "Move Selected Exam to group",
-    icon: "i-lucide-circle-arrow-right",
+    title: "Delete Selected Exams",
+    icon: "i-lucide-trash",
+    onClick: handleExamsDelete,
   },
 ]);
-const selectedRows = ref<any[]>([]);
 
+const selectedRows = ref<any[]>([]);
 function onRowSelection(items: any[]) {
   selectedRows.value = items;
+}
+
+const renameExamModal = ref(false);
+const examNewName = ref("");
+function toggleRanameExamModal(currentName: string = "") {
+  renameExamModal.value = !renameExamModal.value;
+  if (renameExamModal.value) {
+    examNewName.value = currentName;
+  } else {
+    examNewName.value = "";
+  }
 }
 
 function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
   return [
     [
       {
-        label: "Give Another Teacher Access",
-        icon: "i-lucide-users",
-      },
-      {
-        label: "Reveal Student Identities",
-        icon: "i-lucide-id-card",
-      },
-      {
         label: "Duplicate the Exam",
         icon: "i-lucide-copy",
       },
       {
-        label: "Share Exam Template via Link",
-        icon: "i-lucide-link",
+        label: "Rename Exam",
+        icon: "i-lucide-folder-pen",
+        onSelect: () => toggleRanameExamModal(exam.name),
       },
     ],
     [
-      {
-        label: "Tag Exam with a Color",
-        icon: "i-lucide-paintbrush",
-      },
       {
         label: "Move to Group",
         icon: "i-lucide-circle-arrow-right",
