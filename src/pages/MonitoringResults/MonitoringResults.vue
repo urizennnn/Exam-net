@@ -477,6 +477,7 @@ const buttonListTwo = ref([
 //   { name: "Fara" },
 // ]);
 
+
 const columns: TableColumn<any>[] = [
   { accessorKey: "name", header: "Student" },
   { accessorKey: "score", header: "Points" },
