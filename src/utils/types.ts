@@ -62,6 +62,7 @@ export interface Exam {
   _id?: string;
   access: string;
   createdAt: string;
+  endDate: string;
   examKey: string;
   examName: string;
   lecturer: string;

@@ -1,6 +1,6 @@
 <template>
   <section class="w-full bg-zinc-300" id="section">
-    <div class="section-container-width">
+    <div class="container m-auto pb-8 px-8">
       <div
         class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-neutral-400 px-4 bg-neutral-200 shadow-md gap-4"
       >
@@ -18,28 +18,24 @@
           />
           <div class="flex items-center gap-1">
             <template v-for="(_, index) in steps" :key="index">
-              <i
+              <UIcon
+                name="i-tabler-check"
                 v-if="index + 1 < newExamStore.counter"
-                class="text-center text-[#36a8d8] font-semibold rounded-full text-4xl fa-solid fa-circle-check"
-              ></i>
+                class="text-center text-neutral-200 font-semibold rounded-full text-4xl p-1 bg-blue-400"
+              />
               <p
                 v-else
-                :class="`border-2 ${index + 1 === newExamStore.counter ? 'border-[#36a8d8] text-[#36a8d8]' : 'border-[#37373758] text-[#37373758]'} text-center  font-semibold rounded-full w-8 h-8 text-xl`"
+                :class="`border-2 ${index + 1 === newExamStore.counter ? 'border-blue-400 text-blue-400' : 'border-neutral-400 text-neutral-400'} text-center  font-semibold rounded-full w-8 h-8 text-xl`"
               >
                 {{ index + 1 }}
               </p>
-              <i
-                :class="`fa-solid fa-minus ${index + 1 === newExamStore.counter ? 'text-[#36a8d8]' : 'text-[#37373758]'}`"
+              <UIcon
+                name="i-tabler-minus"
+                :class="`${index + 1 === newExamStore.counter ? 'text-blue-400' : 'text-neutral-400'}`"
                 v-if="index < steps.length - 1"
-              ></i>
+              />
             </template>
           </div>
-          <AppButton
-            left-icon="i-lucide-binoculars"
-            theme="primary"
-            class="border-black border-2! rounded-4xl!"
-            v-if="newExamStore.counter > 1"
-          />
         </div>
         <div class="flex gap-1">
           <template v-if="newExamStore.counter != steps.length">
@@ -97,20 +93,15 @@ import { watch, ref, computed } from "vue";
 import { RouterView, useRouter, useRoute } from "vue-router";
 import { useNewExamStore } from "../store/NewExamStore";
 import { useExamServerStore } from "../store/server/exam";
-import {
-  clearNewExamData,
-  getTrueKeys,
-  questionFormatTeacher,
-} from "../utils/functions";
+import { clearNewExamData, getTrueKeys } from "../utils/functions";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../store/server/document";
-import { onMounted } from "vue";
 
 const router = useRouter();
 const routes = useRoute();
 const examId = computed(() => routes.params.id);
 const newExamStore = useNewExamStore();
-const { generateExamKey, updateExamStore } = useNewExamStore();
+const { generateExamKey } = useNewExamStore();
 const { increaseCounter, decreaseCounter } = useNewExamStore();
 const steps = new Array(3).fill("");
 const firstStep = computed(() => newExamStore.form.examFormat);
@@ -124,17 +115,10 @@ const formVerifier = computed(() => [
 ]);
 const showNameExamModal = ref(false);
 const { createExam } = useExamServerStore();
-const {
-  loading: examServerLoading,
-  success: examServerSuccess,
-  exam,
-} = storeToRefs(useExamServerStore());
-const {
-  uploadPdfToCloudinary,
-  uploadDocument,
-  generatePdfBlob,
-  getPdfFromCloudinary,
-} = useDocumentStore();
+const { loading: examServerLoading, success: examServerSuccess } =
+  storeToRefs(useExamServerStore());
+const { uploadPdfToCloudinary, uploadDocument, generatePdfBlob } =
+  useDocumentStore();
 const { loading: documentLoading, result: documentResult } =
   storeToRefs(useDocumentStore());
 
@@ -214,14 +198,6 @@ watch(
     sessionStorage.setItem("examId", n);
   },
 );
-
-onMounted(async () => {
-  if (examId.value && exam.value) {
-    const fileBlob = await getPdfFromCloudinary(exam.value.question);
-    await uploadDocument({ file: fileBlob }, false);
-    updateExamStore(exam.value, questionFormatTeacher(documentResult.value));
-  }
-});
 </script>
 
 <style scoped>

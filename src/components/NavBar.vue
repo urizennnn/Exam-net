@@ -6,12 +6,11 @@
     <img src="../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]" />
 
     <!-- Mobile Menu Button -->
-    <button
+    <AppButton
       @click="toggleMenuOpen"
-      class="lg:hidden cursor-pointer text-white text-2xl outline-none py-[0.85rem]"
-    >
-      <i :class="menuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"></i>
-    </button>
+      :left-icon="`${menuOpen ? 'i-lucide-x' : 'i-tabler-menu-2'}`"
+      class="lg:hidden cursor-pointer text-white text-3xl outline-none py-[0.85rem]"
+    />
 
     <!-- Links -->
     <nav class="hidden lg:flex items-center gap-4">
@@ -24,17 +23,19 @@
         exact
       >
         <p class="capitalize flex gap-2 items-center">
-          <i :class="navLink.icon"></i> {{ navLink.label }}
+          <UIcon class="text-xl" :name="navLink.icon" /> {{ navLink.label }}
         </p>
-        <div v-if="navLink.notification" class="text-orange-500">
-          <i class="fa-solid fa-circle-exclamation"></i>
-        </div>
+        <UIcon
+          name="i-tabler-exclamation-circle-filled"
+          v-if="navLink.notification"
+          class="text-orange-500 text-xl"
+        />
       </RouterLink>
-      <i
-        class="fa-solid fa-right-from-bracket text-white"
-        role="button"
+      <AppButton
+        left-icon="i-tabler-logout"
+        class="text-white text-2xl"
         @click="logout"
-      ></i>
+      />
     </nav>
 
     <!-- Mobile Nav Bar -->
@@ -51,21 +52,24 @@
         exact
       >
         <p class="capitalize flex gap-2 items-center">
-          <i :class="navLink.icon"></i> {{ navLink.label }}
+          <UIcon class="text-xl" :name="navLink.icon" /> {{ navLink.label }}
         </p>
-        <div v-if="navLink.notification" class="text-orange-500">
-          <i class="fa-solid fa-circle-exclamation"></i>
-        </div>
+        <UIcon
+          name="i-tabler-exclamation-circle-filled"
+          v-if="navLink.notification"
+          class="text-orange-500 text-xl"
+        />
       </RouterLink>
-      <i
-        class="fa-solid fa-right-from-bracket text-white px-3 py-[1.22rem]"
+      <AppButton
+        left-icon="i-tabler-logout"
+        class="text-white px-3 py-[1.22rem] text-2xl"
         @click="
           () => {
             toggleMenuOpen();
             logout();
           }
         "
-      ></i>
+      />
     </nav>
   </section>
 </template>
@@ -80,43 +84,37 @@ const navLinks = [
   {
     label: "new exam",
     to: "/new-exam",
-    icon: "fa-solid fa-pencil",
+    icon: "i-tabler-pencil",
     notification: false,
   },
   {
     label: "Exam",
     to: "/exams",
-    icon: "fa-solid fa-bars",
+    icon: "i-tabler-menu-2",
     notification: false,
   },
   {
     label: "Monitoring/Results",
     to: "/monitoring-results",
-    icon: "fa-solid fa-desktop",
+    icon: "i-tabler-device-desktop-check",
     notification: false,
   },
   {
     label: "School",
     to: "/license",
-    icon: "fa-solid fa-house",
+    icon: "i-tabler-school",
     notification: true,
   },
   {
     label: "Profile",
     to: "/profile",
-    icon: "fa-solid fa-user",
-    notification: false,
-  },
-  {
-    label: "Training",
-    to: "/training",
-    icon: "fa-solid fa-circle-play",
+    icon: "i-tabler-user",
     notification: false,
   },
   {
     label: "Support",
     to: "/support",
-    icon: "fa-solid fa-circle-question",
+    icon: "i-tabler-help-circle-filled",
     notification: false,
   },
 ];

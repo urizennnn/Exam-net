@@ -1,16 +1,6 @@
 <template>
   <section class="bg-zinc-300 text-black" id="section">
     <div class="section-container-width">
-      <!-- <p -->
-      <!--   class="w-full text-right pt-4 flex gap-3 items-center justify-end cursor-pointer select-none" -->
-      <!-- > -->
-      <!--   <UIcon -->
-      <!--     :name="`i-lucide-${systemNotification ? 'bell' : 'bell-off'}`" -->
-      <!--     class="size-6" -->
-      <!--   /> -->
-      <!--   System Notification: {{ systemNotification ? "On" : "Off" }} -->
-      <!-- </p> -->
-
       <section class="pt-4 w-full flex gap-3">
         <aside class="w-full max-w-[300px]">
           <AppSelectMenu
@@ -25,12 +15,6 @@
             <UIcon name="i-lucide-house" class="size-5" />
             Overview
           </h1>
-          <AppInput
-            placeholder="Search name"
-            class="mt-4"
-            base-class="bg-white"
-          />
-          <AppToggleButton id="showName" label="Show names" class="mt-3" />
         </aside>
 
         <div class="bg-white rounded-md w-full">
@@ -140,16 +124,6 @@
                   @click="button.clickAction"
                   :loading="examServerLoading || documentLoading"
                   theme="primary"
-                />
-              </div>
-
-              <div class="mt-4">
-                <AppTab
-                  :tabs="resultsTab"
-                  v-model="selectedResultTab"
-                  theme="variant"
-                  class="py-1 tracking-wider hover:border-b-3 hover:border-zinc-800 mr-4 text-zinc-600 hover:text-zinc-800"
-                  activeClass="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer"
                 />
               </div>
 
@@ -357,14 +331,13 @@ const {
   exam,
 } = storeToRefs(useExamServerStore());
 
+const { loading: documentLoading } = storeToRefs(useDocumentStore());
+
 const { getPdfFromCloudinary } = useDocumentStore();
-const { loading: documentLoading, success: documentSuccess } =
-  storeToRefs(useDocumentStore());
 
 const routes = useRoute();
 const router = useRouter();
 
-// const systemNotification = ref(false);
 const allAvailableExams = computed(() =>
   exams.value.map((exam) => exam.examName),
 );
@@ -415,7 +388,6 @@ const buttonList = computed(() => [
     leftIcon: "i-lucide-binoculars",
     to: `/preview/${currentExam.value?._id}`,
   },
-  { label: "Anonymous identities", leftIcon: "i-lucide-eye-off" },
 ]);
 
 const buttonListTwo = ref([
@@ -448,14 +420,6 @@ const buttonListTwo = ref([
 //   { name: "Victor" },
 //   { name: "Fara" },
 // ]);
-
-const resultsTab = ref<TabsType[]>([
-  { isActive: true, label: "Student", value: "student" },
-  { isActive: false, label: "Questions", value: "question" },
-  { isActive: false, label: "Statistics", value: "statistics" },
-]);
-
-const selectedResultTab = ref(resultsTab.value[0].value);
 
 const columns: TableColumn<any>[] = [
   { accessorKey: "name", header: "Student" },
@@ -577,7 +541,7 @@ watch(
 onMounted(async () => {
   await getExams();
   if (routes.params.id) {
-    await getExam({ id: routes.params.id as string });
+    exam.value = exams.value.find((exam) => exam._id === routes.params.id);
     examTitle.value = currentExam.value.examName;
   } else {
     examTitle.value = exams.value[0].examName || "";

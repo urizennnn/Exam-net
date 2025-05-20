@@ -29,6 +29,7 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@iconify-json/tabler": "^1.2.18",
     "@tailwindcss/postcss": "^4.0.12",
     "@types/node": "^22.15.17",
     "@vitejs/plugin-vue": "^5.2.1",

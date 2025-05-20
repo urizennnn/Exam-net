@@ -83,7 +83,6 @@ export const useAuthStore = defineStore("auth", {
     },
     logout() {
       this.clearAccessToken();
-      // successToast("Logout Success");
       router.push({
         name: "login",
       });

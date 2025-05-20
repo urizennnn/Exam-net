@@ -1,4 +1,16 @@
 <template>
+  <div class="px-3" v-if="filterBy">
+    <AppInput
+      :model-value="table?.tableApi?.getColumn(filterBy)?.getFilterValue()"
+      class="max-w-sm"
+      baseClass="p-2!"
+      :placeholder="`Filter ${filterBy}...`"
+      @update:model-value="
+        table?.tableApi?.getColumn(filterBy)?.setFilterValue($event)
+      "
+    />
+  </div>
+
   <UTable
     :data="rowsComputed"
     :columns="columnsComputed"
@@ -49,6 +61,7 @@ const props = defineProps({
     type: String,
     default: "info",
   },
+  filterBy: String,
 });
 
 const emit = defineEmits<{

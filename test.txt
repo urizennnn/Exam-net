@@ -1,13 +1,6 @@
-Testing pre-commit hook
-Testing pre-commit hook
-
 Todo:
 2. On the first page after login, it should welcome the user with the propriate details
-3. moving the training, school from the navbar
-4. On the Exams page, make it searchable, giving them a field to search for a particular exam by name
-5. on the exams table remove the Status column, "start date/time" that is when the exam is created and an "end time" and when the exam ends
 6. when the user clicks on scheduled , it should show the calendar modal
-7. in the options remove "move to groups" option
 8. the edit mode should take them to the exam text alone
 9. in monitoring and result page remove the show names section
 10. remove some redundant buttons in the monitoring and result page, remove the questions tabs

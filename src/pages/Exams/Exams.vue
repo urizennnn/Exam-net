@@ -3,36 +3,15 @@
     class="relative w-full bg-zinc-300 flex items-center justify-center text-black"
     id="section"
   >
-    <div class="section-container-width">
+    <div class="container m-auto pb-8 px-8">
       <div class="w-full flex flex-col rounded-2xl shadow-xl overflow-hidden">
-        <div
-          class="bg-blue-950 text-white p-3 rounded-t-lg flex justify-between items-center"
+        <section
+          class="bg-blue-950 text-white p-3 rounded-t-lg flex justify-center items-center"
         >
-          <div></div>
           <h1 class="text-[18px] md:text-[20px] tracking-wide">Exams</h1>
-          <!-- <div class="flex gap-1 items-center"> -->
-          <!--   <UButton -->
-          <!--     icon="i-lucide-cog" -->
-          <!--     color="neutral" -->
-          <!--     variant="link" -->
-          <!--     class="text-white cursor-pointer" -->
-          <!--   /> -->
-          <!--   <UButton -->
-          <!--     icon="i-lucide-chevron-down" -->
-          <!--     class="text-white cursor-pointer" -->
-          <!--     color="neutral" -->
-          <!--     variant="link" -->
-          <!--   /> -->
-          <!--   <UButton -->
-          <!--     icon="i-lucide-arrow-big-down-dash" -->
-          <!--     class="text-white cursor-pointer" -->
-          <!--     color="neutral" -->
-          <!--     variant="link" -->
-          <!--   /> -->
-          <!-- </div> -->
-        </div>
+        </section>
         <template v-if="exams.length > 0">
-          <div :class="`bg-blue-950 py-1 flex gaitems-center`">
+          <section :class="`bg-blue-950 py-1 flex gaitems-center`">
             <AppButton
               color="neutral"
               class="cursor-pointer size-9 text-white"
@@ -46,26 +25,16 @@
               @click="action.onClick"
               :loading="examServerLoading"
             />
-          </div>
+          </section>
         </template>
-        <template v-if="exams.length > 0 || examServerLoading">
+        <div class="bg-white pt-2" v-if="exams.length > 0 || examServerLoading">
           <AppTable
             @update:rowSelection="onRowSelection"
             :columns="columns"
             :rows="rows"
             :loading="examServerLoading"
+            filter-by="name"
           >
-            <template #row="{ row }">
-              <p>
-                {{ row.original.name }}
-              </p>
-              <p>
-                {{ row.original.createdAt }}
-              </p>
-              <p>
-                {{ row.original.access }}
-              </p>
-            </template>
             <template #action-cell="{ row }">
               <div class="flex gap-2 items-center">
                 <AppButton
@@ -111,15 +80,13 @@
               </div>
             </template>
           </AppTable>
-        </template>
+        </div>
         <div
           class="w-full h-full flex gap-3 items-center justify-center bg-white flex-col px-4 py-4"
         >
           <template v-if="exams.length === 0 && !examServerLoading">
             <UIcon name="i-lucide-file" class="text-gray-700 size-12" />
-            <p class="font-semibold text-gray-700 text-[16px]">
-              No exams in this group yet
-            </p>
+            <p class="font-semibold text-gray-700 text-[16px]">No exams yet</p>
           </template>
           <AppButton
             :leftIcon="`${exams.length === 0 ? 'i-lucide-plus' : ''}`"
@@ -132,26 +99,11 @@
         </div>
       </div>
     </div>
-    <i
-      class="absolute left-4 bottom-4 fa-solid fa-magnifying-glass bg-white p-4 rounded-md shadow-lg"
-    ></i>
-    <i
-      class="absolute right-4 bottom-4 fa-solid fa-question text-white bg-sky-400 rounded-full px-5 py-4"
-    ></i>
   </section>
 
   <AppModal v-model="renameExamModal" title="Rename Exam">
     <template #body>
       <AppInput v-model="examNewName" />
-    </template>
-  </AppModal>
-
-  <AppModal v-model="groupsModal" title="Move exam to group">
-    <template #body>
-      <p class="text-center">No Group is created</p>
-    </template>
-    <template #footer>
-      <AppButton theme="secondary" label="Move" class="px-4! py-2!" />
     </template>
   </AppModal>
 </template>
@@ -176,6 +128,7 @@ const {
 const { formStepTwoCounter } = storeToRefs(useNewExamStore());
 const UCheckbox = resolveComponent("UCheckbox");
 const USelect = resolveComponent("USelect");
+const AppButton = resolveComponent("AppButton");
 const columns = computed<TableColumn<any>[]>(() => [
   {
     id: "select",
@@ -207,11 +160,37 @@ const columns = computed<TableColumn<any>[]>(() => [
   },
   {
     accessorKey: "name",
-    header: "Exam name",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+
+      return h(AppButton, {
+        label: "Name",
+        rightIcon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : "i-lucide-arrow-up-down",
+        class: "flex gap-1",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
   },
   {
     accessorKey: "key",
-    header: "Exam Key",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+
+      return h(AppButton, {
+        label: "Exam Key",
+        rightIcon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : "i-lucide-arrow-up-down",
+        class: "flex gap-1",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
     cell: ({ row }) =>
       h(
         "p",
@@ -224,11 +203,37 @@ const columns = computed<TableColumn<any>[]>(() => [
   },
   {
     accessorKey: "createdAt",
-    header: "Created",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+
+      return h(AppButton, {
+        label: "Start Date",
+        rightIcon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : "i-lucide-arrow-up-down",
+        class: "flex gap-1",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
   },
   {
-    id: "status",
-    header: "Status",
+    accessorKey: "endDate",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+
+      return h(AppButton, {
+        label: "End Date",
+        rightIcon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : "i-lucide-arrow-up-down",
+        class: "flex gap-1",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
   },
   {
     accessorKey: "access",
@@ -254,15 +259,9 @@ const columns = computed<TableColumn<any>[]>(() => [
       ];
 
       const currentValue = row.original.access;
-      const options = predefinedOptions.map((options) =>
-        options.some((option) => option.value === currentValue),
-      )
-        ? predefinedOptions
-        : [{ value: currentValue, label: currentValue }, ...predefinedOptions];
-
       return h(USelect, {
         modelValue: currentValue,
-        items: options,
+        items: predefinedOptions,
         class: "w-40 outline-none bg-inherit text-black",
         color: "info",
         ui: {
@@ -281,15 +280,13 @@ const rows = computed(() =>
     id: exam._id,
     name: exam.examName,
     createdAt: new Date(exam.createdAt).toLocaleDateString(),
+    endDate: exam?.endDate
+      ? new Date(exam?.endDate).toLocaleDateString()
+      : "Not Ended",
     access: exam.access,
     key: exam.examKey,
   })),
 );
-
-const groupsModal = ref(false);
-function toggleGroupModal(ids: any[] = []) {
-  groupsModal.value = !groupsModal.value;
-}
 
 const selectedRows = ref<any[]>([]);
 function onRowSelection(items: any[]) {
@@ -297,11 +294,6 @@ function onRowSelection(items: any[]) {
 }
 
 const iconActions = ref([
-  {
-    title: "Move Selected Exam to group",
-    icon: "i-lucide-circle-arrow-right",
-    onClick: () => toggleGroupModal(selectedRows.value),
-  },
   {
     title: "Archive Selected Exams",
     icon: "i-lucide-archive",
@@ -338,11 +330,6 @@ function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
       },
     ],
     [
-      {
-        label: "Move to Group",
-        icon: "i-lucide-circle-arrow-right",
-        onSelect: () => toggleGroupModal([exam.id]),
-      },
       {
         label: "Archive the Exam",
         icon: "i-lucide-archive",

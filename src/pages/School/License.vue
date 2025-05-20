@@ -4,7 +4,7 @@
     id="section"
     class="relative w-full bg-zinc-300 flex items-center justify-center text-black"
   >
-    <div class="section-container-width">
+    <div class="container m-auto pb-8 px-8">
       <div class="w-full flex flex-col rounded-2xl shadow-xl overflow-hidden">
         <h1
           class="bg-blue-950 text-white p-3 rounded-t-lg text-center text-[18px] md:text-[20px] tracking-wide"
@@ -12,8 +12,11 @@
           License
         </h1>
         <div class="w-full h-full flex gap-4 bg-white! flex-col px-16 py-8">
-          <p class="text-[14px] md:text-[16px] font-sans">
-            <i class="text-red-500 fa-solid fa-triangle-exclamation"></i>
+          <p class="text-[14px] md:text-[16px] flex gap-1 items-center">
+            <UIcon
+              name="i-tabler-info-triangle-filled"
+              class="text-orange-400 text-lg"
+            />
             License
           </p>
           <div class="flex flex-col gap-3">
@@ -24,7 +27,7 @@
               You will get access as soon as the license is ordered.
             </p>
             <AppButton
-              class="py-1 px-4 rounded-4xl! text-black! border-2! text-lg!"
+              class="py-1 px-4 rounded-4xl! text-black! border-2! text-lg! w-fit!"
               label="See pricing and purchase a license"
             />
           </div>
@@ -38,7 +41,7 @@
             </p>
 
             <AppButton
-              class="py-1 px-4 rounded-4xl! text-black! border-2! text-lg!"
+              class="py-1 px-4 rounded-4xl! text-black! border-2! text-lg! w-fit!"
               label="Activate 5 days of temporary access"
             />
           </div>
@@ -46,8 +49,8 @@
           <div class="border border-[#d6d6d6] lg:w-1/2"></div>
 
           <div class="flex flex-col gap-4">
-            <p class="text-[14px] md:text-[16px]">
-              <i class="fa-solid fa-building"></i>
+            <p class="text-[14px] md:text-[16px] flex gap-1">
+              <UIcon name="i-tabler-building" class="text-xl" />
               School information
             </p>
             <p class="text-[14px] md:text-[16px]">Address</p>

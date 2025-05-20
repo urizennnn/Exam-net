@@ -56,10 +56,7 @@ export const useNewExamStore = defineStore("newExams", {
     increaseCounter() {
       this.counter += 1;
     },
-    decreaseCounter(examId: string) {
-      if (examId && this.counter === 2) {
-        this.formStepTwoCounter -= 1;
-      }
+    decreaseCounter() {
       if (this.counter == 2 && this.form.examFormat === "") {
         this.counter -= 1;
         return;
@@ -78,7 +75,6 @@ export const useNewExamStore = defineStore("newExams", {
     updateExamStore(exam: Exam, editorContent: string) {
       this.editorContent = editorContent;
       const { examName, examKey, settings, format } = exam;
-      // const { examType, general } = settings;
       this.examName = examName;
       this.examId = examKey;
 

@@ -235,7 +235,9 @@ onMounted(() => {
       newExamStore.editorContent = content;
       sessionStorage.setItem("editorContent", `${content}`);
     }
+    return;
   }
+  newExamStore.formStepTwoCounter === 1;
 });
 
 onUnmounted(() => {
@@ -262,14 +264,14 @@ watch(
 watch(
   () => newExamStore.formStepTwoCounter,
   (n) => {
-    sessionStorage.setItem("formStepTwoCounter", `${n}`);
+    sessionStorage.setItem("formStepTwoCounter", JSON.stringify(n));
   },
 );
 
 watch(
   () => newExamStore.editorContent,
   (n) => {
-    localStorage.setItem("editorContent", `${n}`);
+    localStorage.setItem("editorContent", JSON.stringify(n));
   },
 );
 
