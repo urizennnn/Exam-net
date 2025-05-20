@@ -106,26 +106,46 @@
       <AppInput v-model="examNewName" />
     </template>
   </AppModal>
+
+  <AppModal
+    v-model="scheduleModal"
+    :title="`Schedule '${scheduleModalTitle}'`"
+    :dismissible="false"
+  >
+    <template #body>
+      <div class="flex gap-2 justify-between w-full items-center">
+        <div class="flex flex-col gap-1 w-full">
+          <p class="text-gray-600 text-md">Start Date</p>
+          <AppInput type="date" v-model="scheduleForm.startDate" />
+        </div>
+        <div class="flex flex-col gap-1 w-full">
+          <p class="text-gray-600 text-md">Start time (local time)</p>
+          <AppInput type="time" v-model="scheduleForm.startTime" />
+        </div>
+      </div>
+    </template>
+    <template #footer>
+      <AppButton
+        label="Save"
+        theme="secondary"
+        @click="clearNewExamData"
+        :disabled="isFormComplete(scheduleForm)"
+      />
+    </template>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
-import { clearNewExamData } from "../../utils/functions";
-import { ref, resolveComponent, h, computed } from "vue";
+import { clearNewExamData, isFormComplete } from "../../utils/functions";
+import { ref, reactive, resolveComponent, h, computed } from "vue";
 import { DropdownMenuItem, TableColumn } from "@nuxt/ui";
 import { useExamServerStore } from "../../store/server/exam";
 import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { errorToast, successToast } from "../../utils/toast";
-import { useNewExamStore } from "../../store/NewExamStore";
-import { useRouter } from "vue-router";
 
-const { getExams, deleteExam, deleteExams, getExam } = useExamServerStore();
-const {
-  exams,
-  loading: examServerLoading,
-  success: examServerSuccess,
-} = storeToRefs(useExamServerStore());
-const { formStepTwoCounter } = storeToRefs(useNewExamStore());
+const { getExams, deleteExam, deleteExams } = useExamServerStore();
+const { exams, loading: examServerLoading } = storeToRefs(useExamServerStore());
 const UCheckbox = resolveComponent("UCheckbox");
 const USelect = resolveComponent("USelect");
 const AppButton = resolveComponent("AppButton");
@@ -238,7 +258,7 @@ const columns = computed<TableColumn<any>[]>(() => [
   {
     accessorKey: "access",
     header: "Access",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const predefinedOptions = [
         [
           { value: "open", label: "Open", chip: { color: "success" } },
@@ -257,11 +277,18 @@ const columns = computed<TableColumn<any>[]>(() => [
           },
         ],
       ];
-
-      const currentValue = row.original.access;
       return h(USelect, {
-        modelValue: currentValue,
+        modelValue: row.original.access,
+        "onUpdate:modelValue": (val: string) => {
+          row.original.access = val;
+          table.options.data[row.index].access = val;
+
+          if (val === "scheduled") {
+            toggleScheduleModal(row.original.name);
+          }
+        },
         items: predefinedOptions,
+        loadind: examServerLoading,
         class: "w-40 outline-none bg-inherit text-black",
         color: "info",
         ui: {
@@ -345,6 +372,17 @@ function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
     ],
   ];
 }
+
+const scheduleModal = ref(false);
+const scheduleModalTitle = ref("");
+function toggleScheduleModal(examName: string = "") {
+  scheduleModalTitle.value = examName;
+  scheduleModal.value = !scheduleModal.value;
+}
+const scheduleForm = reactive({
+  startDate: "",
+  startTime: "",
+});
 
 function copyKey(key: string) {
   navigator.clipboard
