@@ -71,7 +71,17 @@
       v-if="newExamStore.formStepTwoCounter === 3"
       class="w-full h-fit overflow-auto"
     >
-      <AppEditor v-model="newExamStore.editorContent" />
+      <div
+        v-if="documentLoading || examServerLoading"
+        class="p-8 w-full flex items-center justify-center"
+      >
+        <AppButton
+          left-icon="i-tabler-loader-2"
+          :loading="documentLoading || examServerLoading"
+          class="text-center text-5xl w-fit!"
+        />
+      </div>
+      <AppEditor v-else v-model="newExamStore.editorContent" />
     </div>
   </section>
   <AppModal v-model="uploadExamQuestionsModal" title="Upload PDF file">
@@ -102,17 +112,22 @@ import { useNewExamStore } from "../../store/NewExamStore";
 import { useDocumentStore } from "../../store/server/document";
 import { hasTrueValue, questionFormatTeacher } from "../../utils/functions";
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
+import { useExamServerStore } from "../../store/server/exam";
 
 const newExamStore = useNewExamStore();
 const documentStore = useDocumentStore();
-const { uploadDocument } = useDocumentStore();
+const { uploadDocument, getPdfFromCloudinary } = useDocumentStore();
 const { increaseFormStepTwoCounter } = useNewExamStore();
 const {
   loading: documentLoading,
   success: documentSuccess,
   result: documentResult,
 } = storeToRefs(useDocumentStore());
+const { getExam } = useExamServerStore();
+const { loading: examServerLoading, exam } = storeToRefs(useExamServerStore());
 const fileUpload = ref(null);
+const route = useRoute();
 const answerTypeList = ref<
   {
     label: string;
@@ -126,54 +141,54 @@ const answerTypeList = ref<
     label: "information block",
     value: newExamStore.formStepTwo.informationBlock,
     tag: "informationBlock",
-    icon: "fa-solid fa-circle-info",
+    icon: "i-tabler-info-circle-filled",
   },
   {
     label: "Multiple choice",
     value: newExamStore.formStepTwo.multipleChoice,
     tag: "multipleChoice",
-    icon: "fa-solid fa-list-ul",
+    icon: "i-tabler-list",
     auto: true,
   },
   {
     label: "Simple Answer",
     value: newExamStore.formStepTwo.simpleAnswer,
     tag: "simpleAnswer",
-    icon: "fa-regular fa-equals",
+    icon: "i-tabler-menu",
     auto: true,
   },
   {
     label: "Fill the gaps",
     value: newExamStore.formStepTwo.fillTheGaps,
     tag: "fillTheGaps",
-    icon: "fa-solid fa-link-slash",
+    icon: "i-tabler-plug-connected",
     auto: true,
   },
   {
     label: "Match answers",
     value: newExamStore.formStepTwo.matchAnswer,
     tag: "matchAnswer",
-    icon: "fa-solid fa-diagram-predecessor",
+    icon: "i-tabler-git-compare",
     auto: true,
   },
   {
     label: "Grid",
     value: newExamStore.formStepTwo.grid,
     tag: "grid",
-    icon: "fa-solid fa-grip",
+    icon: "i-tabler-layout-grid-filled",
     auto: true,
   },
   {
     label: "Free text",
     value: newExamStore.formStepTwo.freeText,
     tag: "freeText",
-    icon: "fa-solid fa-align-left",
+    icon: "i-tabler-align-left",
   },
   {
     label: "Student answers with attachment",
     value: newExamStore.formStepTwo.attachment,
     tag: "attachment",
-    icon: "fa-solid fa-paperclip",
+    icon: "i-tabler-paperclip",
   },
 ]);
 const contentTypes = [
@@ -223,8 +238,25 @@ function saveAnswerType() {
   });
 }
 
-onMounted(() => {
+onMounted(async () => {
   newExamStore.counter = 2;
+  if (route.params.id) {
+    newExamStore.formStepTwoCounter = 3;
+    await getExam({
+      id: route.params.id as string,
+    });
+    const file = await getPdfFromCloudinary(exam.value.question);
+    await uploadDocument(
+      {
+        file,
+      },
+      false,
+    );
+    if (documentSuccess.value) {
+      newExamStore.editorContent = questionFormatTeacher(documentResult.value);
+    }
+    return;
+  }
   if (
     newExamStore.counter === 2 &&
     newExamStore.form.examFormat != "question"

@@ -1,7 +1,4 @@
 Todo:
 2. On the first page after login, it should welcome the user with the propriate details
 6. when the user clicks on scheduled , it should show the calendar modal
-8. the edit mode should take them to the exam text alone
-9. in monitoring and result page remove the show names section
-10. remove some redundant buttons in the monitoring and result page, remove the questions tabs
 11. send exams to student, set it up for bulk upload

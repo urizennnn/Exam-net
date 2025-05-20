@@ -7,7 +7,7 @@
       <template v-if="auto">
         <h1 class="text-white absolute top-1 left-1 text-sm">A</h1>
       </template>
-      <i :class="icon"></i>
+      <UIcon :name="icon" class="text-5xl" />
     </div>
     <p class="text-sm text-gray-800 font-medium">{{ label }}</p>
   </label>

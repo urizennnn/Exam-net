@@ -41,8 +41,8 @@
                   left-icon="i-lucide-pencil"
                   theme="primary"
                   class="border-black border-2! rounded-4xl!"
-                  @click="handleGetExam(row.original.id)"
                   title="Edit Exam"
+                  :to="`/new-exam/new-question/${row.original.id}`"
                   :loading="examServerLoading"
                 />
                 <AppButton
@@ -345,7 +345,6 @@ function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
     ],
   ];
 }
-const router = useRouter();
 
 function copyKey(key: string) {
   navigator.clipboard
@@ -369,17 +368,6 @@ async function handleExamsDelete() {
   const payload = selectedRows.value.map((item) => item.id);
   await deleteExams(payload);
   await getExams();
-}
-
-async function handleGetExam(id: string) {
-  await getExam({
-    id,
-  });
-
-  if (examServerSuccess.value) {
-    formStepTwoCounter.value = 1;
-    router.push(`/new-question/${id}`);
-  }
 }
 
 onMounted(async () => {

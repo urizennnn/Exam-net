@@ -43,7 +43,7 @@ const router = createRouter({
           component: Exams,
         },
         {
-          path: "new-exam/:id?",
+          path: "new-exam",
           component: NewExamLayout,
           children: [
             {
@@ -52,12 +52,12 @@ const router = createRouter({
               component: ExamFormat,
             },
             {
-              path: "/new-question/:id?",
+              path: "new-question/:id?",
               name: "new-question",
               component: NewQuestion,
             },
             {
-              path: "/exam-config/:id?",
+              path: "exam-config",
               name: "examConfiguration",
               component: ExamConfig,
             },

@@ -1,9 +1,10 @@
 <template>
-  <div class="px-3" v-if="filterBy">
+  <div class="px-3" v-if="filterBy && !loading">
     <AppInput
       :model-value="table?.tableApi?.getColumn(filterBy)?.getFilterValue()"
       class="max-w-sm"
       baseClass="p-2!"
+      :loading="loading"
       :placeholder="`Filter ${filterBy}...`"
       @update:model-value="
         table?.tableApi?.getColumn(filterBy)?.setFilterValue($event)

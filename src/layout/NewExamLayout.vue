@@ -4,62 +4,63 @@
       <div
         class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-neutral-400 px-4 bg-neutral-200 shadow-md gap-4"
       >
-        <AppInput
-          placeholder="Enter the Exam Name"
-          baseClass="ring-2 ring-neutral-400 bg-white"
+        <div v-if="route.params.id"></div>
+        <AppButton
+          @click="decreaseCounter"
+          v-else-if="newExamStore.counter > 1"
+          class="border-none! text-lg! font-semibold! text-black"
+          label="Back"
+          leftIcon="i-lucide-arrow-left"
         />
-        <div class="flex items-center md:gap-2 gap-4">
-          <AppButton
-            @click="decreaseCounter"
-            v-if="newExamStore.counter > 1"
-            class="border-none! text-lg! font-semibold! text-black"
-            label="Back"
-            leftIcon="i-lucide-arrow-left"
-          />
-          <div class="flex items-center gap-1">
-            <template v-for="(_, index) in steps" :key="index">
-              <UIcon
-                name="i-tabler-check"
-                v-if="index + 1 < newExamStore.counter"
-                class="text-center text-neutral-200 font-semibold rounded-full text-4xl p-1 bg-blue-400"
-              />
-              <p
-                v-else
-                :class="`border-2 ${index + 1 === newExamStore.counter ? 'border-blue-400 text-blue-400' : 'border-neutral-400 text-neutral-400'} text-center  font-semibold rounded-full w-8 h-8 text-xl`"
-              >
-                {{ index + 1 }}
-              </p>
-              <UIcon
-                name="i-tabler-minus"
-                :class="`${index + 1 === newExamStore.counter ? 'text-blue-400' : 'text-neutral-400'}`"
-                v-if="index < steps.length - 1"
-              />
-            </template>
-          </div>
-        </div>
-        <div class="flex gap-1">
-          <template v-if="newExamStore.counter != steps.length">
-            <template v-for="(verifier, index) in formVerifier" :key="index">
-              <AppButton
-                v-if="index + 1 === newExamStore.counter"
-                :disabled="verifier.validator"
-                @click="increaseCounter"
-                label="Next"
-                theme="secondary"
-                rightIcon="i-lucide-arrow-right"
-              />
-            </template>
-          </template>
-          <template v-else>
-            <AppButton
-              label="Save"
-              theme="secondary"
-              leftIcon="i-lucide-save"
-              @click="toggleShowNameExamModal"
+        <div class="flex items-center gap-1">
+          <template v-if="route.params.id"></template>
+          <template v-else v-for="(_, index) in steps" :key="index">
+            <UIcon
+              name="i-tabler-check"
+              v-if="index + 1 < newExamStore.counter"
+              class="text-center text-neutral-200 font-semibold rounded-full text-4xl p-1 bg-blue-400"
+            />
+            <p
+              v-else
+              :class="`border-2 ${index + 1 === newExamStore.counter ? 'border-blue-400 text-blue-400' : 'border-neutral-400 text-neutral-400'} text-center  font-semibold rounded-full w-8 h-8 text-xl`"
+            >
+              {{ index + 1 }}
+            </p>
+            <UIcon
+              name="i-tabler-minus"
+              :class="`${index + 1 === newExamStore.counter ? 'text-blue-400' : 'text-neutral-400'}`"
+              v-if="index < steps.length - 1"
             />
           </template>
-          <i class="fa-solid fa-circle-question" role="button"></i>
         </div>
+        <template v-if="route.params.id">
+          <AppButton
+            label="Save"
+            theme="secondary"
+            leftIcon="i-lucide-save"
+            class="flex gap-1 items-center"
+          />
+        </template>
+        <template v-else-if="newExamStore.counter != steps.length">
+          <template v-for="(verifier, index) in formVerifier" :key="index">
+            <AppButton
+              v-if="index + 1 === newExamStore.counter"
+              :disabled="verifier.validator"
+              @click="increaseCounter"
+              label="Next"
+              theme="secondary"
+              rightIcon="i-lucide-arrow-right"
+            />
+          </template>
+        </template>
+        <template v-else>
+          <AppButton
+            label="Save"
+            theme="secondary"
+            leftIcon="i-lucide-save"
+            @click="toggleShowNameExamModal"
+          />
+        </template>
       </div>
       <main>
         <RouterView />
@@ -89,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref, computed } from "vue";
+import { watch, ref, computed, onMounted } from "vue";
 import { RouterView, useRouter, useRoute } from "vue-router";
 import { useNewExamStore } from "../store/NewExamStore";
 import { useExamServerStore } from "../store/server/exam";
@@ -98,8 +99,8 @@ import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../store/server/document";
 
 const router = useRouter();
-const routes = useRoute();
-const examId = computed(() => routes.params.id);
+const route = useRoute();
+
 const newExamStore = useNewExamStore();
 const { generateExamKey } = useNewExamStore();
 const { increaseCounter, decreaseCounter } = useNewExamStore();
@@ -169,6 +170,10 @@ async function submitExam() {
   }
 }
 
+onMounted(() => {
+  console.log(route.params.id);
+});
+
 watch(
   () => newExamStore.counter,
   (n) => {
@@ -176,11 +181,9 @@ watch(
     if (n === 1) {
       router.push("/new-exam");
     } else if (n === 2) {
-      router.push("/new-question");
-    } else if (n === 3 && examId.value) {
-      router.push(`/exam-config/${examId.value}`);
+      router.push("/new-exam/new-question");
     } else if (n === 3) {
-      router.push(`/exam-config`);
+      router.push(`/new-exam/exam-config`);
     }
   },
 );
