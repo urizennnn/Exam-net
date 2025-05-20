@@ -84,17 +84,35 @@
                 </div>
 
                 <div class="w-full px-4 flex flex-col gap-4">
-                  <AppButton
-                    v-for="(button, index) in buttonList"
-                    :key="index"
-                    :label="button.label"
-                    :leftIcon="button.leftIcon"
-                    :loading="examServerLoading"
-                    theme="primary"
-                    class="w-full! items-center justify-center rounded-3xl!"
-                    :to="button.to"
-                    @click="button.click"
-                  />
+                  <template v-for="(button, index) in buttonList" :key="index">
+                    <UDropdownMenu
+                      :items="button.children"
+                      v-if="button?.children"
+                      :ui="{
+                        content: 'bg-white shadow cursor-pointer',
+                        item: 'cursor-pointer text-black hover:bg-black rounded',
+                      }"
+                      :disabled="examServerLoading"
+                    >
+                      <AppButton
+                        :label="button.label"
+                        :leftIcon="button.leftIcon"
+                        :loading="examServerLoading"
+                        theme="primary"
+                        class="w-full! items-center justify-center rounded-3xl!"
+                      />
+                    </UDropdownMenu>
+                    <AppButton
+                      v-else
+                      :label="button.label"
+                      :leftIcon="button.leftIcon"
+                      :loading="examServerLoading"
+                      theme="primary"
+                      class="w-full! items-center justify-center rounded-3xl!"
+                      :to="button.to"
+                      @click="button.click"
+                    />
+                  </template>
                 </div>
               </section>
             </template>
@@ -310,6 +328,32 @@
       <iframe :src="studentsTransciptUrl" width="100%" height="100%"></iframe>
     </template>
   </AppModal>
+
+  <AppModal
+    v-model="bulkStudentUploadModal"
+    title="Invite students to Take Exam"
+  >
+    <template #body>
+      <div class="flex gap-2">
+        <AppInput type="file" v-model="bulkFile" />
+        <AppButton
+          label="Download Template"
+          @click="downloadFile('emails_and_names.csv')"
+          class="rounded-xl! px-8"
+          theme="secondary"
+        />
+      </div>
+    </template>
+    <template #footer>
+      <AppButton
+        label="Invite"
+        @click="toggleBulkStudentUploadModal"
+        class="w-fit! px-8"
+        :disabled="!bulkFile"
+        theme="secondary"
+      />
+    </template>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -320,6 +364,7 @@ import { useExamServerStore } from "../../store/server/exam";
 import { storeToRefs } from "pinia";
 import { useDocumentStore } from "../../store/server/document";
 import { useRoute, useRouter } from "vue-router";
+import { downloadFile } from "../../utils/functions";
 
 const { getExams, inviteStudentToExam, getExam, dropInviteStudent } =
   useExamServerStore();
@@ -379,7 +424,18 @@ const buttonList = computed(() => [
   {
     label: "Send Exam to Student",
     leftIcon: "i-lucide-share-2",
-    click: toggleShowInviteStudent,
+    children: [
+      {
+        label: "Single",
+        onSelect: () => toggleShowInviteStudent(),
+        icon: "i-tabler-multiplier-1x",
+      },
+      {
+        label: "Bulk",
+        icon: "i-tabler-multiplier-2x",
+        onSelect: () => toggleBulkStudentUploadModal(),
+      },
+    ],
   },
   { label: "End the exam for students", leftIcon: "i-lucide-step-forward" },
   { label: "Set a timer for the students", leftIcon: "i-lucide-clock" },
@@ -445,9 +501,20 @@ const showInviteStudent = ref(false);
 const showInvitesModal = ref(false);
 const sendModal = ref(false);
 
+const bulkStudentUploadModal = ref(false);
+const bulkFile = ref(null);
+
 function toggleShowInviteStudent() {
   showInviteStudent.value = !showInviteStudent.value;
   if (!showInviteStudent.value) studentsEmail.value = [];
+}
+
+function toggleBulkStudentUploadModal() {
+  bulkStudentUploadModal.value = !bulkStudentUploadModal.value;
+
+  if (!bulkStudentUploadModal.value) {
+    bulkFile.value = null;
+  }
 }
 
 function toggleShowInvitesModal() {

@@ -91,3 +91,13 @@ export function questionFormatTeacher(
     </ol>
   `.trim();
 }
+
+export function downloadFile(fileName: string) {
+  const fileURL = fileName;
+  const link = document.createElement("a");
+  link.href = `/files/${fileURL}`;
+  link.download = fileURL;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
