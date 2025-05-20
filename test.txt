@@ -1,6 +1,5 @@
 Todo:
 2. On the first page after login, it should welcome the user with the propriate details
-4. On the Exams page, make it searchable, giving them a field to search for a particular exam by name
 6. when the user clicks on scheduled , it should show the calendar modal
 8. the edit mode should take them to the exam text alone
 9. in monitoring and result page remove the show names section
