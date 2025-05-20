@@ -35,25 +35,13 @@
                     <USkeleton class="w-20 h-10" v-if="examServerLoading" />
                     <p v-else>{{ currentExam?.examKey }}</p>
                   </div>
-                  <AppSelect
-                    label="Access"
-                    :loading="examServerLoading"
-                    :items="accessOptions"
-                    v-model="accessValue"
-                  />
-                  <!-- <div class="flex gap-6 items-center font-light text-black text-xl justify-between"> -->
-                  <!--   <p>Teachers</p> -->
-                  <!--   <div class="flex"> -->
-                  <!--     <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index" :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : '' -->
-                  <!--       } py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`"> -->
-                  <!--       {{ teacher.name[0].toUpperCase() }} -->
-                  <!--     </i> -->
-                  <!--     <AppButton -->
-                  <!--       class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5! rounded-full! bg-white" -->
-                  <!--       icon="i-lucide-share-2" size="xl" theme="primary" /> -->
-                  <!--   </div> -->
-                  <!-- </div> -->
-
+                  <div
+                    class="flex gap-6 items-center w-full justify-between text-black text-xl"
+                  >
+                    <p class="font-light">Access</p>
+                    <USkeleton class="w-20 h-10" v-if="examServerLoading" />
+                    <p v-else>{{ currentExam?.access }}</p>
+                  </div>
                   <div class="mt-4">
                     <h4 class="font-bold">Student Status</h4>
                     <div class="flex gap-2 w-full mt-3">
@@ -118,19 +106,6 @@
             </template>
 
             <template v-if="selectSelectedTab === 'results'">
-              <!-- <div -->
-              <!--   class="w-full max-w-[350px] my-8 flex gap-6 items-center font-light text-black text-xl justify-between"> -->
-              <!--   <p>Teachers</p> -->
-              <!--   <div class="flex"> -->
-              <!--     <i v-for="(teacher, index) in teachersList.slice(0, 3)" :key="index" :class="`z-[${index}] ${index > 0 ? 'ml-[-20px]' : '' -->
-              <!--       } py-3 px-5 bg-gray-400 border border-white text-white rounded-full select-none`"> -->
-              <!--       {{ teacher.name[0].toUpperCase() }} -->
-              <!--     </i> -->
-              <!--     <AppButton class="border-gray-500 text-gray-400 py-3 ml-[-20px] z-[5] px-3.5! rounded-full! bg-white" -->
-              <!--       icon="i-lucide-share-2" size="xl" theme="primary" /> -->
-              <!--   </div> -->
-              <!-- </div> -->
-
               <div class="my-8 w-full px-4 flex gap-4">
                 <AppButton
                   v-for="(button, index) in buttonListTwo"
@@ -438,7 +413,6 @@ const buttonList = computed(() => [
     ],
   },
   { label: "End the exam for students", leftIcon: "i-lucide-step-forward" },
-  { label: "Set a timer for the students", leftIcon: "i-lucide-clock" },
   {
     label: "Preview exam",
     leftIcon: "i-lucide-binoculars",
@@ -476,7 +450,6 @@ const buttonListTwo = ref([
 //   { name: "Victor" },
 //   { name: "Fara" },
 // ]);
-
 
 const columns: TableColumn<any>[] = [
   { accessorKey: "name", header: "Student" },
