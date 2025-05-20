@@ -11,6 +11,11 @@
     <section
       class="w-full flex flex-col items-center h-screen justify-center p-4"
     >
+      <img
+        src="../../assets/svg/Asset 7.svg"
+        alt="logo"
+        class="w-[100px] h-[100px]"
+      />
       <AppForm :state="registerForm" title="Register" @submit="onSubmit">
         <UFormField label="Name" name="name" :ui="FormFieldUI">
           <UInput
