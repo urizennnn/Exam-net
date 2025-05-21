@@ -11,6 +11,7 @@ const props = defineProps({
   },
   variant: String,
   description: String,
+  loading: Boolean,
 });
 const open = defineModel<boolean>({
   default: false,
@@ -21,7 +22,7 @@ const open = defineModel<boolean>({
   <UModal
     v-model:open="open"
     :title="title"
-    :dismissible="dismissible"
+    :dismissible="dismissible || !loading"
     :variant="variant"
     :description="description"
     :ui="{

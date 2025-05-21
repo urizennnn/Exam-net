@@ -41,6 +41,7 @@ const {
 const {
   exams,
   loading: examServerLoading,
+  success: examServerSuccess,
 } = storeToRefs(useExamServerStore());
 const UCheckbox = resolveComponent("UCheckbox");
 const USelect = resolveComponent("USelect");
@@ -255,13 +256,25 @@ const iconActions = ref([
 
 const renameExamModal = ref(false);
 const examNewName = ref("");
-function toggleRanameExamModal(currentName: string = "") {
+const renameExamId = ref("");
+function toggleRanameExamModal(currentName: string = "", examId: string = "") {
   renameExamModal.value = !renameExamModal.value;
   if (renameExamModal.value) {
     examNewName.value = currentName;
+    renameExamId.value = examId;
   }
   else {
     examNewName.value = "";
+  }
+}
+async function handleExamRename() {
+  await examUpdate(renameExamId.value, {
+    examName: examNewName.value,
+  });
+
+  if (examServerSuccess.value) {
+    toggleRanameExamModal();
+    await getExams();
   }
 }
 
@@ -275,7 +288,7 @@ function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
       {
         label: "Rename Exam",
         icon: "i-lucide-folder-pen",
-        onSelect: () => toggleRanameExamModal(exam.name),
+        onSelect: () => toggleRanameExamModal(exam.name, exam.id),
       },
     ],
     [
@@ -445,6 +458,15 @@ onMounted(async () => {
   <AppModal v-model="renameExamModal" title="Rename Exam">
     <template #body>
       <AppInput v-model="examNewName" />
+    </template>
+    <template #footer>
+      <AppButton
+        label="Change Name"
+        theme="secondary"
+        :disabled="!examNewName"
+        :loading="examServerLoading"
+        @click="handleExamRename"
+      />
     </template>
   </AppModal>
 
