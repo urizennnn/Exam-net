@@ -233,5 +233,30 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
+
+    async examUpdate(examId: string, payload: object) {
+      try {
+        this.success = false;
+        this.loading = true;
+        const {
+          data,
+        } = await axiosInstance.patch(`/exams/update/${examId}`, payload);
+        const {
+          message,
+        } = data;
+        this.success = true;
+        successToast(message);
+      }
+      catch (error: any) {
+        this.success = false;
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
+        errorToast(errorMessage);
+        throw new Error(errorMessage);
+      }
+      finally {
+        this.loading = false;
+      }
+    },
   },
 });

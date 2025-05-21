@@ -4,7 +4,6 @@ import {
 } from "pinia";
 import {
   computed,
-  onMounted,
   ref,
   watch,
 } from "vue";
@@ -14,6 +13,7 @@ import {
   useRouter,
 } from "vue-router";
 
+import AppButton from "../components/AppButton.vue";
 import {
   useNewExamStore,
 } from "../store/NewExamStore";
@@ -45,15 +45,16 @@ const steps = Array.from({
 const firstStep = computed(() => newExamStore.form.examFormat);
 const formVerifier = computed(() => [
   {
-    validator: firstStep.value == "",
+    validator: firstStep.value === "",
   },
   {
-    validator: newExamStore.editorContent == "",
+    validator: newExamStore.editorContent === "",
   },
 ]);
 const showNameExamModal = ref(false);
 const {
   createExam,
+  examUpdate,
 } = useExamServerStore();
 const {
   loading: examServerLoading,
@@ -118,9 +119,24 @@ async function submitExam() {
   }
 }
 
-onMounted(() => {
-  console.log(route.params.id);
-});
+async function handleQuestionUpdate() {
+  const file = await generatePdfBlob(newExamStore.editorContent);
+  const {
+    url,
+  } = await uploadPdfToCloudinary(file);
+  if (!documentResult.value) {
+    await uploadDocument({
+      file,
+    }, false);
+  }
+  await examUpdate(route.params.id, {
+    question: url,
+  });
+
+  if (examServerSuccess.value) {
+    router.push("/exams");
+  }
+}
 
 watch(() => newExamStore.counter, (n) => {
   sessionStorage.setItem("counter", `${n}`);
@@ -150,7 +166,13 @@ watch(() => newExamStore.examId, (n) => {
       <div
         class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-neutral-400 px-4 bg-neutral-200 shadow-md gap-4"
       >
-        <div v-if="route.params.id" />
+        <AppButton
+          v-if="route.params.id"
+          class="border-none! text-lg! font-semibold! text-black"
+          label="Back"
+          left-icon="i-lucide-arrow-left"
+          to="/exams"
+        />
         <AppButton
           v-else-if="newExamStore.counter > 1"
           class="border-none! text-lg! font-semibold! text-black"
@@ -185,9 +207,11 @@ watch(() => newExamStore.examId, (n) => {
             theme="secondary"
             left-icon="i-lucide-save"
             class="flex gap-1 items-center"
+            :loading="examServerLoading || documentLoading"
+            @click="handleQuestionUpdate"
           />
         </template>
-        <template v-else-if="newExamStore.counter != steps.length">
+        <template v-else-if="newExamStore.counter !== steps.length">
           <template v-for="(verifier, index) in formVerifier" :key="index">
             <AppButton
               v-if="index + 1 === newExamStore.counter"
