@@ -6,7 +6,6 @@ import {
 } from "uid";
 
 import type {
-  Exam,
   FormStepTwo,
   NewExamStore,
 } from "../utils/types";
@@ -69,11 +68,11 @@ export const useNewExamStore = defineStore("newExams", {
       this.counter += 1;
     },
     decreaseCounter() {
-      if (this.counter == 2 && this.form.examFormat === "") {
+      if (this.counter === 2 && this.form.examFormat === "") {
         this.counter -= 1;
         return;
       }
-      else if (this.counter == 2 && this.formStepTwoCounter > 1) {
+      else if (this.counter === 2 && this.formStepTwoCounter > 1) {
         this.formStepTwoCounter -= 1;
         return;
       }
@@ -84,28 +83,6 @@ export const useNewExamStore = defineStore("newExams", {
     },
     generateExamKey() {
       this.examId = uid(7);
-    },
-    updateExamStore(exam: Exam, editorContent: string) {
-      this.editorContent = editorContent;
-      const {
-        examName,
-        examKey,
-        settings,
-        format,
-      } = exam;
-      this.examName = examName;
-      this.examId = examKey;
-
-      const formatKeys = new Set(format);
-      this.formStepTwo = Object.fromEntries(Object.entries(formStepTwoDefaults).map(([key, def]) => {
-        if (formatKeys.has(key)) {
-          const raw = sessionStorage.getItem(key);
-          return [key, raw !== null
-            ? JSON.parse(raw)
-            : def];
-        }
-        return [key, def];
-      })) as FormStepTwo;
     },
   },
 });

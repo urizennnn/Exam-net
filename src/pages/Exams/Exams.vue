@@ -5,6 +5,9 @@ import type {
 } from "@nuxt/ui";
 
 import {
+  access,
+} from "node:fs";
+import {
   storeToRefs,
 } from "pinia";
 import {
@@ -33,6 +36,7 @@ const {
   getExams,
   deleteExam,
   deleteExams,
+  examUpdate,
 } = useExamServerStore();
 const {
   exams,
@@ -180,13 +184,6 @@ const columns = computed<TableColumn<any>[]>(() => [
               color: "error",
             },
           },
-          {
-            value: "discoverable",
-            label: "Discoverable",
-            chip: {
-              color: "info",
-            },
-          },
         ],
         [
           {
@@ -198,16 +195,22 @@ const columns = computed<TableColumn<any>[]>(() => [
       ];
       return h(USelect, {
         "modelValue": row.original.access,
-        "onUpdate:modelValue": (val: string) => {
+        "onUpdate:modelValue": async (val: string) => {
           row.original.access = val;
           table.options.data[row.index].access = val;
 
           if (val === "scheduled") {
             toggleScheduleModal(row.original.name);
           }
+          else {
+            await examUpdate(row.original.id, {
+              access: val,
+            });
+          }
         },
         "items": predefinedOptions,
-        "loadind": examServerLoading,
+        "loading": examServerLoading.value,
+        "disabled": examServerLoading.value,
         "class": "w-40 outline-none bg-inherit text-black",
         "color": "info",
         "ui": {
