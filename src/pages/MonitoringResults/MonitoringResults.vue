@@ -504,6 +504,10 @@ onMounted(async () => {
                   </div>
                 </template>
               </AppTable>
+
+              <div v-if="selectedResultTab === 'statistics'">
+                <AppPieChart :rows="rows" />
+              </div>
             </template>
           </main>
         </div>
