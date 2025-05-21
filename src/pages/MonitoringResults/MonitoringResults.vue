@@ -132,17 +132,18 @@ const buttonList = computed(() => [
 
 const buttonListTwo = ref([
   {
-    label: "Export",
+    label: "Export as CSV",
     leftIcon: "i-lucide-file-down",
+    clickAction: exportCsv,
   },
-  {
-    label: "Download",
-    leftIcon: "i-lucide-arrow-down",
-  },
-  {
-    label: "Print",
-    leftIcon: "i-lucide-printer",
-  },
+  // {
+  //   label: "Download",
+  //   leftIcon: "i-lucide-arrow-down",
+  // },
+  // {
+  //   label: "Print",
+  //   leftIcon: "i-lucide-printer",
+  // },
   {
     label: "Send",
     leftIcon: "i-lucide-mail",
@@ -256,6 +257,23 @@ function openTranscript(url: string) {
   }
 }
 
+function exportCsv() {
+  const header = ["Student", "Points", "Submission Time"];
+  const data = [header, ...rows.value.map(r => [r.name, String(r.score), r.submissionTime])];
+
+  const csv = data.map(r => r.map(cell => `"${cell.replace(/"/g, "\"\"")}"`).join(",")).join("\n");
+
+  const blob = new Blob([csv], {
+    type: "text/csv;charset=utf-8;",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "exam-results.csv";
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 const accessValue = ref("");
 
 const viewOptionShow = ref(true);
@@ -279,6 +297,21 @@ async function toggleTranscriptModal(transcriptUrl: string) {
   studentsTransciptUrl.value = URL.createObjectURL(file);
   transcriptModal.value = true;
 }
+
+const resultsTab = ref<TabsType[]>([
+  {
+    isActive: true,
+    label: "Student",
+    value: "student",
+  },
+  {
+    isActive: false,
+    label: "Statistics",
+    value: "statistics",
+  },
+]);
+
+const selectedResultTab = ref(resultsTab.value[0].value);
 
 watch(() => examTitle.value, async (newTitle) => {
   currentId.value = exams.value.find(e => e.examName === newTitle)._id;
@@ -353,7 +386,7 @@ onMounted(async () => {
                       Access
                     </p>
                     <USkeleton v-if="examServerLoading" class="w-20 h-10" />
-                    <p v-else>
+                    <p v-else class="capitalize">
                       {{ currentExam?.access }}
                     </p>
                   </div>
@@ -428,15 +461,24 @@ onMounted(async () => {
                   :key="index"
                   :label="button.label"
                   :left-icon="button.leftIcon"
-                  :right-icon="button.rightIcon"
                   class="w-full! items-center justify-center rounded-3xl!"
                   :loading="examServerLoading || documentLoading"
                   theme="primary"
                   @click="button.clickAction"
                 />
               </div>
+              <div class="mt-4">
+                <AppTab
+                  v-model="selectedResultTab"
+                  :tabs="resultsTab"
+                  theme="variant"
+                  class="py-1 tracking-wider hover:border-b-3 hover:border-zinc-800 mr-4 text-zinc-600 hover:text-zinc-800"
+                  active-class="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer"
+                />
+              </div>
 
               <AppTable
+                v-if="selectedResultTab === 'student'"
                 :columns="columns"
                 :rows="rows"
                 :loading="examServerLoading || documentLoading"
