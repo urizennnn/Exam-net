@@ -151,7 +151,7 @@ async function submitUploadDocumentForm() {
 
 function saveAnswerType() {
   increaseFormStepTwoCounter();
-  answerTypeList.value.map((items) => {
+  answerTypeList.value.forEach((items) => {
     newExamStore.formStepTwo[items.tag] = items.value;
     sessionStorage.setItem(items.tag, `${items.value}`);
   });
@@ -175,7 +175,7 @@ onMounted(async () => {
   }
   if (
     newExamStore.counter === 2
-    && newExamStore.form.examFormat != "question"
+    && newExamStore.form.examFormat !== "question"
   ) {
     newExamStore.formStepTwoCounter = 3;
     const content = questionFormatTeacher(documentStore.result);
@@ -185,11 +185,11 @@ onMounted(async () => {
     }
     return;
   }
-  newExamStore.formStepTwoCounter === 1;
+  newExamStore.formStepTwoCounter = 1;
 });
 
 onUnmounted(() => {
-  if (newExamStore.counter == 1 && newExamStore.form.examFormat === "") {
+  if (newExamStore.counter === 1 && newExamStore.form.examFormat === "") {
     newExamStore.formStepTwoCounter = 1;
     newExamStore.editorContent = "";
     sessionStorage.setItem("editorContent", "");
@@ -197,7 +197,7 @@ onUnmounted(() => {
 });
 
 watch(() => answerTypeList, (n) => {
-  n.value.map((items) => {
+  n.value.forEach((items) => {
     newExamStore.formStepTwo[items.tag] = items.value;
     sessionStorage.setItem(items.tag, `${items.value}`);
   });

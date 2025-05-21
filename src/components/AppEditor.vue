@@ -68,7 +68,6 @@ import {
   onMounted,
   ref,
   useTemplateRef,
-  watch,
 } from "vue";
 import "ckeditor5/ckeditor5.css";
 
@@ -292,13 +291,12 @@ function onReady(editor) {
 <template>
   <div class="main-container">
     <div
-      ref="editorContainerElement"
       class="editor-container editor-container_document-editor"
     >
       <div ref="editorToolbarElement" class="editor-container__toolbar" />
       <div class="editor-container__editor-wrapper">
         <div class="editor-container__editor">
-          <div ref="editorElement">
+          <div>
             <Ckeditor
               v-if="editor && config"
               v-model="model"

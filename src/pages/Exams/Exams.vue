@@ -5,9 +5,6 @@ import type {
 } from "@nuxt/ui";
 
 import {
-  access,
-} from "node:fs";
-import {
   storeToRefs,
 } from "pinia";
 import {

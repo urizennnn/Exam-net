@@ -18,9 +18,6 @@ import {
 } from "vue-router";
 
 import {
-  useNewExamStore,
-} from "../../store/NewExamStore";
-import {
   useDocumentStore,
 } from "../../store/server/document";
 import {

@@ -41,7 +41,7 @@ const model = defineModel({
 });
 
 function handleTabSwitch(tabindex: number) {
-  tabsFromProps.value.map((tab, index) => {
+  tabsFromProps.value.forEach((tab, index) => {
     if (tabindex === index) {
       tab.isActive = true;
       model.value = tab.value;

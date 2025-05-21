@@ -86,11 +86,11 @@ onMounted(() => {
 });
 
 watch(() => generalConfigs, (n) => {
-  n.value.map((items) => {
+  n.value.forEach((items) => {
     newExamStore.configOptions[items.tag] = items.value;
     sessionStorage.setItem(items.tag, `${items.value}`);
     if (items.children) {
-      items.children.map((item) => {
+      items.children.forEach((item) => {
         newExamStore.configOptions[item.tag] = item.value;
         sessionStorage.setItem(item.tag, `${item.value}`);
       });
@@ -101,7 +101,7 @@ watch(() => generalConfigs, (n) => {
 });
 
 watch(() => examTypeSettingConfigs, (n) => {
-  n.value.map((items) => {
+  n.value.forEach((items) => {
     newExamStore.configOptions[items.tag] = items.value;
     sessionStorage.setItem(items.tag, `${items.value}`);
   });
@@ -148,7 +148,7 @@ watch(() => examTypeSettingConfigs, (n) => {
               {{ config.description }}
             </p>
             <template v-if="config.children && config.value">
-              <div v-for="(child, index) in config.children" :key="index">
+              <div v-for="child in config.children" :key="child.value">
                 <AppInput
                   v-model="child.value"
                   :label="child.label"

@@ -9,7 +9,6 @@ import {
 import {
   computed,
   onMounted,
-  reactive,
   ref,
   watch,
 } from "vue";
@@ -135,22 +134,18 @@ const buttonListTwo = ref([
   {
     label: "Export",
     leftIcon: "i-lucide-file-down",
-    rightIcon: "i-lucide-chevron-down",
   },
   {
     label: "Download",
     leftIcon: "i-lucide-arrow-down",
-    rightIcon: "i-lucide-chevron-down",
   },
   {
     label: "Print",
     leftIcon: "i-lucide-printer",
-    rightIcon: "i-lucide-chevron-down",
   },
   {
     label: "Send",
     leftIcon: "i-lucide-mail",
-    rightIcon: "i-lucide-chevron-down",
     clickAction: toggleSendModal,
   },
 ]);
@@ -188,6 +183,15 @@ const studentsEmail = ref<string[]>([]);
 const showInviteStudent = ref(false);
 const showInvitesModal = ref(false);
 const sendModal = ref(false);
+const filterEmail = ref("");
+
+const filteredInvites = computed(() => {
+  const term = filterEmail.value.trim().toLowerCase();
+  if (!term)
+    return currentExam.value?.invites;
+  return currentExam.value?.invites.filter(email =>
+    email.toLowerCase().includes(term));
+});
 
 const bulkStudentUploadModal = ref(false);
 const bulkFile = ref(null);
@@ -228,7 +232,7 @@ async function handleInviteStudent() {
 }
 
 async function handleBulkUpload() {
-  await inviteStudentInBulk(routes.params.id, {
+  await inviteStudentInBulk(routes.params.id as string, {
     file: bulkFile.value,
   });
 
@@ -253,26 +257,8 @@ function openTranscript(url: string) {
 }
 
 const accessValue = ref("");
-const sendExamTimeLimit = reactive({
-  number: 15,
-  type: "hours",
-});
-const viewOptionShow = ref(true);
-const sendModelViewOption = ref([
-  {
-    label: "Show all",
-    value: true,
-  },
-  {
-    label: "Show points and feedback",
-    value: false,
-  },
-  {
-    label: "Customize",
-    value: false,
-  },
-]);
 
+const viewOptionShow = ref(true);
 const transcriptModal = ref(false);
 const studentsTransciptUrl = ref<any>(null);
 
@@ -280,10 +266,6 @@ function toggleSendModal() {
   sendModal.value = !sendModal.value;
   if (!sendModal.value)
     viewOptionShow.value = false;
-}
-
-function toggleViewOptionShow() {
-  viewOptionShow.value = !viewOptionShow.value;
 }
 
 async function toggleTranscriptModal(transcriptUrl: string) {
@@ -555,84 +537,18 @@ onMounted(async () => {
         This will send a link to the student which can be used to see the
         answers and the marking.
       </p>
-      <section class="grid gap-6 grid-cols-2">
-        <div>
-          <h1 class="p-2 bg-blue-100 text-blue-500 font-bold rounded-t-lg">
-            Settings
-          </h1>
-          <div class="text-gray-600 flex flex-col gap-4 mt-3">
-            <h2>
-              <i class="fa-regular fa-clock" />
-              Time Limit
-            </h2>
-            <p>Select how long this link is valid</p>
-            <div class="flex gap-3">
-              <AppInput
-                v-model="sendExamTimeLimit.number"
-                theme="secondary"
-                type="number"
-                max="60"
-                min="15"
-              />
-              <select
-                v-model="sendExamTimeLimit.type"
-                value="hours"
-                class="border-b border-b-gray-600 w-full"
-              >
-                <option value="hours">
-                  hours
-                </option>
-                <option value="minutes">
-                  minutes
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="text-gray-600 flex flex-col gap-4 mt-4">
-            <div class="flex items-center justify-between">
-              <h1>
-                <i class="fa-solid fa-eye-slash" />
-                View options
-              </h1>
-              <i
-                :class="`cursor-pointer fa-solid ${
-                  !viewOptionShow ? 'fa-angle-down' : 'fa-angle-up'
-                }`"
-                role="button"
-                @click="toggleViewOptionShow"
-              />
-            </div>
-            <div
-              v-for="(option, index) in sendModelViewOption"
-              v-show="viewOptionShow"
-              :key="index"
-              class="flex flex-col gap-1"
-            >
-              <label
-                :for="`radio-${index}`"
-                class="flex items-center gap-3 select-none cursor-pointer"
-              >
-                <input
-                  :id="`radio-${index}`"
-                  v-model="option.value"
-                  type="radio"
-                  name="viewOptionRadio"
-                >
-                <p>{{ option.label }}</p>
-              </label>
-            </div>
-            <AppButton label="Preview settings" class="rounded-4xl! px-5!" />
-          </div>
-        </div>
-        <div class="rounded-lg">
-          <h1 class="p-2 bg-blue-500 text-white font-bold rounded-t-lg">
-            Students
-          </h1>
-        </div>
-      </section>
+      <AppInput v-model="filterEmail" placeholder="Filter email..." />
+      <div class="rounded-lg overflow-scroll max-h-[500px] h-auto w-full mt-2">
+        <h1 class="p-2 bg-blue-500 text-white font-bold rounded-t-lg">
+          Students
+        </h1>
+        <p v-for="invitee in filteredInvites" :key="invitee" class="flex items-center justify-between p-2 border-b-1">
+          {{ invitee }} <AppButton label="Send" theme="secondary" />
+        </p>
+      </div>
     </template>
     <template #footer>
-      <AppButton label="Send" class="w-fit! px-8" @click="toggleSendModal" />
+      <AppButton label="Send to All" class="w-fit! px-8" theme="secondary" @click="toggleSendModal" />
     </template>
   </AppModal>
 
