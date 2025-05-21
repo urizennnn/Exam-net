@@ -98,7 +98,7 @@ export const useDocumentStore = defineStore("documents", {
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const temp = document.createElement("div");
       temp.innerHTML = htmlContent;
-      const fullText = temp.innerText || "";
+      const fullText = temp.textContent || "";
 
       const fontSize = 10;
       const lineHeight = fontSize * 1.2;

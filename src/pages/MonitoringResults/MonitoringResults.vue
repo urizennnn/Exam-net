@@ -37,6 +37,7 @@ const {
   inviteStudentToExam,
   getExam,
   dropInviteStudent,
+  inviteStudentInBulk,
 }
   = useExamServerStore();
 
@@ -223,6 +224,16 @@ async function handleInviteStudent() {
     await getExam({
       id: currentExam.value!._id,
     });
+  }
+}
+
+async function handleBulkUpload() {
+  await inviteStudentInBulk(routes.params.id, {
+    file: bulkFile.value,
+  });
+
+  if (examServerSuccess.value) {
+    toggleBulkStudentUploadModal();
   }
 }
 
@@ -637,7 +648,7 @@ onMounted(async () => {
   >
     <template #body>
       <div class="flex gap-2">
-        <AppInput v-model="bulkFile" type="file" />
+        <AppInput v-model="bulkFile" type="file" accept=".csv" />
         <AppButton
           label="Download Template"
           class="rounded-xl! px-8"
@@ -652,7 +663,8 @@ onMounted(async () => {
         class="w-fit! px-8"
         :disabled="!bulkFile"
         theme="secondary"
-        @click="toggleBulkStudentUploadModal"
+        :loading="examServerLoading"
+        @click="handleBulkUpload"
       />
     </template>
   </AppModal>
