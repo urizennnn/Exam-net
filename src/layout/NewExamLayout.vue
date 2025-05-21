@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import {
+  storeToRefs,
+} from "pinia";
+import {
   computed,
   onMounted,
   ref,
@@ -10,9 +13,13 @@ import {
   useRoute,
   useRouter,
 } from "vue-router";
+
 import {
   useNewExamStore,
 } from "../store/NewExamStore";
+import {
+  useDocumentStore,
+} from "../store/server/document";
 import {
   useExamServerStore,
 } from "../store/server/exam";
@@ -20,12 +27,6 @@ import {
   clearNewExamData,
   getTrueKeys,
 } from "../utils/functions";
-import {
-  storeToRefs,
-} from "pinia";
-import {
-  useDocumentStore,
-} from "../store/server/document";
 
 const router = useRouter();
 const route = useRoute();

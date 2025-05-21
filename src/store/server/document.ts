@@ -1,10 +1,17 @@
 import {
+  PDFDocument,
+  rgb,
+  StandardFonts,
+} from "pdf-lib";
+import {
   defineStore,
 } from "pinia";
+
 import type {
   BaseState,
   UploadDocumentPayload,
 } from "../../utils/types";
+
 import {
   axiosInstance,
 } from "../../utils/axiosConfig";
@@ -12,11 +19,6 @@ import {
   errorToast,
   successToast,
 } from "../../utils/toast";
-import {
-  PDFDocument,
-  rgb,
-  StandardFonts,
-} from "pdf-lib";
 
 type DocumentStore = {
   result: {

@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import {
+  storeToRefs,
+} from "pinia";
+import {
   onMounted,
   onUnmounted,
   ref,
   watch,
 } from "vue";
+import {
+  useRoute,
+} from "vue-router";
+
 import {
   useNewExamStore,
 } from "../../store/NewExamStore";
@@ -12,18 +19,12 @@ import {
   useDocumentStore,
 } from "../../store/server/document";
 import {
+  useExamServerStore,
+} from "../../store/server/exam";
+import {
   hasTrueValue,
   questionFormatTeacher,
 } from "../../utils/functions";
-import {
-  storeToRefs,
-} from "pinia";
-import {
-  useRoute,
-} from "vue-router";
-import {
-  useExamServerStore,
-} from "../../store/server/exam";
 
 const newExamStore = useNewExamStore();
 const documentStore = useDocumentStore();

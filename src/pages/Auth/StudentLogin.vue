@@ -5,14 +5,15 @@ import {
   ref,
 } from "vue";
 import {
+  useRouter,
+} from "vue-router";
+
+import {
   axiosInstance,
 } from "../../utils/axiosConfig";
 import {
   errorToast,
 } from "../../utils/toast";
-import {
-  useRouter,
-} from "vue-router";
 
 const router = useRouter();
 const loading = ref(false);

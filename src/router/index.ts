@@ -2,20 +2,21 @@ import {
   createRouter,
   createWebHistory,
 } from "vue-router";
-import License from "../pages/School/License.vue";
-import Exams from "../pages/Exams/Exams.vue";
-import ExamFormat from "../pages/NewExam/ExamFormat.vue";
-import NewQuestion from "../pages/NewExam/NewQuestion.vue";
+
 import MainLayout from "../layout/MainLayout.vue";
 import NewExamLayout from "../layout/NewExamLayout.vue";
-import ExamConfig from "../pages/NewExam/ExamConfig.vue";
-import Preview from "../pages/Preview/Preview.vue";
-import NotFound from "../pages/NotFound.vue";
-import MonitoringResults from "../pages/MonitoringResults/MonitoringResults.vue";
-import Student from "../pages/Student/Student.vue";
-import Register from "../pages/Auth/Register.vue";
 import Login from "../pages/Auth/Login.vue";
+import Register from "../pages/Auth/Register.vue";
 import StudentLogin from "../pages/Auth/StudentLogin.vue";
+import Exams from "../pages/Exams/Exams.vue";
+import MonitoringResults from "../pages/MonitoringResults/MonitoringResults.vue";
+import ExamConfig from "../pages/NewExam/ExamConfig.vue";
+import ExamFormat from "../pages/NewExam/ExamFormat.vue";
+import NewQuestion from "../pages/NewExam/NewQuestion.vue";
+import NotFound from "../pages/NotFound.vue";
+import Preview from "../pages/Preview/Preview.vue";
+import License from "../pages/School/License.vue";
+import Student from "../pages/Student/Student.vue";
 import StudentSubmission from "../pages/Student/SubmissionNotification.vue";
 
 const router = createRouter({

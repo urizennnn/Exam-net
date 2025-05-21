@@ -1,15 +1,7 @@
 <script setup>
 import {
-  computed,
-  onMounted,
-  ref,
-  useTemplateRef,
-  watch,
-} from "vue";
-import {
   Ckeditor,
 } from "@ckeditor/ckeditor5-vue";
-
 import {
   Alignment,
   Autoformat,
@@ -71,6 +63,13 @@ import {
   TodoList,
   Underline,
 } from "ckeditor5";
+import {
+  computed,
+  onMounted,
+  ref,
+  useTemplateRef,
+  watch,
+} from "vue";
 import "ckeditor5/ckeditor5.css";
 
 const model = defineModel();

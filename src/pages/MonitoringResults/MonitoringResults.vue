@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import type {
+  TableColumn,
+} from "@nuxt/ui";
+
+import {
+  storeToRefs,
+} from "pinia";
 import {
   computed,
   onMounted,
@@ -6,25 +13,21 @@ import {
   ref,
   watch,
 } from "vue";
-import type {
-  TabsType,
-} from "../../utils/types";
-import type {
-  TableColumn,
-} from "@nuxt/ui";
-import {
-  useExamServerStore,
-} from "../../store/server/exam";
-import {
-  storeToRefs,
-} from "pinia";
-import {
-  useDocumentStore,
-} from "../../store/server/document";
 import {
   useRoute,
   useRouter,
 } from "vue-router";
+
+import type {
+  TabsType,
+} from "../../utils/types";
+
+import {
+  useDocumentStore,
+} from "../../store/server/document";
+import {
+  useExamServerStore,
+} from "../../store/server/exam";
 import {
   downloadFile,
 } from "../../utils/functions";

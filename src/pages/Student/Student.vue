@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import {
+  storeToRefs,
+} from "pinia";
+import {
   computed,
   onBeforeUnmount,
   onMounted,
@@ -11,9 +14,7 @@ import {
   useRoute,
   useRouter,
 } from "vue-router";
-import {
-  storeToRefs,
-} from "pinia";
+
 import {
   useDocumentStore,
 } from "../../store/server/document";
@@ -21,12 +22,12 @@ import {
   useExamServerStore,
 } from "../../store/server/exam";
 import {
+  axiosInstance,
+} from "../../utils/axiosConfig";
+import {
   questionFormatTeacher,
   sanitize,
 } from "../../utils/functions";
-import {
-  axiosInstance,
-} from "../../utils/axiosConfig";
 
 const now = ref(new Date());
 let timer: number | null = null;

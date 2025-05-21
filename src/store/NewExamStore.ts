@@ -1,14 +1,16 @@
 import {
   defineStore,
 } from "pinia";
+import {
+  uid,
+} from "uid";
+
 import type {
   Exam,
   FormStepTwo,
   NewExamStore,
 } from "../utils/types";
-import {
-  uid,
-} from "uid";
+
 import {
   formStepTwoDefaults,
 } from "../utils/variables";

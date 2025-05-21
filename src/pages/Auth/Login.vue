@@ -1,18 +1,19 @@
 <script lang="ts" setup>
 import {
+  storeToRefs,
+} from "pinia";
+import {
   computed,
   reactive,
   ref,
 } from "vue";
 import {
-  useAuthStore,
-} from "../../store/server/auth";
-import {
-  storeToRefs,
-} from "pinia";
-import {
   useRouter,
 } from "vue-router";
+
+import {
+  useAuthStore,
+} from "../../store/server/auth";
 
 const loginForm = reactive({
   email: "",

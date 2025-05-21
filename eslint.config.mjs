@@ -20,6 +20,11 @@ export default antfu({
     "antfu/no-top-level-await": ["off"],
     "node/prefer-global/process": ["off"],
     "node/no-process-env": ["error"],
-    "perfectionist/sort-imports": "off",
+    "perfectionist/sort-imports": [
+      "error",
+      {
+        tsconfigRootDir: ".",
+      },
+    ],
   },
 });

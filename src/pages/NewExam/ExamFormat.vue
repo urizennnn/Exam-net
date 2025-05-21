@@ -1,21 +1,22 @@
 <script setup>
 import {
-  useNewExamStore,
-} from "../../store/NewExamStore";
-import {
-  useDocumentStore,
-} from "../../store/server/document";
+  storeToRefs,
+} from "pinia";
 import {
   onMounted,
   ref,
   watch,
 } from "vue";
 import {
-  storeToRefs,
-} from "pinia";
-import {
   useRouter,
 } from "vue-router";
+
+import {
+  useNewExamStore,
+} from "../../store/NewExamStore";
+import {
+  useDocumentStore,
+} from "../../store/server/document";
 
 const router = useRouter();
 const newExamStore = useNewExamStore();

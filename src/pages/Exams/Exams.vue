@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import type {
+  DropdownMenuItem,
+  TableColumn,
+} from "@nuxt/ui";
+
 import {
-  clearNewExamData,
-  isFormComplete,
-} from "../../utils/functions";
+  storeToRefs,
+} from "pinia";
 import {
   computed,
   h,
@@ -12,16 +16,14 @@ import {
   resolveComponent,
 
 } from "vue";
-import type {
-  DropdownMenuItem,
-  TableColumn,
-} from "@nuxt/ui";
+
 import {
   useExamServerStore,
 } from "../../store/server/exam";
 import {
-  storeToRefs,
-} from "pinia";
+  clearNewExamData,
+  isFormComplete,
+} from "../../utils/functions";
 import {
   errorToast,
   successToast,

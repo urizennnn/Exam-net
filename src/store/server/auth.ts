@@ -1,17 +1,19 @@
 import {
   defineStore,
 } from "pinia";
+
 import type {
   BaseState,
 } from "../../utils/types";
+
 import router from "../../router";
+import {
+  axiosInstance,
+} from "../../utils/axiosConfig";
 import {
   errorToast,
   successToast,
 } from "../../utils/toast";
-import {
-  axiosInstance,
-} from "../../utils/axiosConfig";
 
 type AuthState = {
   access: string;

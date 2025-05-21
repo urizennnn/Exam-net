@@ -1,17 +1,19 @@
 import {
   defineStore,
 } from "pinia";
+
 import type {
   BaseState,
   Exam,
 } from "../../utils/types";
+
+import {
+  axiosInstance,
+} from "../../utils/axiosConfig";
 import {
   errorToast,
   successToast,
 } from "../../utils/toast";
-import {
-  axiosInstance,
-} from "../../utils/axiosConfig";
 
 type ExamServerState = {
   exams: Exam[];

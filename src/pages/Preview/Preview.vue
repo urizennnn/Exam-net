@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
-  useNewExamStore,
-} from "../../store/NewExamStore";
+  storeToRefs,
+} from "pinia";
 import {
   Pane,
   Splitpanes,
@@ -14,20 +14,21 @@ import {
 
 } from "vue";
 import {
-  fileSize,
-} from "../../utils/variables";
-import {
   useRoute,
 } from "vue-router";
+
 import {
-  storeToRefs,
-} from "pinia";
+  useNewExamStore,
+} from "../../store/NewExamStore";
 import {
   useDocumentStore,
 } from "../../store/server/document";
 import {
   useExamServerStore,
 } from "../../store/server/exam";
+import {
+  fileSize,
+} from "../../utils/variables";
 
 const fileDirectionHorizontal = ref(false);
 const questionSection = ref(null);

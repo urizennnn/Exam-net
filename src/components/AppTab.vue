@@ -3,10 +3,12 @@ import type {
   PropType,
 
 } from "vue";
+
 import {
   onMounted,
   ref,
 } from "vue";
+
 import type {
   TabsType,
 } from "../utils/types";
