@@ -1,13 +1,9 @@
 <script setup></script>
 
-<template>
-  <UApp>
-    <RouterView />
-  </UApp>
-</template>
-
 <script setup>
-import { Cloudinary } from "@cloudinary/url-gen";
+import {
+  Cloudinary,
+} from "@cloudinary/url-gen";
 
 const cld = new Cloudinary({
   cloud: {
@@ -16,3 +12,9 @@ const cld = new Cloudinary({
   },
 });
 </script>
+
+<template>
+  <UApp>
+    <RouterView />
+  </UApp>
+</template>

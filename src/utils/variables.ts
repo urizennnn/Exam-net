@@ -1,4 +1,6 @@
-import { FormStepTwo } from "./types";
+import type {
+  FormStepTwo,
+} from "./types";
 
 export enum fileSize {
   min_size = 30,

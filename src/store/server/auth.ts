@@ -1,21 +1,30 @@
-import { defineStore } from "pinia";
-import { BaseState } from "../../utils/types";
+import {
+  defineStore,
+} from "pinia";
+import type {
+  BaseState,
+} from "../../utils/types";
 import router from "../../router";
-import { successToast, errorToast } from "../../utils/toast";
-import { axiosInstance } from "../../utils/axiosConfig";
+import {
+  errorToast,
+  successToast,
+} from "../../utils/toast";
+import {
+  axiosInstance,
+} from "../../utils/axiosConfig";
 
-interface AuthState extends BaseState {
+type AuthState = {
   access: string;
-}
+} & BaseState;
 
-interface LoginPayload {
+type LoginPayload = {
   email: string;
   password: string;
-}
+};
 
-interface RegisterPayload extends LoginPayload {
+type RegisterPayload = {
   name: string;
-}
+} & LoginPayload;
 
 export const useAuthStore = defineStore("auth", {
   state: (): AuthState => ({
@@ -28,19 +37,25 @@ export const useAuthStore = defineStore("auth", {
       try {
         this.success = false;
         this.loading = true;
-        const { data } = await axiosInstance.post("/users/login", payload);
-        const { access_token } = data;
+        const {
+          data,
+        } = await axiosInstance.post("/users/login", payload);
+        const {
+          access_token,
+        } = data;
         this.access = access_token;
         this.setAccessToken(access_token);
         successToast("Login Successful");
         this.success = true;
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },
@@ -48,17 +63,23 @@ export const useAuthStore = defineStore("auth", {
       try {
         this.success = false;
         this.loading = true;
-        const { data } = await axiosInstance.post("/users/signup", payload);
-        const { message } = data;
+        const {
+          data,
+        } = await axiosInstance.post("/users/signup", payload);
+        const {
+          message,
+        } = data;
         this.success = true;
         successToast(message);
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },

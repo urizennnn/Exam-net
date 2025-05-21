@@ -1,10 +1,24 @@
-import { defineStore } from "pinia";
-import { UploadDocumentPayload, BaseState } from "../../utils/types";
-import { axiosInstance } from "../../utils/axiosConfig";
-import { successToast, errorToast } from "../../utils/toast";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import {
+  defineStore,
+} from "pinia";
+import type {
+  BaseState,
+  UploadDocumentPayload,
+} from "../../utils/types";
+import {
+  axiosInstance,
+} from "../../utils/axiosConfig";
+import {
+  errorToast,
+  successToast,
+} from "../../utils/toast";
+import {
+  PDFDocument,
+  rgb,
+  StandardFonts,
+} from "pdf-lib";
 
-interface DocumentStore extends BaseState {
+type DocumentStore = {
   result: {
     type: string;
     question: string;
@@ -12,10 +26,10 @@ interface DocumentStore extends BaseState {
     answer: string;
     studentAnswer?: string;
   }[];
-}
+} & BaseState;
 
 function wait(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export const useDocumentStore = defineStore("documents", {
@@ -34,25 +48,29 @@ export const useDocumentStore = defineStore("documents", {
         const formData = new FormData();
         formData.append("file", payload.file);
 
-        const { data: initial } = await axiosInstance.post(
-          "/process",
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
+        const {
+          data: initial,
+        } = await axiosInstance.post("/process", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
           },
-        );
+        });
 
         const jobId = initial.jobId;
-        if (!jobId) throw new Error("No jobId returned from server");
+        if (!jobId) {
+          throw new Error("No jobId returned from server");
+        }
 
         while (true) {
-          const { data: job } = await axiosInstance.get(
-            `/process/job/${jobId}`,
-          );
+          const {
+            data: job,
+          } = await axiosInstance.get(`/process/job/${jobId}`);
           if (job.state === "completed") {
             this.result = job.result;
             this.success = true;
-            if (alert) successToast("File Uploaded");
+            if (alert) {
+              successToast("File Uploaded");
+            }
             break;
           }
           if (job.state === "failed") {
@@ -60,13 +78,15 @@ export const useDocumentStore = defineStore("documents", {
           }
           await wait(2000);
         }
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.message || error.response?.data?.message || "Network Error";
+        const errorMessage
+          = error.message || error.response?.data?.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },
@@ -95,13 +115,18 @@ export const useDocumentStore = defineStore("documents", {
           const w = font.widthOfTextAtSize(test, fontSize);
           if (w <= maxWidth) {
             line = test;
-          } else {
-            if (line) lines.push(line);
+          }
+          else {
+            if (line) {
+              lines.push(line);
+            }
             line = word;
           }
         }
 
-        if (line) lines.push(line);
+        if (line) {
+          lines.push(line);
+        }
         return lines;
       }
 
@@ -131,7 +156,9 @@ export const useDocumentStore = defineStore("documents", {
       }
 
       const pdfBytes = await pdfDoc.save();
-      return new Blob([pdfBytes], { type: "application/pdf" });
+      return new Blob([pdfBytes], {
+        type: "application/pdf",
+      });
     },
 
     async uploadPdfToCloudinary(pdfBlob: Blob) {
@@ -157,10 +184,14 @@ export const useDocumentStore = defineStore("documents", {
         }
 
         const data = await response.json();
-        return { url: data.secure_url };
-      } catch {
+        return {
+          url: data.secure_url,
+        };
+      }
+      catch {
         return null;
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },
@@ -172,9 +203,7 @@ export const useDocumentStore = defineStore("documents", {
 
         const res = await fetch(pdfUrl);
         if (!res.ok) {
-          throw new Error(
-            `Failed to fetch PDF: ${res.status} ${res.statusText}`,
-          );
+          throw new Error(`Failed to fetch PDF: ${res.status} ${res.statusText}`);
         }
 
         const blob = await res.blob();
@@ -185,12 +214,14 @@ export const useDocumentStore = defineStore("documents", {
           type: blob.type,
           lastModified: Date.now(),
         });
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
         const errorMessage = error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },

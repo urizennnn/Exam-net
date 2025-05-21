@@ -1,7 +1,17 @@
-import { defineStore } from "pinia";
-import { Exam, FormStepTwo, NewExamStore } from "../utils/types";
-import { uid } from "uid";
-import { formStepTwoDefaults } from "../utils/variables";
+import {
+  defineStore,
+} from "pinia";
+import type {
+  Exam,
+  FormStepTwo,
+  NewExamStore,
+} from "../utils/types";
+import {
+  uid,
+} from "uid";
+import {
+  formStepTwoDefaults,
+} from "../utils/variables";
 
 export const useNewExamStore = defineStore("newExams", {
   state: (): NewExamStore => ({
@@ -16,12 +26,12 @@ export const useNewExamStore = defineStore("newExams", {
     formStepTwoCounter: sessionStorage.getItem("formStepTwoCounter")
       ? JSON.parse(sessionStorage.getItem("formStepTwoCounter"))
       : 1,
-    formStepTwo: Object.fromEntries(
-      Object.entries(formStepTwoDefaults).map(([key, def]) => {
-        const raw = sessionStorage.getItem(key);
-        return [key, raw !== null ? JSON.parse(raw) : def];
-      }),
-    ) as FormStepTwo,
+    formStepTwo: Object.fromEntries(Object.entries(formStepTwoDefaults).map(([key, def]) => {
+      const raw = sessionStorage.getItem(key);
+      return [key, raw !== null
+        ? JSON.parse(raw)
+        : def];
+    })) as FormStepTwo,
     editorContent: sessionStorage.getItem("editorContent")
       ? sessionStorage.getItem("editorContent")
       : "",
@@ -60,7 +70,8 @@ export const useNewExamStore = defineStore("newExams", {
       if (this.counter == 2 && this.form.examFormat === "") {
         this.counter -= 1;
         return;
-      } else if (this.counter == 2 && this.formStepTwoCounter > 1) {
+      }
+      else if (this.counter == 2 && this.formStepTwoCounter > 1) {
         this.formStepTwoCounter -= 1;
         return;
       }
@@ -74,20 +85,25 @@ export const useNewExamStore = defineStore("newExams", {
     },
     updateExamStore(exam: Exam, editorContent: string) {
       this.editorContent = editorContent;
-      const { examName, examKey, settings, format } = exam;
+      const {
+        examName,
+        examKey,
+        settings,
+        format,
+      } = exam;
       this.examName = examName;
       this.examId = examKey;
 
       const formatKeys = new Set(format);
-      this.formStepTwo = Object.fromEntries(
-        Object.entries(formStepTwoDefaults).map(([key, def]) => {
-          if (formatKeys.has(key)) {
-            const raw = sessionStorage.getItem(key);
-            return [key, raw !== null ? JSON.parse(raw) : def];
-          }
-          return [key, def];
-        }),
-      ) as FormStepTwo;
+      this.formStepTwo = Object.fromEntries(Object.entries(formStepTwoDefaults).map(([key, def]) => {
+        if (formatKeys.has(key)) {
+          const raw = sessionStorage.getItem(key);
+          return [key, raw !== null
+            ? JSON.parse(raw)
+            : def];
+        }
+        return [key, def];
+      })) as FormStepTwo;
     },
   },
 });

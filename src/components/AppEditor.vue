@@ -1,33 +1,16 @@
-<template>
-  <div class="main-container">
-    <div
-      class="editor-container editor-container_document-editor"
-      ref="editorContainerElement"
-    >
-      <div class="editor-container__toolbar" ref="editorToolbarElement"></div>
-      <div class="editor-container__editor-wrapper">
-        <div class="editor-container__editor">
-          <div ref="editorElement">
-            <ckeditor
-              v-if="editor && config"
-              v-model="model"
-              :editor="editor"
-              :config="config"
-              @ready="onReady"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { computed, ref, onMounted, useTemplateRef, watch } from "vue";
-import { Ckeditor } from "@ckeditor/ckeditor5-vue";
+import {
+  computed,
+  onMounted,
+  ref,
+  useTemplateRef,
+  watch,
+} from "vue";
+import {
+  Ckeditor,
+} from "@ckeditor/ckeditor5-vue";
 
 import {
-  DecoupledEditor,
   Alignment,
   Autoformat,
   AutoImage,
@@ -36,6 +19,7 @@ import {
   Base64UploadAdapter,
   Bold,
   Code,
+  DecoupledEditor,
   Essentials,
   FindAndReplace,
   FontBackgroundColor,
@@ -300,11 +284,35 @@ onMounted(() => {
 });
 
 function onReady(editor) {
-  [...editorToolbar.value.children].forEach((child) => child.remove());
+  [...editorToolbar.value.children].forEach(child => child.remove());
 
   editorToolbar.value.appendChild(editor.ui.view.toolbar.element);
 }
 </script>
+
+<template>
+  <div class="main-container">
+    <div
+      ref="editorContainerElement"
+      class="editor-container editor-container_document-editor"
+    >
+      <div ref="editorToolbarElement" class="editor-container__toolbar" />
+      <div class="editor-container__editor-wrapper">
+        <div class="editor-container__editor">
+          <div ref="editorElement">
+            <Ckeditor
+              v-if="editor && config"
+              v-model="model"
+              :editor="editor"
+              :config="config"
+              @ready="onReady"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap");
@@ -355,9 +363,7 @@ function onReady(editor) {
   border-right: 0;
 }
 
-.editor-container_document-editor
-  .editor-container__menu-bar
-  > .ck.ck-menu-bar {
+.editor-container_document-editor .editor-container__menu-bar > .ck.ck-menu-bar {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   border-top: 0;
@@ -378,9 +384,7 @@ function onReady(editor) {
   height: 100%;
 }
 
-.editor-container_document-editor
-  .editor-container__editor
-  .ck.ck-editor__editable {
+.editor-container_document-editor .editor-container__editor .ck.ck-editor__editable {
   box-sizing: border-box;
   min-width: calc(210mm + 2px);
   max-width: calc(210mm + 2px);
@@ -407,8 +411,7 @@ function onReady(editor) {
   padding: var(--ck-spacing-small) var(--ck-spacing-standard);
 }
 
-.editor-container_include-word-count.editor-container_document-editor
-  .editor_container__word-count {
+.editor-container_include-word-count.editor-container_document-editor .editor_container__word-count {
   border-top: 1px solid var(--ck-color-base-border);
 }
 </style>

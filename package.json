@@ -1,13 +1,15 @@
 {
   "name": "exam-mod-vue",
-  "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "format": "prettier --write \"**/*.{ts,vue,scss,html,md,json}\" --ignore-path .gitignore"
+    "format": "prettier --write \"**/*.{ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-vue": "^7.3.0",
@@ -29,12 +31,18 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^4.13.2",
     "@iconify-json/tabler": "^1.2.18",
     "@tailwindcss/postcss": "^4.0.12",
     "@types/node": "^22.15.17",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
     "@vitejs/plugin-vue": "^5.2.1",
     "autoprefixer": "^10.4.20",
     "dotenv": "^16.4.7",
+    "eslint": "^9.27.0",
+    "eslint-plugin-format": "^1.0.1",
+    "eslint-plugin-vue": "^10.1.0",
     "vite": "^6.2.0"
   }
 }

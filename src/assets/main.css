@@ -2,24 +2,24 @@
 @import "@nuxt/ui";
 
 .section-container-width {
-    max-width: 1440px;
-    width: 100%;
-    padding: 0 2rem 2rem;
-    margin: 0 auto;
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 2rem 2rem;
+  margin: 0 auto;
 }
 
 *::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background: white;
-	border: none;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border: none;
 }
 
 *::-webkit-scrollbar-thumb {
-    background: #51a2ff;
-    border-radius: 2.5rem;
+  background: #51a2ff;
+  border-radius: 2.5rem;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background: #51a2ff;
+  background: #51a2ff;
 }

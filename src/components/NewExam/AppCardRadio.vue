@@ -1,12 +1,31 @@
+<script lang="ts" setup>
+defineProps({
+  id: String,
+  label: String,
+  top: [String, Array],
+  value: String,
+});
+
+const emit = defineEmits(["click"]);
+
+const model = defineModel({
+  required: false,
+});
+
+function handleClick(event: Event) {
+  emit("click", event);
+}
+</script>
+
 <template>
   <input
-    type="radio"
     :id="`card-${id}`"
+    v-model="model"
+    type="radio"
     name="AppCardRadio"
     :value="value"
-    v-model="model"
     @click="handleClick"
-  />
+  >
   <label
     :for="`card-${id}`"
     class="h-[250px] md:h-[300px] w-full rounded-lg shadow-lg flex flex-col border-2 border-[#e4e1e1]"
@@ -16,7 +35,7 @@
     >
       <div
         class="border-t border-l border-r border-[#e4e1e1] w-[60%] bg-white rounded-t-lg"
-      ></div>
+      />
       <template v-if="typeof top === 'string'">
         <p
           class="absolute top-6 right-4 sm:right-16 bg-[#0968a7] text-white px-2 py-1 rounded-sm font-sans font-normal text-xs sm:text-sm"
@@ -47,23 +66,6 @@
     </section>
   </label>
 </template>
-
-<script lang="ts" setup>
-defineProps({
-  id: String,
-  label: String,
-  top: [String, Array],
-  value: String,
-});
-
-const model = defineModel({ required: false });
-
-const emit = defineEmits(["click"]);
-
-function handleClick(event: Event) {
-  emit("click", event);
-}
-</script>
 
 <style scoped>
 input {

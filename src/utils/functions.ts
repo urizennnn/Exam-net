@@ -1,9 +1,9 @@
-export const isFormComplete = (formObject: any) => {
-  return Object.values(formObject).some((v) => !v);
-};
+export function isFormComplete(formObject: any) {
+  return Object.values(formObject).some(v => !v);
+}
 
 export function hasTrueValue(obj: any): boolean {
-  return Object.values(obj).some((value) => value);
+  return Object.values(obj).some(value => value);
 }
 
 export function clearData() {
@@ -33,10 +33,8 @@ export function clearNewExamData() {
   sessionStorage.removeItem("examId");
 }
 
-export function getTrueKeys<T extends Record<string, boolean>>(
-  obj: T,
-): Array<keyof T> {
-  return (Object.keys(obj) as Array<keyof T>).filter((key) => obj[key]);
+export function getTrueKeys<T extends Record<string, boolean>>(obj: T): Array<keyof T> {
+  return (Object.keys(obj) as Array<keyof T>).filter(key => obj[key]);
 }
 
 function escapeHtml(raw: string): string {
@@ -48,27 +46,27 @@ function escapeHtml(raw: string): string {
     .replace(/'/g, "&#039;");
 }
 
-export const sanitize = (text: string) => text.replace(/\n/g, "");
+export function sanitize(text: string) {
+  return text.replace(/\n/g, "");
+}
 
-export function questionFormatTeacher(
-  questions: Array<{
-    question: string;
-    options?: string[];
-    answer?: string | null;
-    studentAnswer?: string | null;
-  }>,
-): string {
+export function questionFormatTeacher(questions: Array<{
+  question: string;
+  options?: string[];
+  answer?: string | null;
+  studentAnswer?: string | null;
+}>): string {
   return `
     <ol>
       ${questions
         .map((q) => {
           const questionText = escapeHtml(q.question);
-          const opts =
-            Array.isArray(q.options) && q.options.length
+          const opts
+            = Array.isArray(q.options) && q.options.length
               ? `<ul>
                  ${q.options
-                   .map((opt) => `<li>${sanitize(escapeHtml(opt))}</li>`)
-                   .join("")}
+                    .map(opt => `<li>${sanitize(escapeHtml(opt))}</li>`)
+                    .join("")}
                </ul>`
               : "";
           const answer = q.answer

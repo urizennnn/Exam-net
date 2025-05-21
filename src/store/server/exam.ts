@@ -1,16 +1,26 @@
-import { defineStore } from "pinia";
-import { BaseState, Exam } from "../../utils/types";
-import { errorToast, successToast } from "../../utils/toast";
-import { axiosInstance } from "../../utils/axiosConfig";
+import {
+  defineStore,
+} from "pinia";
+import type {
+  BaseState,
+  Exam,
+} from "../../utils/types";
+import {
+  errorToast,
+  successToast,
+} from "../../utils/toast";
+import {
+  axiosInstance,
+} from "../../utils/axiosConfig";
 
-interface ExamServerState extends BaseState {
+type ExamServerState = {
   exams: Exam[];
   exam: Exam;
-}
+} & BaseState;
 
-interface InviteStudentPayload {
+type InviteStudentPayload = {
   emails: string[];
-}
+};
 
 export const useExamServerStore = defineStore("exam-server", {
   state: (): ExamServerState => ({
@@ -24,18 +34,24 @@ export const useExamServerStore = defineStore("exam-server", {
       try {
         this.success = false;
         this.loading = true;
-        const { data } = await axiosInstance.post("/exams", payload);
+        const {
+          data,
+        } = await axiosInstance.post("/exams", payload);
 
-        const { message } = data;
+        const {
+          message,
+        } = data;
         successToast(message);
         this.success = true;
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },
@@ -44,16 +60,20 @@ export const useExamServerStore = defineStore("exam-server", {
       try {
         this.success = false;
         this.loading = true;
-        const { data } = await axiosInstance.get("/exams");
+        const {
+          data,
+        } = await axiosInstance.get("/exams");
         this.exams = data;
         this.success = true;
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },
@@ -62,16 +82,20 @@ export const useExamServerStore = defineStore("exam-server", {
       try {
         this.success = false;
         this.loading = true;
-        const { data } = await axiosInstance.get(`/exams/${payload.id}`);
+        const {
+          data,
+        } = await axiosInstance.get(`/exams/${payload.id}`);
         this.exam = data;
         this.success = true;
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },
@@ -80,18 +104,24 @@ export const useExamServerStore = defineStore("exam-server", {
       try {
         this.success = false;
         this.loading = true;
-        const { data } = await axiosInstance.delete(`/exams/${payload.id}`);
+        const {
+          data,
+        } = await axiosInstance.delete(`/exams/${payload.id}`);
 
-        const { message } = data;
+        const {
+          message,
+        } = data;
         this.success = true;
         successToast(message);
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },
@@ -100,20 +130,23 @@ export const useExamServerStore = defineStore("exam-server", {
       try {
         this.success = false;
         this.loading = true;
-        const { data } = await axiosInstance.patch(
-          `/exams/delete/many`,
-          payload,
-        );
-        const { message } = data;
+        const {
+          data,
+        } = await axiosInstance.patch(`/exams/delete/many`, payload);
+        const {
+          message,
+        } = data;
         this.success = true;
         successToast(message);
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },
@@ -122,20 +155,23 @@ export const useExamServerStore = defineStore("exam-server", {
       try {
         this.success = false;
         this.loading = true;
-        const { data } = await axiosInstance.put(
-          `/exams/invite/${examId}`,
-          payload,
-        );
-        const { message } = data;
+        const {
+          data,
+        } = await axiosInstance.put(`/exams/invite/${examId}`, payload);
+        const {
+          message,
+        } = data;
         this.success = true;
         successToast(message);
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },
@@ -145,19 +181,23 @@ export const useExamServerStore = defineStore("exam-server", {
       try {
         this.success = false;
         this.loading = true;
-        const { data } = await axiosInstance.post(
-          `/exams/drop-invite/${encodeURIComponent(email)}/${examId}`,
-        );
-        const { message } = data;
+        const {
+          data,
+        } = await axiosInstance.post(`/exams/drop-invite/${encodeURIComponent(email)}/${examId}`);
+        const {
+          message,
+        } = data;
         this.success = true;
         successToast(message);
-      } catch (error: any) {
+      }
+      catch (error: any) {
         this.success = false;
-        const errorMessage =
-          error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      } finally {
+      }
+      finally {
         this.loading = false;
       }
     },

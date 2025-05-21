@@ -1,18 +1,7 @@
-<template>
-  <nav
-    class="bg-gray-800 h-full w-full flex md:flex-col flex-row gap-4 md:w-fit md:pt-20 md:pb-10 px-10 pb-1 md:px-0"
-  >
-    <i
-      role="button"
-      v-for="(tab, index) in tabs"
-      :key="index"
-      :class="`${tab.class} ${tab.active ? 'border-solid md:border-l-3 border-t-3 md:border-t-0 px-2 py-2 border-amber-400 active' : ''} text-2xl md:text-3xl cursor-pointer text-gray-400 font-extralight`"
-    ></i>
-  </nav>
-</template>
-
 <script lang="ts" setup>
-import { ref } from "vue";
+import {
+  ref,
+} from "vue";
 
 const tabs = ref([
   {
@@ -22,6 +11,19 @@ const tabs = ref([
   },
 ]);
 </script>
+
+<template>
+  <nav
+    class="bg-gray-800 h-full w-full flex md:flex-col flex-row gap-4 md:w-fit md:pt-20 md:pb-10 px-10 pb-1 md:px-0"
+  >
+    <i
+      v-for="(tab, index) in tabs"
+      :key="index"
+      role="button"
+      :class="`${tab.class} ${tab.active ? 'border-solid md:border-l-3 border-t-3 md:border-t-0 px-2 py-2 border-amber-400 active' : ''} text-2xl md:text-3xl cursor-pointer text-gray-400 font-extralight`"
+    />
+  </nav>
+</template>
 
 <style scoped>
 i.active {

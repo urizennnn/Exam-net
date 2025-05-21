@@ -1,80 +1,12 @@
-<template>
-  <section class="bg-white w-full flex">
-    <!-- SideBar For Config -->
-    <section class="text-white bg-gray-800">
-      <h1 class="font-bold text-center tracking-wider px-4 pt-8">
-        Configurations
-      </h1>
-      <ul class="mt-4">
-        <li
-          v-for="(option, index) in configOptionsTabs"
-          :key="index"
-          :class="`${option.isActive ? 'border-solid md:border-l-3 border-t-3 md:border-t-0 border-amber-400 active relative bg-gray-700' : ''} cursor-pointer px-4 py-4 hover:bg-gray-700 capitalize`"
-        >
-          {{ option.label }}
-        </li>
-      </ul>
-    </section>
-
-    <!-- Main page -->
-    <main class="px-8 pt-12 pb-6 text-black">
-      <section>
-        <h1 id="general" class="font-bold tracking-wide text-2xl">General</h1>
-        <div
-          class="flex flex-col gap-4 border-l-2 border-r-0 border-t-0 border-b-0 border-solid border-l-gray-300 mt-2 h-auto px-4"
-        >
-          <div v-for="(config, index) in generalConfigs" :key="index">
-            <AppToggleButton
-              :id="`generalType${index}`"
-              :label="config.label"
-              class="text-black tracking-wider"
-              v-model="config.value"
-            />
-            <p class="mt-1 text-gray-400 text-sm leading-5 tracking-wider">
-              {{ config.description }}
-            </p>
-            <template v-if="config.children && config.value">
-              <div v-for="(child, index) in config.children" :key="index">
-                <AppInput
-                  :label="child.label"
-                  theme="secondary"
-                  type="number"
-                  max="60"
-                  min="15"
-                  v-model="child.value"
-                />
-              </div>
-            </template>
-          </div>
-        </div>
-      </section>
-      <section class="mt-8">
-        <h1 id="general" class="font-bold tracking-wide text-2xl">
-          Exam type settings
-        </h1>
-        <div
-          class="flex flex-col gap-4 border-l-2 border-r-0 border-t-0 border-b-0 border-solid border-l-gray-300 mt-2 h-auto px-4"
-        >
-          <div v-for="(con, index) in examTypeSettingConfigs" :key="index">
-            <AppToggleButton
-              :id="`examType${index}`"
-              :label="con.label"
-              class="text-black tracking-wider"
-              v-model="con.value"
-            />
-            <p class="mt-1 text-gray-400 text-sm leading-5 tracking-wider">
-              {{ con.description }}
-            </p>
-          </div>
-        </div>
-      </section>
-    </main>
-  </section>
-</template>
-
 <script lang="ts" setup>
-import { watch, onMounted, ref } from "vue";
-import { useNewExamStore } from "../../store/NewExamStore";
+import {
+  onMounted,
+  ref,
+  watch,
+} from "vue";
+import {
+  useNewExamStore,
+} from "../../store/NewExamStore";
 
 const newExamStore = useNewExamStore();
 const configOptionsTabs = ref([
@@ -88,7 +20,7 @@ const configOptionsTabs = ref([
   },
 ]);
 
-interface configTypes {
+type configTypes = {
   label: string;
   description: string;
   value: boolean;
@@ -98,7 +30,7 @@ interface configTypes {
     value: any;
     tag: string;
   }[];
-}
+};
 
 const generalConfigs = ref<configTypes[]>([
   {
@@ -152,35 +84,103 @@ onMounted(() => {
   newExamStore.counter = 3;
 });
 
-watch(
-  () => generalConfigs,
-  (n) => {
-    n.value.map((items) => {
-      newExamStore.configOptions[items.tag] = items.value;
-      sessionStorage.setItem(items.tag, `${items.value}`);
-      if (items.children) {
-        items.children.map((item) => {
-          newExamStore.configOptions[item.tag] = item.value;
-          sessionStorage.setItem(item.tag, `${item.value}`);
-        });
-      }
-    });
-  },
-  {
-    deep: true,
-  },
-);
+watch(() => generalConfigs, (n) => {
+  n.value.map((items) => {
+    newExamStore.configOptions[items.tag] = items.value;
+    sessionStorage.setItem(items.tag, `${items.value}`);
+    if (items.children) {
+      items.children.map((item) => {
+        newExamStore.configOptions[item.tag] = item.value;
+        sessionStorage.setItem(item.tag, `${item.value}`);
+      });
+    }
+  });
+}, {
+  deep: true,
+});
 
-watch(
-  () => examTypeSettingConfigs,
-  (n) => {
-    n.value.map((items) => {
-      newExamStore.configOptions[items.tag] = items.value;
-      sessionStorage.setItem(items.tag, `${items.value}`);
-    });
-  },
-  {
-    deep: true,
-  },
-);
+watch(() => examTypeSettingConfigs, (n) => {
+  n.value.map((items) => {
+    newExamStore.configOptions[items.tag] = items.value;
+    sessionStorage.setItem(items.tag, `${items.value}`);
+  });
+}, {
+  deep: true,
+});
 </script>
+
+<template>
+  <section class="bg-white w-full flex">
+    <!-- SideBar For Config -->
+    <section class="text-white bg-gray-800">
+      <h1 class="font-bold text-center tracking-wider px-4 pt-8">
+        Configurations
+      </h1>
+      <ul class="mt-4">
+        <li
+          v-for="(option, index) in configOptionsTabs"
+          :key="index"
+          :class="`${option.isActive ? 'border-solid md:border-l-3 border-t-3 md:border-t-0 border-amber-400 active relative bg-gray-700' : ''} cursor-pointer px-4 py-4 hover:bg-gray-700 capitalize`"
+        >
+          {{ option.label }}
+        </li>
+      </ul>
+    </section>
+
+    <!-- Main page -->
+    <main class="px-8 pt-12 pb-6 text-black">
+      <section>
+        <h1 id="general" class="font-bold tracking-wide text-2xl">
+          General
+        </h1>
+        <div
+          class="flex flex-col gap-4 border-l-2 border-r-0 border-t-0 border-b-0 border-solid border-l-gray-300 mt-2 h-auto px-4"
+        >
+          <div v-for="(config, index) in generalConfigs" :key="index">
+            <AppToggleButton
+              :id="`generalType${index}`"
+              v-model="config.value"
+              :label="config.label"
+              class="text-black tracking-wider"
+            />
+            <p class="mt-1 text-gray-400 text-sm leading-5 tracking-wider">
+              {{ config.description }}
+            </p>
+            <template v-if="config.children && config.value">
+              <div v-for="(child, index) in config.children" :key="index">
+                <AppInput
+                  v-model="child.value"
+                  :label="child.label"
+                  theme="secondary"
+                  type="number"
+                  max="60"
+                  min="15"
+                />
+              </div>
+            </template>
+          </div>
+        </div>
+      </section>
+      <section class="mt-8">
+        <h1 id="general" class="font-bold tracking-wide text-2xl">
+          Exam type settings
+        </h1>
+        <div
+          class="flex flex-col gap-4 border-l-2 border-r-0 border-t-0 border-b-0 border-solid border-l-gray-300 mt-2 h-auto px-4"
+        >
+          <div v-for="(con, index) in examTypeSettingConfigs" :key="index">
+            <AppToggleButton
+              :id="`examType${index}`"
+              v-model="con.value"
+              :label="con.label"
+              class="text-black tracking-wider"
+            />
+            <p class="mt-1 text-gray-400 text-sm leading-5 tracking-wider">
+              {{ con.description }}
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </section>
+</template>

@@ -1,33 +1,3 @@
-<template>
-  <UButton
-    :label="label"
-    :class="[
-      'cursor-pointer',
-      theme === 'primary'
-        ? 'text-gray-700 py-2 gap-2 hover:text-gray-900 hover:border-gray-900 border border-gray-400 px-2 disable:bg-gray-200 rounded-lg'
-        : '',
-      props.class,
-      theme === 'secondary'
-        ? 'bg-black rounded-3xl hover:bg-neutral-800 text-white font-semibold py-1 px-3 disabled:bg-[#38383858]'
-        : '',
-      theme === 'variant'
-        ? 'bg-white text-black! hover:bg-slate-200 disabled:bg-[#38383858]'
-        : '',
-    ]"
-    :disabled="disabled"
-    @click="handleClick"
-    :to="to"
-    :icon="leftIcon"
-    :trailingIcon="rightIcon"
-    loading-auto
-    :loading="loading"
-    :size="size"
-    :variant="variant"
-  >
-    <slot />
-  </UButton>
-</template>
-
 <script lang="ts" setup>
 const props = defineProps({
   label: String,
@@ -74,7 +44,36 @@ const props = defineProps({
 
 const emit = defineEmits(["click"]);
 
-const handleClick = (event: Event) => {
+function handleClick(event: Event) {
   emit("click", event);
-};
+}
 </script>
+
+<template>
+  <UButton
+    :label="label"
+    class="cursor-pointer" :class="[
+      theme === 'primary'
+        ? 'text-gray-700 py-2 gap-2 hover:text-gray-900 hover:border-gray-900 border border-gray-400 px-2 disable:bg-gray-200 rounded-lg'
+        : '',
+      props.class,
+      theme === 'secondary'
+        ? 'bg-black rounded-3xl hover:bg-neutral-800 text-white font-semibold py-1 px-3 disabled:bg-[#38383858]'
+        : '',
+      theme === 'variant'
+        ? 'bg-white text-black! hover:bg-slate-200 disabled:bg-[#38383858]'
+        : '',
+    ]"
+    :disabled="disabled"
+    :to="to"
+    :icon="leftIcon"
+    :trailing-icon="rightIcon"
+    loading-auto
+    :loading="loading"
+    :size="size"
+    :variant="variant"
+    @click="handleClick"
+  >
+    <slot />
+  </UButton>
+</template>

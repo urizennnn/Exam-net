@@ -1,4 +1,4 @@
-export interface NewExamStore {
+export type NewExamStore = {
   counter: number;
   form: {
     examFormat: string;
@@ -25,40 +25,40 @@ export interface NewExamStore {
   };
   examName: string;
   examId: string;
-}
+};
 
-export interface ExamStoreState {
+export type ExamStoreState = {
   exams: {
     examName: string;
     examKey: string;
     createdAt: string;
     access: "open" | "closed" | "discoverable" | "scheduled";
   }[];
-}
+};
 
-export interface BaseState {
+export type BaseState = {
   success: boolean;
   message?: string;
   data?: any;
   error?: string;
   loading: boolean;
-}
+};
 
-export interface UploadDocumentPayload {
+export type UploadDocumentPayload = {
   file: any | null;
-}
+};
 
-export interface UploadDocumentResponse {
+export type UploadDocumentResponse = {
   data: string[] | string;
-}
+};
 
-export interface TabsType {
+export type TabsType = {
   isActive: boolean;
   label: string;
   value: string;
-}
+};
 
-export interface Exam {
+export type Exam = {
   _id?: string;
   access: string;
   createdAt: string;
@@ -79,9 +79,9 @@ export interface Exam {
   };
   format: any[];
   invites?: string[];
-}
+};
 
-export interface FormStepTwo {
+export type FormStepTwo = {
   informationBlock: boolean;
   multipleChoice: boolean;
   simpleAnswer: boolean;
@@ -90,4 +90,4 @@ export interface FormStepTwo {
   grid: boolean;
   freeText: boolean;
   attachment: boolean;
-}
+};

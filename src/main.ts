@@ -1,8 +1,12 @@
-import { createApp } from "vue";
+import {
+  createApp,
+} from "vue";
 import "./assets/main.css";
 import App from "./App.vue";
 import router from "./router";
-import { createPinia } from "pinia";
+import {
+  createPinia,
+} from "pinia";
 import ui from "@nuxt/ui/vue-plugin";
 
 const pinia = createPinia();

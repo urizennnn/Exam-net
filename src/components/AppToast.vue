@@ -1,3 +1,19 @@
+<script setup lang="ts">
+import {
+  ref,
+} from "vue";
+
+defineProps({
+  text: String,
+});
+
+const showToast = ref(true);
+
+function closeToast() {
+  showToast.value = false;
+}
+</script>
+
 <template>
   <section
     v-show="showToast"
@@ -10,20 +26,6 @@
       class="fa-solid fa-xmark cursor-pointer text-2xl"
       role="button"
       @click="closeToast"
-    ></i>
+    />
   </section>
 </template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-
-defineProps({
-  text: String,
-});
-
-const showToast = ref(true);
-
-function closeToast() {
-  showToast.value = false;
-}
-</script>

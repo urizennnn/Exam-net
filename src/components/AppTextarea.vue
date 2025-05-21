@@ -1,3 +1,16 @@
+<script lang="ts" setup>
+const props = defineProps({
+  placeholder: String,
+  rows: Number,
+  autoresize: Boolean,
+  baseClass: String,
+  class: String,
+  disabled: Boolean,
+});
+
+const model = defineModel<any>();
+</script>
+
 <template>
   <UTextarea
     v-model="model"
@@ -12,16 +25,3 @@
     }"
   />
 </template>
-
-<script lang="ts" setup>
-const props = defineProps({
-  placeholder: String,
-  rows: Number,
-  autoresize: Boolean,
-  baseClass: String,
-  class: String,
-  disabled: Boolean,
-});
-
-const model = defineModel<any>();
-</script>

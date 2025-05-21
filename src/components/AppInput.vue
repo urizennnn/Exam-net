@@ -1,37 +1,8 @@
-<template>
-  <UInput
-    v-if="type === 'file'"
-    type="file"
-    :accept="accept"
-    @change="onFileChange"
-    color="info"
-    :ui="{
-      trailing: 'pe-1',
-      root: `w-full ${rootClass}`,
-      base: `p-4 bg-inherit text-black ${baseClass}`,
-    }"
-  />
-
-  <UInput
-    v-else
-    :type="type"
-    v-model="model"
-    :placeholder="placeholder"
-    :class="[props.class]"
-    :max="max"
-    :min="min"
-    color="info"
-    :ui="{
-      trailing: 'pe-1',
-      root: `w-full ${rootClass}`,
-      base: `p-4 bg-inherit text-black ${baseClass}`,
-    }"
-    @keyup="onKeyup"
-  />
-</template>
-
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
+import {
+  defineEmits,
+  defineProps,
+} from "vue";
 
 const props = defineProps({
   type: {
@@ -61,3 +32,35 @@ function onKeyup(e: KeyboardEvent) {
   emit("keyup", e);
 }
 </script>
+
+<template>
+  <UInput
+    v-if="type === 'file'"
+    type="file"
+    :accept="accept"
+    color="info"
+    :ui="{
+      trailing: 'pe-1',
+      root: `w-full ${rootClass}`,
+      base: `p-4 bg-inherit text-black ${baseClass}`,
+    }"
+    @change="onFileChange"
+  />
+
+  <UInput
+    v-else
+    v-model="model"
+    :type="type"
+    :placeholder="placeholder"
+    :class="[props.class]"
+    :max="max"
+    :min="min"
+    color="info"
+    :ui="{
+      trailing: 'pe-1',
+      root: `w-full ${rootClass}`,
+      base: `p-4 bg-inherit text-black ${baseClass}`,
+    }"
+    @keyup="onKeyup"
+  />
+</template>

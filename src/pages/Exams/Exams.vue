@@ -1,186 +1,82 @@
-<template>
-  <section
-    class="relative w-full bg-zinc-300 flex items-center justify-center text-black"
-    id="section"
-  >
-    <div class="container m-auto pb-8 px-8">
-      <div class="w-full flex flex-col rounded-2xl shadow-xl overflow-hidden">
-        <section
-          class="bg-blue-950 text-white p-3 rounded-t-lg flex justify-center items-center"
-        >
-          <h1 class="text-[18px] md:text-[20px] tracking-wide">Exams</h1>
-        </section>
-        <template v-if="exams.length > 0">
-          <section :class="`bg-blue-950 py-1 flex gaitems-center`">
-            <AppButton
-              color="neutral"
-              class="cursor-pointer size-9 text-white"
-              size="xl"
-              variant="link"
-              :icon="action.icon"
-              v-for="action in iconActions"
-              :key="action.title"
-              :disabled="selectedRows.length === 0"
-              :title="action.title"
-              @click="action.onClick"
-              :loading="examServerLoading"
-            />
-          </section>
-        </template>
-        <div class="bg-white pt-2" v-if="exams.length > 0 || examServerLoading">
-          <AppTable
-            @update:rowSelection="onRowSelection"
-            :columns="columns"
-            :rows="rows"
-            :loading="examServerLoading"
-            filter-by="name"
-          >
-            <template #action-cell="{ row }">
-              <div class="flex gap-2 items-center">
-                <AppButton
-                  left-icon="i-lucide-pencil"
-                  theme="primary"
-                  class="border-black border-2! rounded-4xl!"
-                  title="Edit Exam"
-                  :to="`/new-exam/new-question/${row.original.id}`"
-                  :loading="examServerLoading"
-                />
-                <AppButton
-                  left-icon="i-lucide-monitor-check"
-                  theme="primary"
-                  class="border-black border-2! rounded-4xl!"
-                  :to="`/monitoring-results/${row.original.id}`"
-                  title="Monitor Exam"
-                  :loading="examServerLoading"
-                />
-                <AppButton
-                  left-icon="i-lucide-binoculars"
-                  theme="primary"
-                  class="border-black border-2! rounded-4xl!"
-                  :to="`/preview/${row.original.id}`"
-                  title="Preview Exam"
-                  :loading="examServerLoading"
-                />
-                <UDropdownMenu
-                  :items="getExamDropdownActions(row.original)"
-                  :content="{
-                    align: 'start',
-                  }"
-                  :ui="{
-                    content: 'bg-white shadow cursor-pointer',
-                    item: 'cursor-pointer text-black hover:bg-black rounded',
-                  }"
-                  :disabled="examServerLoading"
-                >
-                  <UIcon
-                    name="i-lucide-ellipsis-vertical"
-                    class="size-6 cursor-pointer"
-                  />
-                </UDropdownMenu>
-              </div>
-            </template>
-          </AppTable>
-        </div>
-        <div
-          class="w-full h-full flex gap-3 items-center justify-center bg-white flex-col px-4 py-4"
-        >
-          <template v-if="exams.length === 0 && !examServerLoading">
-            <UIcon name="i-lucide-file" class="text-gray-700 size-12" />
-            <p class="font-semibold text-gray-700 text-[16px]">No exams yet</p>
-          </template>
-          <AppButton
-            :leftIcon="`${exams.length === 0 ? 'i-lucide-plus' : ''}`"
-            label="New Exam"
-            theme="secondary"
-            class="bg-gray-700 py-2 px-4"
-            to="/new-exam"
-            @click="clearNewExamData"
-          />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <AppModal v-model="renameExamModal" title="Rename Exam">
-    <template #body>
-      <AppInput v-model="examNewName" />
-    </template>
-  </AppModal>
-
-  <AppModal
-    v-model="scheduleModal"
-    :title="`Schedule '${scheduleModalTitle}'`"
-    :dismissible="false"
-  >
-    <template #body>
-      <div class="flex gap-2 justify-between w-full items-center">
-        <div class="flex flex-col gap-1 w-full">
-          <p class="text-gray-600 text-md">Start Date</p>
-          <AppInput type="date" v-model="scheduleForm.startDate" />
-        </div>
-        <div class="flex flex-col gap-1 w-full">
-          <p class="text-gray-600 text-md">Start time (local time)</p>
-          <AppInput type="time" v-model="scheduleForm.startTime" />
-        </div>
-      </div>
-    </template>
-    <template #footer>
-      <AppButton
-        label="Save"
-        theme="secondary"
-        @click="clearNewExamData"
-        :disabled="isFormComplete(scheduleForm)"
-      />
-    </template>
-  </AppModal>
-</template>
-
 <script setup lang="ts">
-import { clearNewExamData, isFormComplete } from "../../utils/functions";
-import { ref, reactive, resolveComponent, h, computed } from "vue";
-import { DropdownMenuItem, TableColumn } from "@nuxt/ui";
-import { useExamServerStore } from "../../store/server/exam";
-import { onMounted } from "vue";
-import { storeToRefs } from "pinia";
-import { errorToast, successToast } from "../../utils/toast";
+import {
+  clearNewExamData,
+  isFormComplete,
+} from "../../utils/functions";
+import {
+  computed,
+  h,
+  onMounted,
+  reactive,
+  ref,
+  resolveComponent,
 
-const { getExams, deleteExam, deleteExams } = useExamServerStore();
-const { exams, loading: examServerLoading } = storeToRefs(useExamServerStore());
+} from "vue";
+import type {
+  DropdownMenuItem,
+  TableColumn,
+} from "@nuxt/ui";
+import {
+  useExamServerStore,
+} from "../../store/server/exam";
+import {
+  storeToRefs,
+} from "pinia";
+import {
+  errorToast,
+  successToast,
+} from "../../utils/toast";
+
+const {
+  getExams,
+  deleteExam,
+  deleteExams,
+} = useExamServerStore();
+const {
+  exams,
+  loading: examServerLoading,
+} = storeToRefs(useExamServerStore());
 const UCheckbox = resolveComponent("UCheckbox");
 const USelect = resolveComponent("USelect");
 const AppButton = resolveComponent("AppButton");
 const columns = computed<TableColumn<any>[]>(() => [
   {
     id: "select",
-    header: ({ table }) =>
+    header: ({
+      table,
+    }) =>
       h(UCheckbox, {
-        modelValue: table.getIsSomePageRowsSelected()
+        "modelValue": table.getIsSomePageRowsSelected()
           ? "indeterminate"
           : table.getIsAllPageRowsSelected(),
         "onUpdate:modelValue": (value: boolean | "indeterminate") =>
           table.toggleAllPageRowsSelected(!!value),
         "aria-label": "Select all",
-        color: "info",
-        ui: {
+        "color": "info",
+        "ui": {
           indicator: "text-white",
         },
-        disabled: exams.value.length === 0,
+        "disabled": exams.value.length === 0,
       }),
-    cell: ({ row }) =>
+    cell: ({
+      row,
+    }) =>
       h(UCheckbox, {
-        modelValue: row.getIsSelected(),
+        "modelValue": row.getIsSelected(),
         "onUpdate:modelValue": (value: boolean | "indeterminate") =>
           row.toggleSelected(!!value),
         "aria-label": "Select row",
-        color: "info",
-        ui: {
+        "color": "info",
+        "ui": {
           indicator: "text-white",
         },
       }),
   },
   {
     accessorKey: "name",
-    header: ({ column }) => {
+    header: ({
+      column,
+    }) => {
       const isSorted = column.getIsSorted();
 
       return h(AppButton, {
@@ -197,7 +93,9 @@ const columns = computed<TableColumn<any>[]>(() => [
   },
   {
     accessorKey: "key",
-    header: ({ column }) => {
+    header: ({
+      column,
+    }) => {
       const isSorted = column.getIsSorted();
 
       return h(AppButton, {
@@ -211,19 +109,19 @@ const columns = computed<TableColumn<any>[]>(() => [
         onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
       });
     },
-    cell: ({ row }) =>
-      h(
-        "p",
-        {
-          class: "bg-gray-200 p-2 w-fit rounded cursor-pointer select-none",
-          onClick: () => copyKey(row.original.key),
-        },
-        String(row.original.key),
-      ),
+    cell: ({
+      row,
+    }) =>
+      h("p", {
+        class: "bg-gray-200 p-2 w-fit rounded cursor-pointer select-none",
+        onClick: () => copyKey(row.original.key),
+      }, String(row.original.key)),
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => {
+    header: ({
+      column,
+    }) => {
       const isSorted = column.getIsSorted();
 
       return h(AppButton, {
@@ -240,7 +138,9 @@ const columns = computed<TableColumn<any>[]>(() => [
   },
   {
     accessorKey: "endDate",
-    header: ({ column }) => {
+    header: ({
+      column,
+    }) => {
       const isSorted = column.getIsSorted();
 
       return h(AppButton, {
@@ -258,15 +158,32 @@ const columns = computed<TableColumn<any>[]>(() => [
   {
     accessorKey: "access",
     header: "Access",
-    cell: ({ row, table }) => {
+    cell: ({
+      row,
+      table,
+    }) => {
       const predefinedOptions = [
         [
-          { value: "open", label: "Open", chip: { color: "success" } },
-          { value: "closed", label: "Closed", chip: { color: "error" } },
+          {
+            value: "open",
+            label: "Open",
+            chip: {
+              color: "success",
+            },
+          },
+          {
+            value: "closed",
+            label: "Closed",
+            chip: {
+              color: "error",
+            },
+          },
           {
             value: "discoverable",
             label: "Discoverable",
-            chip: { color: "info" },
+            chip: {
+              color: "info",
+            },
           },
         ],
         [
@@ -278,7 +195,7 @@ const columns = computed<TableColumn<any>[]>(() => [
         ],
       ];
       return h(USelect, {
-        modelValue: row.original.access,
+        "modelValue": row.original.access,
         "onUpdate:modelValue": (val: string) => {
           row.original.access = val;
           table.options.data[row.index].access = val;
@@ -287,11 +204,11 @@ const columns = computed<TableColumn<any>[]>(() => [
             toggleScheduleModal(row.original.name);
           }
         },
-        items: predefinedOptions,
-        loadind: examServerLoading,
-        class: "w-40 outline-none bg-inherit text-black",
-        color: "info",
-        ui: {
+        "items": predefinedOptions,
+        "loadind": examServerLoading,
+        "class": "w-40 outline-none bg-inherit text-black",
+        "color": "info",
+        "ui": {
           content: "bg-white",
           item: "text-black hover:text-black",
         },
@@ -303,7 +220,7 @@ const columns = computed<TableColumn<any>[]>(() => [
   },
 ]);
 const rows = computed(() =>
-  exams.value.map((exam) => ({
+  exams.value.map(exam => ({
     id: exam._id,
     name: exam.examName,
     createdAt: new Date(exam.createdAt).toLocaleDateString(),
@@ -312,8 +229,7 @@ const rows = computed(() =>
       : "Not Ended",
     access: exam.access,
     key: exam.examKey,
-  })),
-);
+  })));
 
 const selectedRows = ref<any[]>([]);
 function onRowSelection(items: any[]) {
@@ -338,7 +254,8 @@ function toggleRanameExamModal(currentName: string = "") {
   renameExamModal.value = !renameExamModal.value;
   if (renameExamModal.value) {
     examNewName.value = currentName;
-  } else {
+  }
+  else {
     examNewName.value = "";
   }
 }
@@ -403,7 +320,7 @@ async function handleExamDelete(id: string) {
 }
 
 async function handleExamsDelete() {
-  const payload = selectedRows.value.map((item) => item.id);
+  const payload = selectedRows.value.map(item => item.id);
   await deleteExams(payload);
   await getExams();
 }
@@ -412,6 +329,151 @@ onMounted(async () => {
   await getExams();
 });
 </script>
+
+<template>
+  <section
+    id="section"
+    class="relative w-full bg-zinc-300 flex items-center justify-center text-black"
+  >
+    <div class="container m-auto pb-8 px-8">
+      <div class="w-full flex flex-col rounded-2xl shadow-xl overflow-hidden">
+        <section
+          class="bg-blue-950 text-white p-3 rounded-t-lg flex justify-center items-center"
+        >
+          <h1 class="text-[18px] md:text-[20px] tracking-wide">
+            Exams
+          </h1>
+        </section>
+        <template v-if="exams.length > 0">
+          <section class="bg-blue-950 py-1 flex gaitems-center">
+            <AppButton
+              v-for="action in iconActions"
+              :key="action.title"
+              color="neutral"
+              class="cursor-pointer size-9 text-white"
+              size="xl"
+              variant="link"
+              :icon="action.icon"
+              :disabled="selectedRows.length === 0"
+              :title="action.title"
+              :loading="examServerLoading"
+              @click="action.onClick"
+            />
+          </section>
+        </template>
+        <div v-if="exams.length > 0 || examServerLoading" class="bg-white pt-2">
+          <AppTable
+            :columns="columns"
+            :rows="rows"
+            :loading="examServerLoading"
+            filter-by="name"
+            @update:row-selection="onRowSelection"
+          >
+            <template #action-cell="{ row }">
+              <div class="flex gap-2 items-center">
+                <AppButton
+                  left-icon="i-lucide-pencil"
+                  theme="primary"
+                  class="border-black border-2! rounded-4xl!"
+                  title="Edit Exam"
+                  :to="`/new-exam/new-question/${row.original.id}`"
+                  :loading="examServerLoading"
+                />
+                <AppButton
+                  left-icon="i-lucide-monitor-check"
+                  theme="primary"
+                  class="border-black border-2! rounded-4xl!"
+                  :to="`/monitoring-results/${row.original.id}`"
+                  title="Monitor Exam"
+                  :loading="examServerLoading"
+                />
+                <AppButton
+                  left-icon="i-lucide-binoculars"
+                  theme="primary"
+                  class="border-black border-2! rounded-4xl!"
+                  :to="`/preview/${row.original.id}`"
+                  title="Preview Exam"
+                  :loading="examServerLoading"
+                />
+                <UDropdownMenu
+                  :items="getExamDropdownActions(row.original)"
+                  :content="{
+                    align: 'start',
+                  }"
+                  :ui="{
+                    content: 'bg-white shadow cursor-pointer',
+                    item: 'cursor-pointer text-black hover:bg-black rounded',
+                  }"
+                  :disabled="examServerLoading"
+                >
+                  <UIcon
+                    name="i-lucide-ellipsis-vertical"
+                    class="size-6 cursor-pointer"
+                  />
+                </UDropdownMenu>
+              </div>
+            </template>
+          </AppTable>
+        </div>
+        <div
+          class="w-full h-full flex gap-3 items-center justify-center bg-white flex-col px-4 py-4"
+        >
+          <template v-if="exams.length === 0 && !examServerLoading">
+            <UIcon name="i-lucide-file" class="text-gray-700 size-12" />
+            <p class="font-semibold text-gray-700 text-[16px]">
+              No exams yet
+            </p>
+          </template>
+          <AppButton
+            :left-icon="`${exams.length === 0 ? 'i-lucide-plus' : ''}`"
+            label="New Exam"
+            theme="secondary"
+            class="bg-gray-700 py-2 px-4"
+            to="/new-exam"
+            @click="clearNewExamData"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <AppModal v-model="renameExamModal" title="Rename Exam">
+    <template #body>
+      <AppInput v-model="examNewName" />
+    </template>
+  </AppModal>
+
+  <AppModal
+    v-model="scheduleModal"
+    :title="`Schedule '${scheduleModalTitle}'`"
+    :dismissible="false"
+  >
+    <template #body>
+      <div class="flex gap-2 justify-between w-full items-center">
+        <div class="flex flex-col gap-1 w-full">
+          <p class="text-gray-600 text-md">
+            Start Date
+          </p>
+          <AppInput v-model="scheduleForm.startDate" type="date" />
+        </div>
+        <div class="flex flex-col gap-1 w-full">
+          <p class="text-gray-600 text-md">
+            Start time (local time)
+          </p>
+          <AppInput v-model="scheduleForm.startTime" type="time" />
+        </div>
+      </div>
+    </template>
+    <template #footer>
+      <AppButton
+        label="Save"
+        theme="secondary"
+        :disabled="isFormComplete(scheduleForm)"
+        @click="clearNewExamData"
+      />
+    </template>
+  </AppModal>
+</template>
 
 <style scoped>
 #section {

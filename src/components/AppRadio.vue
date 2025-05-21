@@ -1,3 +1,21 @@
+<script lang="ts" setup>
+import type {
+  RadioGroupItem,
+  RadioGroupValue,
+} from "@nuxt/ui";
+import type {
+  PropType,
+} from "vue";
+
+const props = defineProps({
+  items: Array as PropType<RadioGroupItem[]>,
+  class: String,
+  disabled: Boolean,
+});
+
+const model = defineModel<RadioGroupValue>();
+</script>
+
 <template>
   <URadioGroup
     v-model="model"
@@ -11,16 +29,3 @@
     }"
   />
 </template>
-
-<script lang="ts" setup>
-import { RadioGroupItem, RadioGroupValue } from "@nuxt/ui";
-import { PropType } from "vue";
-
-const props = defineProps({
-  items: Array as PropType<RadioGroupItem[]>,
-  class: String,
-  disabled: Boolean,
-});
-
-const model = defineModel<RadioGroupValue>();
-</script>

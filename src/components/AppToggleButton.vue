@@ -1,15 +1,3 @@
-<template>
-  <USwitch
-    size="xl"
-    :label="label"
-    v-model="model"
-    :ui="{
-      thumb: 'bg-gray-50',
-      label: 'text-black',
-    }"
-  />
-</template>
-
 <script lang="ts" setup>
 defineProps({
   label: {
@@ -18,5 +6,19 @@ defineProps({
   },
 });
 
-const model = defineModel<boolean>({ default: false });
+const model = defineModel<boolean>({
+  default: false,
+});
 </script>
+
+<template>
+  <USwitch
+    v-model="model"
+    size="xl"
+    :label="label"
+    :ui="{
+      thumb: 'bg-gray-50',
+      label: 'text-black',
+    }"
+  />
+</template>

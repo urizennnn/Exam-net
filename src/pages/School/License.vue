@@ -1,3 +1,5 @@
+<script setup></script>
+
 <template>
   <Header />
   <section
@@ -23,7 +25,7 @@
             <p class="text-[14px] font-sans">
               Your school needs a license in order to use Exam.net. Click
               Purchase a license below to see pricing and to order.
-              <br />
+              <br>
               You will get access as soon as the license is ordered.
             </p>
             <AppButton
@@ -35,7 +37,7 @@
             <p class="text-[14px] font-sans">
               You can activate 5 days of temporary access for your user to give
               you time to complete your purchase or save material
-              <br class="hidden md:block" />
+              <br class="hidden md:block">
               before access is denied. If your school needs more time to
               evaluate Exam.net, email sales@exam.net.
             </p>
@@ -46,22 +48,22 @@
             />
           </div>
 
-          <div class="border border-[#d6d6d6] lg:w-1/2"></div>
+          <div class="border border-[#d6d6d6] lg:w-1/2" />
 
           <div class="flex flex-col gap-4">
             <p class="text-[14px] md:text-[16px] flex gap-1">
               <UIcon name="i-tabler-building" class="text-xl" />
               School information
             </p>
-            <p class="text-[14px] md:text-[16px]">Address</p>
+            <p class="text-[14px] md:text-[16px]">
+              Address
+            </p>
           </div>
         </div>
       </div>
     </div>
   </section>
 </template>
-
-<script setup></script>
 
 <style scoped>
 #section {

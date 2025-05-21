@@ -1,18 +1,3 @@
-<template>
-  <input type="checkbox" :id="`checkbox-${id}`" :name="tag" v-model="model" />
-  <label :for="`checkbox-${id}`" class="flex flex-col gap-2 text-center z-0">
-    <div
-      class="bg-white border border-gray-300 rounded-lg h-20 w-full max-w-[150px] flex items-center justify-center text-2xl mx-auto"
-    >
-      <template v-if="auto">
-        <h1 class="text-white absolute top-1 left-1 text-sm">A</h1>
-      </template>
-      <UIcon :name="icon" class="text-5xl" />
-    </div>
-    <p class="text-sm text-gray-800 font-medium">{{ label }}</p>
-  </label>
-</template>
-
 <script lang="ts" setup>
 defineProps({
   id: Number,
@@ -27,6 +12,21 @@ defineProps({
 
 const model = defineModel();
 </script>
+
+<template>
+  <input :id="`checkbox-${id}`" v-model="model" type="checkbox" :name="tag">
+  <label :for="`checkbox-${id}`" class="flex flex-col gap-2 text-center z-0">
+    <div
+      class="bg-white border border-gray-300 rounded-lg h-20 w-full max-w-[150px] flex items-center justify-center text-2xl mx-auto"
+    >
+      <template v-if="auto">
+        <h1 class="text-white absolute top-1 left-1 text-sm">A</h1>
+      </template>
+      <UIcon :name="icon" class="text-5xl" />
+    </div>
+    <p class="text-sm text-gray-800 font-medium">{{ label }}</p>
+  </label>
+</template>
 
 <style scoped>
 input {
