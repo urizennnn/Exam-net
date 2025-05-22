@@ -60,7 +60,7 @@ async function submitUploadDocumentForm() {
 
   if (documentSuccess.value) {
     toggleShowUploadDocumentModal();
-    router.push("/new-question");
+    router.push("/new-exam/new-question");
   }
   else {
     fileUpload.value = null;
