@@ -44,16 +44,17 @@ export const useAuthStore = defineStore("auth", {
         } = await axiosInstance.post("/users/login", payload);
         const {
           access_token,
+          name,
         } = data;
         this.access = access_token;
         this.setAccessToken(access_token);
+        this.setToken("name", name);
         successToast("Login Successful");
         this.success = true;
       }
       catch (error: any) {
         this.success = false;
-        const errorMessage
-          = error.response?.data?.message || error.message || "Network Error";
+        const errorMessage = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
       }
@@ -61,6 +62,7 @@ export const useAuthStore = defineStore("auth", {
         this.loading = false;
       }
     },
+
     async register(payload: RegisterPayload) {
       try {
         this.success = false;
@@ -76,8 +78,7 @@ export const useAuthStore = defineStore("auth", {
       }
       catch (error: any) {
         this.success = false;
-        const errorMessage
-          = error.response?.data?.message || error.message || "Network Error";
+        const errorMessage = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
       }
@@ -93,19 +94,23 @@ export const useAuthStore = defineStore("auth", {
     },
 
     clearAccessToken() {
-      this.access = null;
+      this.access = "";
       this.clearToken("access");
     },
+
     setToken(key: string, token: string) {
       localStorage.setItem(key, JSON.stringify(token));
     },
+
     clearToken(key: string) {
       if (localStorage.getItem(key)) {
         localStorage.removeItem(key);
       }
     },
+
     logout() {
       this.clearAccessToken();
+      this.clearToken("name");
       router.push({
         name: "login",
       });
