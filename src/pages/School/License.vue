@@ -1,65 +1,65 @@
-<script setup></script>
+<script setup>
+</script>
 
 <template>
-  <Header />
-  <section
-    id="section"
-    class="relative w-full bg-zinc-300 flex items-center justify-center text-black"
-  >
+  <section id="section" class="relative w-full bg-zinc-300 flex items-center justify-center text-black">
     <div class="container m-auto pb-8 px-8">
-      <div class="w-full flex flex-col rounded-2xl shadow-xl overflow-hidden">
-        <h1
-          class="bg-blue-950 text-white p-3 rounded-t-lg text-center text-[18px] md:text-[20px] tracking-wide"
-        >
-          License
+      <div class="w-full flex flex-col rounded-2xl shadow-xl overflow-hidden bg-white p-8">
+        <h1 class="text-3xl font-bold mb-4">
+          Exam Creation Overview
         </h1>
-        <div class="w-full h-full flex gap-4 bg-white! flex-col px-16 py-8">
-          <p class="text-[14px] md:text-[16px] flex gap-1 items-center">
-            <UIcon
-              name="i-tabler-info-triangle-filled"
-              class="text-orange-400 text-lg"
-            />
-            License
-          </p>
-          <div class="flex flex-col gap-3">
-            <p class="text-[14px] font-sans">
-              Your school needs a license in order to use Exam.net. Click
-              Purchase a license below to see pricing and to order.
-              <br>
-              You will get access as soon as the license is ordered.
-            </p>
-            <AppButton
-              class="py-1 px-4 rounded-4xl! text-black! border-2! text-lg! w-fit!"
-              label="See pricing and purchase a license"
-            />
-          </div>
-          <div class="flex flex-col gap-3">
-            <p class="text-[14px] font-sans">
-              You can activate 5 days of temporary access for your user to give
-              you time to complete your purchase or save material
-              <br class="hidden md:block">
-              before access is denied. If your school needs more time to
-              evaluate Exam.net, email sales@exam.net.
-            </p>
 
-            <AppButton
-              class="py-1 px-4 rounded-4xl! text-black! border-2! text-lg! w-fit!"
-              label="Activate 5 days of temporary access"
-            />
-          </div>
+        <h2 class="text-2xl font-semibold mt-6 mb-2">
+          Step 1: Logging In
+        </h2>
+        <ul class="list-disc list-inside mb-4">
+          <li>User logs into the platform.</li>
+        </ul>
 
-          <div class="border border-[#d6d6d6] lg:w-1/2" />
+        <h2 class="text-2xl font-semibold mt-6 mb-2">
+          Step 2: Creating a New Exam
+        </h2>
+        <ul class="list-disc list-inside mb-4">
+          <li>Click on the “Create New Exam” button.</li>
+        </ul>
 
-          <div class="flex flex-col gap-4">
-            <p class="text-[14px] md:text-[16px] flex gap-1">
-              <UIcon name="i-tabler-building" class="text-xl" />
-              School information
-            </p>
-            <p class="text-[14px] md:text-[16px]">
-              Address
-            </p>
-          </div>
-        </div>
+        <h3 class="text-xl font-medium mt-4 mb-2">
+          Option A: Uploading a PDF
+        </h3>
+        <ul class="list-disc list-inside mb-4 ml-4">
+          <li>User uploads a PDF file containing exam questions.</li>
+          <li>The AI extracts data from the PDF.</li>
+          <li>An editor is provided for making any necessary changes.</li>
+        </ul>
+        <blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-600 mb-4">
+          *Disclaimer*: AI-passed questions from the upload will not appear on the student dashboard or question preview.
+        </blockquote>
+
+        <h3 class="text-xl font-medium mt-4 mb-2">
+          Option B: Manual Entry
+        </h3>
+        <ul class="list-disc list-inside mb-4 ml-4">
+          <li>User manually enters exam questions.</li>
+        </ul>
+
+        <h2 class="text-2xl font-semibold mt-6 mb-2">
+          Step 3: Setting Exam Details
+        </h2>
+        <ul class="list-disc list-inside mb-4 ml-0">
+          <li>Click “Next” to configure exam settings like time and other parameters.</li>
+          <li>Assign a name to the exam.</li>
+        </ul>
+
+        <h2 class="text-2xl font-semibold mt-6 mb-2">
+          Step 4: Monitoring and Results
+        </h2>
+        <ul class="list-disc list-inside mb-0 ml-0">
+          <li>Access the monitoring result dashboard.</li>
+          <li>Invite students via email for bulk upload.</li>
+          <li> When choosing bulk upload, <b>Please</b> view the template provided and ensure the data is in the correct format.</li>
+          <li>Students will receive an email with a link to the exam.</li>
+          <li>View students’ results and transcripts in the results page.</li>
+        </ul>
       </div>
     </div>
   </section>
