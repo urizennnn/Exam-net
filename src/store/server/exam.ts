@@ -1,6 +1,9 @@
 import {
   defineStore,
 } from "pinia";
+import {
+  uid,
+} from "uid";
 
 import type {
   BaseState,
@@ -260,14 +263,15 @@ export const useExamServerStore = defineStore("exam-server", {
       }
     },
 
-    async sendExamBackToStudent(examId: string, payload: string | Array<string>) {
+    async duplicateExam(examId: string) {
       try {
         this.success = false;
         this.loading = true;
+        const newExamKey = uid(7);
         const {
           data,
-        } = await axiosInstance.post(`/exams/${examId}/send`, {
-          email: payload,
+        } = await axiosInstance.post(`/exams/${examId}/duplicate`, {
+          examKey: newExamKey,
         });
         const {
           message,

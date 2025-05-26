@@ -13,8 +13,8 @@ import AppButton from "../components/AppButton.vue";
       Oops. Nothing here...
     </p>
     <AppButton
-      to="/"
-      label="Go Home"
+      to="/exams"
+      label="Go to Exams"
       theme="variant"
       extra-class="py-4! px-10!"
     />

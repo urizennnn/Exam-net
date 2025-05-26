@@ -34,6 +34,7 @@ const {
   deleteExam,
   deleteExams,
   examUpdate,
+  duplicateExam,
 } = useExamServerStore();
 const {
   exams,
@@ -275,23 +276,25 @@ async function handleExamRename() {
   }
 }
 
+async function handleExamDuplicate(examId: string) {
+  await duplicateExam(examId);
+  if (examServerSuccess.value) {
+    await getExams();
+  }
+}
+
 function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
   return [
     [
       {
         label: "Duplicate the Exam",
         icon: "i-lucide-copy",
+        onSelect: () => handleExamDuplicate(exam.id),
       },
       {
         label: "Rename Exam",
         icon: "i-lucide-folder-pen",
         onSelect: () => toggleRanameExamModal(exam.name, exam.id),
-      },
-    ],
-    [
-      {
-        label: "Archive the Exam",
-        icon: "i-lucide-archive",
       },
     ],
     [
@@ -507,4 +510,3 @@ onMounted(async () => {
   margin: 0;
 }
 </style>
-

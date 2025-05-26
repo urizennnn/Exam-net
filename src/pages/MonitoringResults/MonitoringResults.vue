@@ -1,3 +1,4 @@
+<!-- eslint-disable ts/no-use-before-define -->
 <script setup lang="ts">
 import type {
   TableColumn,
@@ -518,8 +519,12 @@ async function handleSendToAll() {
           <ul class="h-full max-h-[250px] p-4 flex flex-col gap-3 w-full overflow-y-scroll overflow-x-hidden">
             <li v-for="(student, index) in studentsData" :key="index" class="flex justify-between items-center border-b pb-2">
               <div>
-                <p class="font-semibold">{{ student.name }}</p>
-                <p class="text-sm text-gray-600">{{ student.email }}</p>
+                <p class="font-semibold">
+                  {{ student.name }}
+                </p>
+                <p class="text-sm text-gray-600">
+                  {{ student.email }}
+                </p>
               </div>
               <AppButton
                 icon="i-lucide-trash"
@@ -635,4 +640,3 @@ async function handleSendToAll() {
   margin: 0;
 }
 </style>
-
