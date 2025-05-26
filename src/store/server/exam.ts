@@ -259,5 +259,32 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
+
+    async sendExamBackToStudent(examId: string, payload: string | Array<string>) {
+      try {
+        this.success = false;
+        this.loading = true;
+        const {
+          data,
+        } = await axiosInstance.post(`/exams/${examId}/send`, {
+          email: payload,
+        });
+        const {
+          message,
+        } = data;
+        this.success = true;
+        successToast(message);
+      }
+      catch (error: any) {
+        this.success = false;
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
+        errorToast(errorMessage);
+        throw new Error(errorMessage);
+      }
+      finally {
+        this.loading = false;
+      }
+    },
   },
 });

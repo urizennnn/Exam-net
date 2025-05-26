@@ -38,6 +38,7 @@ const {
   getExam,
   dropInviteStudent,
   inviteStudentInBulk,
+  sendExamBackToStudent,
 } = examStore;
 const {
   loading: examServerLoading,
@@ -78,9 +79,10 @@ const selectedTab = ref(tabs.value[0].value);
 const studentStatus = computed(() => {
   const invites = inviteEmails.value.length;
   const submissions = currentExam.value?.submissions?.length ?? 0;
+  const ongoing = currentExam.value?.ongoing ?? 0;
   return [
     {
-      done: invites,
+      done: ongoing,
       total: invites,
       title: "ongoing",
       borderBottom: "border-blue-300",
@@ -313,6 +315,26 @@ onMounted(async () => {
     examTitle.value = exams.value[0]?.examName ?? "";
   }
 });
+
+async function handleSendToStudent(email: string) {
+  await sendExamBackToStudent(currentExam.value!._id, email);
+  if (examServerSuccess.value) {
+    // Optionally refresh exam data or show success message
+    await getExam({
+      id: currentExam.value!._id,
+    });
+  }
+}
+
+async function handleSendToAll() {
+  await sendExamBackToStudent(currentExam.value!._id, filteredInviteEmails.value);
+  if (examServerSuccess.value) {
+    sendModal.value = false;
+    await getExam({
+      id: currentExam.value!._id,
+    });
+  }
+}
 </script>
 
 <template>
@@ -553,12 +575,24 @@ onMounted(async () => {
             :key="invitee"
             class="flex items-center justify-between p-2 border-b-1"
           >
-            {{ invitee }} <AppButton label="Send" theme="secondary" />
+            {{ invitee }}
+            <AppButton
+              label="Send"
+              theme="secondary"
+              :loading="examServerLoading"
+              @click="handleSendToStudent(invitee)"
+            />
           </p>
         </div>
       </template>
       <template #footer>
-        <AppButton label="Send to All" class="w-fit! px-8" theme="secondary" />
+        <AppButton
+          label="Send to All"
+          class="w-fit! px-8"
+          theme="secondary"
+          :loading="examServerLoading"
+          @click="handleSendToAll"
+        />
       </template>
     </AppModal>
 

@@ -66,6 +66,7 @@ export type Exam = {
   examKey: string;
   examName: string;
   lecturer: string;
+  ongoing: number;
   question: string;
   settings: {
     examType: {
