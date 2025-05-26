@@ -346,6 +346,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <Header />
   <section
     id="section"
     class="relative w-full bg-zinc-300 flex items-center justify-center text-black"
@@ -506,3 +507,4 @@ onMounted(async () => {
   margin: 0;
 }
 </style>
+

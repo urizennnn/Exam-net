@@ -31,7 +31,7 @@ const navLinks = [
     notification: false,
   },
   {
-    label: "School",
+    label: "Training",
     to: "/license",
     icon: "i-tabler-school",
     notification: true,
