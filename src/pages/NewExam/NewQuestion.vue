@@ -222,9 +222,8 @@ watch(() => documentResult, (n) => {
   <section class="bg-white w-full flex text-black">
     <div
       v-if="newExamStore.formStepTwoCounter === 1"
-      class="flex md:flex-row flex-col"
+      class="flex md:flex-row flex-col w-full"
     >
-      <AppNewExamSideBar />
       <section class="p-10 w-full">
         <div class="m-auto w-full rounded-t-lg bg-white">
           <h1

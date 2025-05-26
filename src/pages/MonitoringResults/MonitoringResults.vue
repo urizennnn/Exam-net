@@ -340,303 +340,293 @@ async function handleSendToAll() {
 
 <template>
   <Header />
-  <section id="section" class="bg-zinc-300 text-black">
-    <div class="section-container-width">
-      <template v-if="!hasExams">
-        <div class="text-center py-20 text-gray-500 text-xl">
-          No exams created at this time
-        </div>
-      </template>
-      <template v-else>
-        <section class="pt-4 w-full flex gap-3">
-          <aside class="w-full max-w-[300px]">
-            <AppSelectMenu
-              v-model="examTitle"
-              :items="allAvailableExams"
-              :loading="examServerLoading"
-              base-class="ring-0 text-2xl"
-            />
-            <h1 class="flex items-center gap-1 font-bold py-2 px-3 w-full bg-zinc-400 rounded-md mt-3">
-              <UIcon name="i-lucide-house" class="size-5" /> Overview
+  <div class="container m-auto pb-8 px-8">
+    <template v-if="!hasExams">
+      <div class="text-center py-20 text-gray-500 text-xl">
+        No exams created at this time
+      </div>
+    </template>
+    <template v-else>
+      <section class="pt-4 w-full flex gap-3">
+        <aside class="w-full max-w-[300px]">
+          <AppSelectMenu
+            v-model="examTitle"
+            :items="allAvailableExams"
+            :loading="examServerLoading"
+            base-class="ring-0 text-2xl"
+          />
+          <h1 class="flex items-center gap-1 font-bold py-2 px-3 w-full bg-zinc-400 rounded-md mt-3">
+            <UIcon name="i-lucide-house" class="size-5" /> Overview
+          </h1>
+        </aside>
+        <div class="bg-white rounded-md w-full">
+          <AppTab v-model="selectedTab" :tabs="tabs" />
+          <main class="py-8 px-4">
+            <USkeleton v-if="examServerLoading" class="w-[350px] h-12" />
+            <h1 v-else class="text-black text-5xl font-bold">
+              {{ examTitle }}
             </h1>
-          </aside>
-          <div class="bg-white rounded-md w-full">
-            <AppTab v-model="selectedTab" :tabs="tabs" />
-            <main class="py-8 px-4">
-              <USkeleton v-if="examServerLoading" class="w-[350px] h-12" />
-              <h1 v-else class="text-black text-5xl font-bold">
-                {{ examTitle }}
-              </h1>
 
-              <template v-if="selectedTab === 'monitoring'">
-                <section class="flex gap-6 mt-4">
-                  <div class="flex flex-col gap-3 w-full max-w-[350px]">
-                    <div class="flex gap-6 items-center w-full justify-between text-black text-xl">
-                      <p class="font-light">
-                        Exam key
-                      </p>
-                      <USkeleton v-if="examServerLoading" class="w-20 h-10" />
-                      <p v-else>
-                        {{ currentExam?.examKey }}
-                      </p>
-                    </div>
-                    <div class="flex gap-6 items-center w-full justify-between text-black text-xl">
-                      <p class="font-light">
-                        Access
-                      </p>
-                      <USkeleton v-if="examServerLoading" class="w-20 h-10" />
-                      <p v-else class="capitalize">
-                        {{ currentExam?.access }}
-                      </p>
-                    </div>
-                    <div class="mt-4">
-                      <h4 class="font-bold">
-                        Student Status
-                      </h4>
-                      <div class="flex gap-2 w-full mt-3">
-                        <div v-if="examServerLoading" class="w-full h-full flex items-center justify-between">
-                          <USkeleton class="w-full h-[100px]" />
-                        </div>
-                        <div
-                          v-for="(status, index) in studentStatus"
-                          :key="index"
-                          :class="`${status.borderBottom} border-b-4 p-4 flex items-center justify-center flex-col gap-3 bg-gray-100 w-full`"
-                        >
-                          <p class="text-xl flex items-end">
-                            <span class="font-bold text-2xl">{{ status.done }}</span>/{{ status.total }}
-                          </p>
-                          <p class="capitalize text-xl tracking-wide">
-                            {{ status.title }}
-                          </p>
-                        </div>
+            <template v-if="selectedTab === 'monitoring'">
+              <section class="flex gap-6 mt-4">
+                <div class="flex flex-col gap-3 w-full max-w-[350px]">
+                  <div class="flex gap-6 items-center w-full justify-between text-black text-xl">
+                    <p class="font-light">
+                      Exam key
+                    </p>
+                    <USkeleton v-if="examServerLoading" class="w-20 h-10" />
+                    <p v-else>
+                      {{ currentExam?.examKey }}
+                    </p>
+                  </div>
+                  <div class="flex gap-6 items-center w-full justify-between text-black text-xl">
+                    <p class="font-light">
+                      Access
+                    </p>
+                    <USkeleton v-if="examServerLoading" class="w-20 h-10" />
+                    <p v-else class="capitalize">
+                      {{ currentExam?.access }}
+                    </p>
+                  </div>
+                  <div class="mt-4">
+                    <h4 class="font-bold">
+                      Student Status
+                    </h4>
+                    <div class="flex gap-2 w-full mt-3">
+                      <div v-if="examServerLoading" class="w-full h-full flex items-center justify-between">
+                        <USkeleton class="w-full h-[100px]" />
+                      </div>
+                      <div
+                        v-for="(status, index) in studentStatus"
+                        :key="index"
+                        :class="`${status.borderBottom} border-b-4 p-4 flex items-center justify-center flex-col gap-3 bg-gray-100 w-full`"
+                      >
+                        <p class="text-xl flex items-end">
+                          <span class="font-bold text-2xl">{{ status.done }}</span>/{{ status.total }}
+                        </p>
+                        <p class="capitalize text-xl tracking-wide">
+                          {{ status.title }}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <div class="w-full px-4 flex flex-col gap-4">
-                    <template v-for="(button, index) in buttonList" :key="index">
-                      <UDropdownMenu
-                        v-if="button.children"
-                        :items="button.children"
-                        :ui="{ content: 'bg-white shadow cursor-pointer', item: 'cursor-pointer text-black hover:bg-black rounded' }"
-                        :disabled="examServerLoading"
-                      >
-                        <AppButton
-                          :label="button.label"
-                          :left-icon="button.leftIcon"
-                          :loading="examServerLoading"
-                          theme="primary"
-                          class="w-full! items-center justify-center rounded-3xl!"
-                        />
-                      </UDropdownMenu>
+                </div>
+                <div class="w-full px-4 flex flex-col gap-4">
+                  <template v-for="(button, index) in buttonList" :key="index">
+                    <UDropdownMenu
+                      v-if="button.children"
+                      :items="button.children"
+                      :ui="{ content: 'bg-white shadow cursor-pointer', item: 'cursor-pointer text-black hover:bg-black rounded' }"
+                      :disabled="examServerLoading"
+                    >
                       <AppButton
-                        v-else
                         :label="button.label"
                         :left-icon="button.leftIcon"
                         :loading="examServerLoading"
                         theme="primary"
                         class="w-full! items-center justify-center rounded-3xl!"
-                        :to="button.to"
-                        @click="button.click"
                       />
-                    </template>
-                  </div>
-                </section>
-              </template>
+                    </UDropdownMenu>
+                    <AppButton
+                      v-else
+                      :label="button.label"
+                      :left-icon="button.leftIcon"
+                      :loading="examServerLoading"
+                      theme="primary"
+                      class="w-full! items-center justify-center rounded-3xl!"
+                      :to="button.to"
+                      @click="button.click"
+                    />
+                  </template>
+                </div>
+              </section>
+            </template>
 
-              <template v-if="selectedTab === 'results'">
-                <div class="my-8 w-full px-4 flex gap-4">
-                  <AppButton
-                    v-for="(button, index) in buttonListTwo"
-                    :key="index"
-                    :label="button.label"
-                    :left-icon="button.leftIcon"
-                    :loading="examServerLoading || documentLoading"
-                    theme="primary"
-                    class="w-full! items-center justify-center rounded-3xl!"
-                    @click="button.clickAction"
-                  />
-                </div>
-                <div class="mt-4">
-                  <AppTab
-                    v-model="selectedResultTab"
-                    :tabs="resultsTab"
-                    theme="variant"
-                    class="py-1 tracking-wider hover:border-b-3 hover:border-zinc-800 mr-4 text-zinc-600 hover:text-zinc-800"
-                    active-class="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer"
-                  />
-                </div>
-                <AppTable
-                  v-if="selectedResultTab === 'student'"
-                  :columns="columns"
-                  :rows="rows"
+            <template v-if="selectedTab === 'results'">
+              <div class="my-8 w-full px-4 flex gap-4">
+                <AppButton
+                  v-for="(button, index) in buttonListTwo"
+                  :key="index"
+                  :label="button.label"
+                  :left-icon="button.leftIcon"
                   :loading="examServerLoading || documentLoading"
-                >
-                  <template #name-cell="{ row }">
-                    <p class="cursor-pointer text-blue-600 underline" @click="openTranscript(row.original.transcript)">
-                      {{ row.original.name }}
-                    </p>
-                  </template>
-                  <template #action-cell="{ row }">
-                    <div class="flex gap-2 items-center">
-                      <AppButton
-                        left-icon="i-lucide-file-badge"
-                        theme="primary"
-                        class="border-black border-2! rounded-4xl!"
-                        title="View Transcript"
-                        :loading="documentLoading"
-                        @click="toggleTranscriptModal(row.original.transcript)"
-                      />
-                    </div>
-                  </template>
-                </AppTable>
-                <div v-if="selectedResultTab === 'statistics'">
-                  <AppPieChart :rows="rows" />
-                </div>
-              </template>
-            </main>
-          </div>
-        </section>
-      </template>
-    </div>
-
-    <AppModal v-model="showInviteStudent" title="Invite Student to Take Exam">
-      <template #body>
-        <div class="rounded-lg">
-          <div class="flex gap-2 mb-4">
-            <AppInput v-model="studentName" placeholder="Enter Student Name" class="flex-1" />
-            <AppInput v-model="studentEmail" placeholder="Enter Student Email" class="flex-1" />
-            <AppButton
-              label="Add"
-              theme="secondary"
-              class="px-4"
-              :disabled="!studentName || !studentEmail"
-              @click="addStudentData"
-            />
-          </div>
-          <h1 class="p-2 bg-blue-500 text-white mt-4 font-bold rounded-t-lg">
-            Students
-          </h1>
-          <ul class="h-full max-h-[250px] p-4 flex flex-col gap-3 w-full overflow-y-scroll overflow-x-hidden">
-            <li v-for="(student, index) in studentsData" :key="index" class="flex justify-between items-center border-b pb-2">
-              <div>
-                <p class="font-semibold">
-                  {{ student.name }}
-                </p>
-                <p class="text-sm text-gray-600">
-                  {{ student.email }}
-                </p>
+                  theme="primary"
+                  class="w-full! items-center justify-center rounded-3xl!"
+                  @click="button.clickAction"
+                />
               </div>
-              <AppButton
-                icon="i-lucide-trash"
-                class="text-red-600"
-                @click="removeStudent(index)"
-              />
-            </li>
-            <li v-if="studentsData.length === 0" class="text-center italic text-gray-500">
-              No students added yet
-            </li>
-          </ul>
+              <div class="mt-4">
+                <AppTab
+                  v-model="selectedResultTab"
+                  :tabs="resultsTab"
+                  theme="variant"
+                  class="py-1 tracking-wider hover:border-b-3 hover:border-zinc-800 mr-4 text-zinc-600 hover:text-zinc-800"
+                  active-class="border-b-3 border-zinc-800 text-zinc-800 cursor-pointer"
+                />
+              </div>
+              <AppTable
+                v-if="selectedResultTab === 'student'"
+                :columns="columns"
+                :rows="rows"
+                :loading="examServerLoading || documentLoading"
+              >
+                <template #name-cell="{ row }">
+                  <p class="cursor-pointer text-blue-600 underline" @click="openTranscript(row.original.transcript)">
+                    {{ row.original.name }}
+                  </p>
+                </template>
+                <template #action-cell="{ row }">
+                  <div class="flex gap-2 items-center">
+                    <AppButton
+                      left-icon="i-lucide-file-badge"
+                      theme="primary"
+                      class="border-black border-2! rounded-4xl!"
+                      title="View Transcript"
+                      :loading="documentLoading"
+                      @click="toggleTranscriptModal(row.original.transcript)"
+                    />
+                  </div>
+                </template>
+              </AppTable>
+              <div v-if="selectedResultTab === 'statistics'">
+                <AppPieChart :rows="rows" />
+              </div>
+            </template>
+          </main>
         </div>
-      </template>
-      <template #footer>
-        <AppButton
-          label="Send"
-          :disabled="studentsData.length === 0"
-          :loading="examServerLoading"
-          class="w-fit! px-8"
-          @click="handleInviteStudent"
-        />
-      </template>
-    </AppModal>
+      </section>
+    </template>
+  </div>
 
-    <AppModal v-model="showInvitesModal" title="Invited Students">
-      <template #body>
-        <ul class="flex flex-col gap-3 max-h-[300px] overflow-y-auto w-full">
-          <li v-for="email in inviteEmails" :key="email" class="flex justify-between items-center border-b pb-1">
-            <span>{{ email }}</span>
-            <AppButton
-              icon="i-lucide-trash"
-              class="text-2xl text-red-600"
-              :loading="examServerLoading"
-              @click="handleDropInvite(email)"
-            />
-          </li>
-          <li v-if="inviteEmails.length === 0" class="text-center italic text-gray-500">
-            No invites yet
-          </li>
-        </ul>
-      </template>
-    </AppModal>
-
-    <AppModal v-model="sendModal" title="Send exam back to student">
-      <template #body>
-        <AppInput v-model="filterEmail" placeholder="Filter email..." />
-        <div class="rounded-lg overflow-scroll max-h-[500px] h-auto w-full mt-2">
-          <h1 class="p-2 bg-blue-500 text-white font-bold rounded-t-lg">
-            Students
-          </h1>
-          <p
-            v-for="invitee in filteredInviteEmails"
-            :key="invitee"
-            class="flex items-center justify-between p-2 border-b-1"
-          >
-            {{ invitee }}
-            <AppButton
-              label="Send"
-              theme="secondary"
-              :loading="examServerLoading"
-              @click="handleSendToStudent(invitee)"
-            />
-          </p>
-        </div>
-      </template>
-      <template #footer>
-        <AppButton
-          label="Send to All"
-          class="w-fit! px-8"
-          theme="secondary"
-          :loading="examServerLoading"
-          @click="handleSendToAll"
-        />
-      </template>
-    </AppModal>
-
-    <AppModal v-model="transcriptModal" class="max-w-[85%]! h-[85dvh]">
-      <template #content>
-        <iframe :src="studentsTransciptUrl" width="100%" height="100%" />
-      </template>
-    </AppModal>
-
-    <AppModal v-model="bulkStudentUploadModal" title="Invite students to Take Exam">
-      <template #body>
-        <div class="flex gap-2">
-          <AppInput v-model="bulkFile" type="file" accept=".csv" />
+  <AppModal v-model="showInviteStudent" title="Invite Student to Take Exam">
+    <template #body>
+      <div class="rounded-lg">
+        <div class="flex gap-2 mb-4">
+          <AppInput v-model="studentName" placeholder="Enter Student Name" class="flex-1" />
+          <AppInput v-model="studentEmail" placeholder="Enter Student Email" class="flex-1" />
           <AppButton
-            label="Download Template"
-            class="rounded-xl! px-8"
+            label="Add"
             theme="secondary"
-            @click="downloadFile('emails_and_names.csv')"
+            class="px-4"
+            :disabled="!studentName || !studentEmail"
+            @click="addStudentData"
           />
         </div>
-      </template>
-      <template #footer>
-        <AppButton
-          label="Invite"
-          class="w-fit! px-8"
-          :disabled="!bulkFile"
-          theme="secondary"
-          :loading="examServerLoading"
-          @click="handleBulkUpload"
-        />
-      </template>
-    </AppModal>
-  </section>
-</template>
+        <h1 class="p-2 bg-blue-500 text-white mt-4 font-bold rounded-t-lg">
+          Students
+        </h1>
+        <ul class="h-full max-h-[250px] p-4 flex flex-col gap-3 w-full overflow-y-scroll overflow-x-hidden">
+          <li v-for="(student, index) in studentsData" :key="index" class="flex justify-between items-center border-b pb-2">
+            <div>
+              <p class="font-semibold">
+                {{ student.name }}
+              </p>
+              <p class="text-sm text-gray-600">
+                {{ student.email }}
+              </p>
+            </div>
+            <AppButton
+              icon="i-lucide-trash"
+              class="text-red-600"
+              @click="removeStudent(index)"
+            />
+          </li>
+          <li v-if="studentsData.length === 0" class="text-center italic text-gray-500">
+            No students added yet
+          </li>
+        </ul>
+      </div>
+    </template>
+    <template #footer>
+      <AppButton
+        label="Send"
+        :disabled="studentsData.length === 0"
+        :loading="examServerLoading"
+        class="w-fit! px-8"
+        @click="handleInviteStudent"
+      />
+    </template>
+  </AppModal>
 
-<style scoped>
-#section {
-  min-height: calc(100dvh - 60px);
-  padding: 0;
-  margin: 0;
-}
-</style>
+  <AppModal v-model="showInvitesModal" title="Invited Students">
+    <template #body>
+      <ul class="flex flex-col gap-3 max-h-[300px] overflow-y-auto w-full">
+        <li v-for="email in inviteEmails" :key="email" class="flex justify-between items-center border-b pb-1">
+          <span>{{ email }}</span>
+          <AppButton
+            icon="i-lucide-trash"
+            class="text-2xl text-red-600"
+            :loading="examServerLoading"
+            @click="handleDropInvite(email)"
+          />
+        </li>
+        <li v-if="inviteEmails.length === 0" class="text-center italic text-gray-500">
+          No invites yet
+        </li>
+      </ul>
+    </template>
+  </AppModal>
+
+  <AppModal v-model="sendModal" title="Send exam back to student">
+    <template #body>
+      <AppInput v-model="filterEmail" placeholder="Filter email..." />
+      <div class="rounded-lg overflow-scroll max-h-[500px] h-auto w-full mt-2">
+        <h1 class="p-2 bg-blue-500 text-white font-bold rounded-t-lg">
+          Students
+        </h1>
+        <p
+          v-for="invitee in filteredInviteEmails"
+          :key="invitee"
+          class="flex items-center justify-between p-2 border-b-1"
+        >
+          {{ invitee }}
+          <AppButton
+            label="Send"
+            theme="secondary"
+            :loading="examServerLoading"
+            @click="handleSendToStudent(invitee)"
+          />
+        </p>
+      </div>
+    </template>
+    <template #footer>
+      <AppButton
+        label="Send to All"
+        class="w-fit! px-8"
+        theme="secondary"
+        :loading="examServerLoading"
+        @click="handleSendToAll"
+      />
+    </template>
+  </AppModal>
+
+  <AppModal v-model="transcriptModal" class="max-w-[85%]! h-[85dvh]">
+    <template #content>
+      <iframe :src="studentsTransciptUrl" width="100%" height="100%" />
+    </template>
+  </AppModal>
+
+  <AppModal v-model="bulkStudentUploadModal" title="Invite students to Take Exam">
+    <template #body>
+      <div class="flex gap-2">
+        <AppInput v-model="bulkFile" type="file" accept=".csv" />
+        <AppButton
+          label="Download Template"
+          class="rounded-xl! px-8"
+          theme="secondary"
+          @click="downloadFile('emails_and_names.csv')"
+        />
+      </div>
+    </template>
+    <template #footer>
+      <AppButton
+        label="Invite"
+        class="w-fit! px-8"
+        :disabled="!bulkFile"
+        theme="secondary"
+        :loading="examServerLoading"
+        @click="handleBulkUpload"
+      />
+    </template>
+  </AppModal>
+</template>

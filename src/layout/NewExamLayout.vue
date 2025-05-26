@@ -161,7 +161,7 @@ watch(() => newExamStore.examId, (n) => {
 </script>
 
 <template>
-  <section id="section" class="w-full bg-zinc-300">
+  <section>
     <div class="container m-auto pb-8 px-8">
       <div
         class="flex flex-col md:flex-row justify-between items-center py-4 border-b-2 border-neutral-400 px-4 bg-neutral-200 shadow-md gap-4"
@@ -258,11 +258,3 @@ watch(() => newExamStore.examId, (n) => {
     </template>
   </AppModal>
 </template>
-
-<style scoped>
-#section {
-  min-height: calc(100dvh - 60px);
-  padding: 0;
-  margin: 0;
-}
-</style>

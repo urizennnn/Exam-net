@@ -10,16 +10,6 @@ import {
 } from "../../store/NewExamStore";
 
 const newExamStore = useNewExamStore();
-const configOptionsTabs = ref([
-  {
-    label: "general",
-    isActive: true,
-  },
-  {
-    label: "exam type settings",
-    isActive: false,
-  },
-]);
 
 type configTypes = {
   label: string;
@@ -42,7 +32,7 @@ const generalConfigs = ref<configTypes[]>([
     tag: "anonymizeExam",
   },
   {
-    label: "Set time limit",
+    label: "Set time limit (default: 1 hour)",
     description:
       "Pre-define how much time the students will have before being required to hand in the exam. Each timer is individual and the countdown starts when the student enters the exam, if the students re-enters the exam, the timer is reset.",
     value: newExamStore.configOptions.setTimeLimit,
@@ -111,27 +101,16 @@ watch(() => examTypeSettingConfigs, (n) => {
 </script>
 
 <template>
-  <section class="bg-white w-full flex">
+  <section class="bg-white w-full">
     <!-- SideBar For Config -->
-    <section class="text-white bg-gray-800">
-      <h1 class="font-bold text-center tracking-wider px-4 pt-8">
-        Configurations
-      </h1>
-      <ul class="mt-4">
-        <li
-          v-for="(option, index) in configOptionsTabs"
-          :key="index"
-          :class="`${option.isActive ? 'border-solid md:border-l-3 border-t-3 md:border-t-0 border-amber-400 active relative bg-gray-700' : ''} cursor-pointer px-4 py-4 hover:bg-gray-700 capitalize`"
-        >
-          {{ option.label }}
-        </li>
-      </ul>
-    </section>
+    <h1 class="font-bold  text-black text-3xl tracking-wider px-4 pt-8">
+      Configurations
+    </h1>
 
     <!-- Main page -->
-    <main class="px-8 pt-12 pb-6 text-black">
+    <main class="px-8 pt-4 pb-6 text-black">
       <section>
-        <h1 id="general" class="font-bold tracking-wide text-2xl">
+        <h1 id="general" class="font-semibold tracking-wide text-2xl">
           General
         </h1>
         <div
@@ -156,6 +135,7 @@ watch(() => examTypeSettingConfigs, (n) => {
                   type="number"
                   max="60"
                   min="15"
+                  class="max-w-[400px]!"
                 />
               </div>
             </template>
@@ -163,7 +143,7 @@ watch(() => examTypeSettingConfigs, (n) => {
         </div>
       </section>
       <section class="mt-8">
-        <h1 id="general" class="font-bold tracking-wide text-2xl">
+        <h1 id="general" class="font-semibold tracking-wide text-2xl">
           Exam type settings
         </h1>
         <div

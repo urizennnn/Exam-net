@@ -241,10 +241,10 @@ function onRowSelection(items: any[]) {
 }
 
 const iconActions = ref([
-  {
-    title: "Archive Selected Exams",
-    icon: "i-lucide-archive",
-  },
+  // {
+  //   title: "Archive Selected Exams",
+  //   icon: "i-lucide-archive",
+  // },
   {
     title: "Delete Selected Exams",
     icon: "i-lucide-trash",
@@ -350,111 +350,107 @@ onMounted(async () => {
 
 <template>
   <Header />
-  <section
-    id="section"
-    class="relative w-full bg-zinc-300 flex items-center justify-center text-black"
-  >
-    <div class="container m-auto pb-8 px-8">
-      <div class="w-full flex flex-col rounded-2xl shadow-xl overflow-hidden">
-        <section
-          class="bg-blue-950 text-white p-3 rounded-t-lg flex justify-center items-center"
-        >
-          <h1 class="text-[18px] md:text-[20px] tracking-wide">
-            Exams
-          </h1>
-        </section>
-        <template v-if="exams.length > 0">
-          <section class="bg-blue-950 py-1 flex gaitems-center">
-            <AppButton
-              v-for="action in iconActions"
-              :key="action.title"
-              color="neutral"
-              class="cursor-pointer size-9 text-white"
-              size="xl"
-              variant="link"
-              :icon="action.icon"
-              :disabled="selectedRows.length === 0"
-              :title="action.title"
-              :loading="examServerLoading"
-              @click="action.onClick"
-            />
-          </section>
-        </template>
-        <div v-if="exams.length > 0 || examServerLoading" class="bg-white pt-2">
-          <AppTable
-            :columns="columns"
-            :rows="rows"
-            :loading="examServerLoading"
-            filter-by="name"
-            @update:row-selection="onRowSelection"
-          >
-            <template #action-cell="{ row }">
-              <div class="flex gap-2 items-center">
-                <AppButton
-                  left-icon="i-lucide-pencil"
-                  theme="primary"
-                  class="border-black border-2! rounded-4xl!"
-                  title="Edit Exam"
-                  :to="`/new-exam/new-question/${row.original.id}`"
-                  :loading="examServerLoading"
-                />
-                <AppButton
-                  left-icon="i-lucide-monitor-check"
-                  theme="primary"
-                  class="border-black border-2! rounded-4xl!"
-                  :to="`/monitoring-results/${row.original.id}`"
-                  title="Monitor Exam"
-                  :loading="examServerLoading"
-                />
-                <AppButton
-                  left-icon="i-lucide-binoculars"
-                  theme="primary"
-                  class="border-black border-2! rounded-4xl!"
-                  :to="`/preview/${row.original.id}`"
-                  title="Preview Exam"
-                  :loading="examServerLoading"
-                />
-                <UDropdownMenu
-                  :items="getExamDropdownActions(row.original)"
-                  :content="{
-                    align: 'start',
-                  }"
-                  :ui="{
-                    content: 'bg-white shadow cursor-pointer',
-                    item: 'cursor-pointer text-black hover:bg-black rounded',
-                  }"
-                  :disabled="examServerLoading"
-                >
-                  <UIcon
-                    name="i-lucide-ellipsis-vertical"
-                    class="size-6 cursor-pointer"
-                  />
-                </UDropdownMenu>
-              </div>
-            </template>
-          </AppTable>
-        </div>
-        <div
-          class="w-full h-full flex gap-3 items-center justify-center bg-white flex-col px-4 py-4"
-        >
-          <template v-if="exams.length === 0 && !examServerLoading">
-            <UIcon name="i-lucide-file" class="text-gray-700 size-12" />
-            <p class="font-semibold text-gray-700 text-[16px]">
-              No exams yet
-            </p>
-          </template>
+  <div class="container m-auto pb-8 px-8 mt-4">
+    <div class="w-full flex flex-col rounded-2xl shadow-xl overflow-hidden">
+      <section
+        class="bg-blue-950 text-white p-3 rounded-t-lg flex justify-center items-center"
+      >
+        <h1 class="text-[18px] md:text-[20px] tracking-wide">
+          Exams
+        </h1>
+      </section>
+      <template v-if="exams.length > 0">
+        <section class="bg-blue-950 py-1 flex gaitems-center">
           <AppButton
-            :left-icon="`${exams.length === 0 ? 'i-lucide-plus' : ''}`"
-            label="New Exam"
-            theme="secondary"
-            class="bg-gray-700 py-2 px-4"
-            to="/new-exam"
-            @click="clearNewExamData"
+            v-for="action in iconActions"
+            :key="action.title"
+            color="neutral"
+            class="cursor-pointer size-9 text-white"
+            size="xl"
+            variant="link"
+            :icon="action.icon"
+            :disabled="selectedRows.length === 0"
+            :title="action.title"
+            :loading="examServerLoading"
+            @click="action.onClick"
           />
-        </div>
+        </section>
+      </template>
+      <div v-if="exams.length > 0 || examServerLoading" class="bg-white pt-2">
+        <AppTable
+          :columns="columns"
+          :rows="rows"
+          :loading="examServerLoading"
+          filter-by="name"
+          @update:row-selection="onRowSelection"
+        >
+          <template #action-cell="{ row }">
+            <div class="flex gap-2 items-center">
+              <AppButton
+                left-icon="i-lucide-pencil"
+                theme="primary"
+                class="border-black border-2! rounded-4xl!"
+                title="Edit Exam"
+                :to="`/new-exam/new-question/${row.original.id}`"
+                :loading="examServerLoading"
+              />
+              <AppButton
+                left-icon="i-lucide-monitor-check"
+                theme="primary"
+                class="border-black border-2! rounded-4xl!"
+                :to="`/monitoring-results/${row.original.id}`"
+                title="Monitor Exam"
+                :loading="examServerLoading"
+              />
+              <AppButton
+                left-icon="i-lucide-binoculars"
+                theme="primary"
+                class="border-black border-2! rounded-4xl!"
+                :to="`/preview/${row.original.id}`"
+                title="Preview Exam"
+                :loading="examServerLoading"
+              />
+              <UDropdownMenu
+                :items="getExamDropdownActions(row.original)"
+                :content="{
+                  align: 'start',
+                }"
+                :ui="{
+                  content: 'bg-white shadow cursor-pointer',
+                  item: 'cursor-pointer text-black hover:bg-black rounded',
+                }"
+                :disabled="examServerLoading"
+              >
+                <UIcon
+                  name="i-lucide-ellipsis-vertical"
+                  class="size-6 cursor-pointer"
+                />
+              </UDropdownMenu>
+            </div>
+          </template>
+        </AppTable>
+      </div>
+      <div
+        class="w-full h-full flex gap-3 items-center justify-center bg-white flex-col px-4 py-4"
+      >
+        <template v-if="exams.length === 0 && !examServerLoading">
+          <UIcon name="i-lucide-file" class="text-gray-700 size-12" />
+          <p class="font-semibold text-gray-700 text-[16px]">
+            No exams yet
+          </p>
+        </template>
+        <AppButton
+          :left-icon="`${exams.length === 0 ? 'i-lucide-plus' : ''}`"
+          label="New Exam"
+          theme="secondary"
+          class="bg-gray-700 py-2 px-4"
+          to="/new-exam"
+          :loading="examServerLoading"
+          @click="clearNewExamData"
+        />
       </div>
     </div>
-  </section>
+  </div>
 
   <AppModal v-model="renameExamModal" title="Rename Exam">
     <template #body>
@@ -494,19 +490,10 @@ onMounted(async () => {
     </template>
     <template #footer>
       <AppButton
-        label="Save"
+        label="Set time"
         theme="secondary"
         :disabled="isFormComplete(scheduleForm)"
-        @click="clearNewExamData"
       />
     </template>
   </AppModal>
 </template>
-
-<style scoped>
-#section {
-  min-height: calc(100dvh - 60px);
-  padding: 0;
-  margin: 0;
-}
-</style>

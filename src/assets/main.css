@@ -1,13 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-.section-container-width {
-  max-width: 1440px;
-  width: 100%;
-  padding: 0 2rem 2rem;
-  margin: 0 auto;
-}
-
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
