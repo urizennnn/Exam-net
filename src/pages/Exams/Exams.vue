@@ -35,6 +35,7 @@ const {
   deleteExams,
   examUpdate,
   duplicateExam,
+  scheduleExam,
 } = useExamServerStore();
 const {
   exams,
@@ -199,7 +200,7 @@ const columns = computed<TableColumn<any>[]>(() => [
           table.options.data[row.index].access = val;
 
           if (val === "scheduled") {
-            toggleScheduleModal(row.original.name);
+            toggleScheduleModal(row.original.name, row.original.id);
           }
           else {
             await examUpdate(row.original.id, {
@@ -227,7 +228,9 @@ const rows = computed(() =>
   exams.value.map(exam => ({
     id: exam._id,
     name: exam.examName,
-    createdAt: new Date(exam.createdAt).toLocaleDateString(),
+    createdAt: exam.startDate
+      ? new Date(exam.startDate).toLocaleDateString()
+      : "Not Scheduled",
     endDate: exam?.endDate
       ? new Date(exam?.endDate).toLocaleDateString()
       : "Not Ended",
@@ -299,6 +302,12 @@ function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
     ],
     [
       {
+        label: "Archive the Exam",
+        icon: "i-lucide-archive",
+      },
+    ],
+    [
+      {
         label: "Delete the Exam",
         icon: "i-lucide-trash",
         color: "error",
@@ -310,14 +319,34 @@ function getExamDropdownActions(exam: any): DropdownMenuItem[][] {
 
 const scheduleModal = ref(false);
 const scheduleModalTitle = ref("");
-function toggleScheduleModal(examName: string = "") {
-  scheduleModalTitle.value = examName;
-  scheduleModal.value = !scheduleModal.value;
-}
+const scheduleExamId = ref("");
+
 const scheduleForm = reactive({
   startDate: "",
   startTime: "",
 });
+
+function toggleScheduleModal(examName: string = "", examId: string = "") {
+  scheduleModalTitle.value = examName;
+  scheduleExamId.value = examId;
+
+  // Find the exam data and populate the form if it has a scheduled start date
+  if (examId) {
+    const exam = exams.value.find(e => e._id === examId);
+    if (exam && exam.startDate) {
+      const startDate = new Date(exam.startDate);
+      scheduleForm.startDate = startDate.toISOString().split("T")[0]; // YYYY-MM-DD format
+      scheduleForm.startTime = startDate.toTimeString().slice(0, 5); // HH:MM format
+    }
+    else {
+      // Clear form if no existing schedule
+      scheduleForm.startDate = "";
+      scheduleForm.startTime = "";
+    }
+  }
+
+  scheduleModal.value = !scheduleModal.value;
+}
 
 function copyKey(key: string) {
   navigator.clipboard
@@ -341,6 +370,21 @@ async function handleExamsDelete() {
   const payload = selectedRows.value.map(item => item.id);
   await deleteExams(payload);
   await getExams();
+}
+
+async function handleScheduleExam() {
+  if (!scheduleForm.startDate || !scheduleForm.startTime) {
+    return;
+  }
+
+  await scheduleExam(scheduleExamId.value, scheduleForm.startDate, scheduleForm.startTime);
+
+  if (examServerSuccess.value) {
+    scheduleModal.value = false;
+    scheduleForm.startDate = "";
+    scheduleForm.startTime = "";
+    await getExams();
+  }
 }
 
 onMounted(async () => {
@@ -492,7 +536,9 @@ onMounted(async () => {
       <AppButton
         label="Set time"
         theme="secondary"
-        :disabled="isFormComplete(scheduleForm)"
+        :disabled="!scheduleForm.startDate || !scheduleForm.startTime"
+        :loading="examServerLoading"
+        @click="handleScheduleExam"
       />
     </template>
   </AppModal>

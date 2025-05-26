@@ -290,5 +290,36 @@ export const useExamServerStore = defineStore("exam-server", {
         this.loading = false;
       }
     },
+
+    async scheduleExam(examId: string, startDate: string, startTime: string) {
+      try {
+        this.success = false;
+        this.loading = true;
+
+        // Combine date and time into ISO string
+        const startAt = new Date(`${startDate}T${startTime}`).toISOString();
+
+        const {
+          data,
+        } = await axiosInstance.post(`/exams/${examId}/schedule`, {
+          startAt,
+        });
+        const {
+          message,
+        } = data;
+        this.success = true;
+        successToast(message);
+      }
+      catch (error: any) {
+        this.success = false;
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
+        errorToast(errorMessage);
+        throw new Error(errorMessage);
+      }
+      finally {
+        this.loading = false;
+      }
+    },
   },
 });
