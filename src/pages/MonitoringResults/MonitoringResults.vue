@@ -31,23 +31,6 @@ import {
   downloadFile,
 } from "../../utils/functions";
 
-function extractEmail(invite: any): string {
-  if (!invite)
-    return "";
-  if (typeof invite === "string") {
-    try {
-      const p = JSON.parse(invite);
-      return p?.email ?? invite;
-    }
-    catch {
-      return invite;
-    }
-  }
-  if (typeof invite === "object" && "email" in invite)
-    return invite.email;
-  return "";
-}
-
 const examStore = useExamServerStore();
 const {
   getExams,
@@ -185,7 +168,8 @@ const rows = computed(() =>
   })) ?? []);
 
 const studentEmail = ref("");
-const studentsEmail = ref<string[]>([]);
+const studentName = ref("");
+const studentsData = ref<{ name: string; email: string }[]>([]);
 const showInviteStudent = ref(false);
 const showInvitesModal = ref(false);
 const sendModal = ref(false);
@@ -213,19 +197,42 @@ const resultsTab = ref<TabsType[]>([
 ]);
 const selectedResultTab = ref(resultsTab.value[0].value);
 
-function addStudentEmail(email: string) {
-  if (email) {
-    studentsEmail.value.push(email);
+function extractEmail(invite: any): string {
+  if (!invite)
+    return "";
+  if (typeof invite === "string") {
+    try {
+      const p = JSON.parse(invite);
+      return p?.email ?? invite;
+    }
+    catch {
+      return invite;
+    }
+  }
+  if (typeof invite === "object" && "email" in invite)
+    return invite.email;
+  return "";
+}
+
+function addStudentData() {
+  if (studentEmail.value && studentName.value) {
+    studentsData.value.push({
+      name: studentName.value,
+      email: studentEmail.value,
+    });
     studentEmail.value = "";
+    studentName.value = "";
   }
 }
 
 async function handleInviteStudent() {
   await inviteStudentToExam(currentExam.value!._id, {
-    emails: studentsEmail.value,
+    emails: studentsData.value.map(student => student.email),
+    names: studentsData.value.map(student => student.name),
   });
   if (examServerSuccess.value) {
     showInviteStudent.value = false;
+    studentsData.value = [];
     await getExam({
       id: currentExam.value!._id,
     });
@@ -278,6 +285,10 @@ async function toggleTranscriptModal(transcriptUrl: string) {
   transcriptModal.value = true;
 }
 
+function removeStudent(index: number) {
+  studentsData.value.splice(index, 1);
+}
+
 watch(examTitle, async (newTitle) => {
   const found = exams.value.find(e => e.examName === newTitle);
   if (found) {
@@ -305,6 +316,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <Header />
   <section id="section" class="bg-zinc-300 text-black">
     <div class="section-container-width">
       <template v-if="!hasExams">
@@ -467,13 +479,34 @@ onMounted(async () => {
     <AppModal v-model="showInviteStudent" title="Invite Student to Take Exam">
       <template #body>
         <div class="rounded-lg">
-          <AppInput v-model="studentEmail" placeholder="Enter Students Email" @keyup.enter="addStudentEmail(studentEmail)" />
+          <div class="flex gap-2 mb-4">
+            <AppInput v-model="studentName" placeholder="Enter Student Name" class="flex-1" />
+            <AppInput v-model="studentEmail" placeholder="Enter Student Email" class="flex-1" />
+            <AppButton
+              label="Add"
+              theme="secondary"
+              class="px-4"
+              :disabled="!studentName || !studentEmail"
+              @click="addStudentData"
+            />
+          </div>
           <h1 class="p-2 bg-blue-500 text-white mt-4 font-bold rounded-t-lg">
             Students
           </h1>
           <ul class="h-full max-h-[250px] p-4 flex flex-col gap-3 w-full overflow-y-scroll overflow-x-hidden">
-            <li v-for="student in studentsEmail" :key="student">
-              {{ student }}
+            <li v-for="(student, index) in studentsData" :key="index" class="flex justify-between items-center border-b pb-2">
+              <div>
+                <p class="font-semibold">{{ student.name }}</p>
+                <p class="text-sm text-gray-600">{{ student.email }}</p>
+              </div>
+              <AppButton
+                icon="i-lucide-trash"
+                class="text-red-600"
+                @click="removeStudent(index)"
+              />
+            </li>
+            <li v-if="studentsData.length === 0" class="text-center italic text-gray-500">
+              No students added yet
             </li>
           </ul>
         </div>
@@ -481,7 +514,7 @@ onMounted(async () => {
       <template #footer>
         <AppButton
           label="Send"
-          :disabled="studentsEmail.length === 0"
+          :disabled="studentsData.length === 0"
           :loading="examServerLoading"
           class="w-fit! px-8"
           @click="handleInviteStudent"
@@ -568,3 +601,4 @@ onMounted(async () => {
   margin: 0;
 }
 </style>
+

@@ -22,6 +22,7 @@ type ExamServerState = {
 
 type InviteStudentPayload = {
   emails: string[];
+  names?: string[];
 };
 
 export const useExamServerStore = defineStore("exam-server", {
