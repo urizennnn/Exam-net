@@ -97,6 +97,7 @@ function toggleSubmitExamModal() {
 async function handleExamSubmit() {
   isDoneWithExam.value = true;
   clearInterval(intervalId!);
+  router.push("/student-login");
   documentResult.value.forEach((q, i) => (q.studentAnswer = answers.value[i]));
   const html = questionFormatTeacher(documentResult.value);
   const pdfBlob = await generatePdfBlob(html);
@@ -121,7 +122,6 @@ async function handleExamSubmit() {
       "Content-Type": "multipart/form-data",
     },
   });
-  router.push(`/student/${examID.value}/done`);
   toggleSubmitExamModal();
 }
 
