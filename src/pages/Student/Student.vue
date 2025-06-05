@@ -97,7 +97,7 @@ function toggleSubmitExamModal() {
 async function handleExamSubmit() {
   isDoneWithExam.value = true;
   clearInterval(intervalId!);
-  router.push("/student-login");
+  router.replace(`/student/${examID.value}/done`);
   documentResult.value.forEach((q, i) => (q.studentAnswer = answers.value[i]));
   const html = questionFormatTeacher(documentResult.value);
   const pdfBlob = await generatePdfBlob(html);
