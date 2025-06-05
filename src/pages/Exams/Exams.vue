@@ -22,7 +22,6 @@ import {
 } from "../../store/server/exam";
 import {
   clearNewExamData,
-  isFormComplete,
 } from "../../utils/functions";
 import {
   errorToast,
