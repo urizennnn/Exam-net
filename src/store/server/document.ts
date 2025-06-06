@@ -227,5 +227,20 @@ export const useDocumentStore = defineStore("documents", {
         this.loading = false;
       }
     },
+
+    setQuestions(questions: Array<{
+      type: string;
+      question: string;
+      options: string[];
+      answer?: string;
+    }>) {
+      this.result = questions.map(q => ({
+        type: q.type,
+        question: q.question,
+        options: q.options ?? [],
+        answer: "",
+      }));
+      localStorage.setItem("studentQuestions", JSON.stringify(this.result));
+    },
   },
 });

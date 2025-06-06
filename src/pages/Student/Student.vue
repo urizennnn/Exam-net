@@ -57,6 +57,7 @@ const {
   getPdfFromCloudinary,
   generatePdfBlob,
   uploadPdfToCloudinary,
+  setQuestions,
 } = documentStore;
 
 const {
@@ -146,10 +147,16 @@ onMounted(async () => {
   await getExam({
     id: examID.value,
   });
-  const file = await getPdfFromCloudinary(exam.value!.question);
-  await uploadDocument({
-    file,
-  }, false);
+  const stored = localStorage.getItem("studentQuestions");
+  if (stored) {
+    setQuestions(JSON.parse(stored));
+  }
+  else {
+    const file = await getPdfFromCloudinary(exam.value!.question);
+    await uploadDocument({
+      file,
+    }, false);
+  }
   answers.value = documentResult.value.map(() => "");
   remainingTime.value = timeLimit.value;
   if (timeLimit.value > 0 && mode.value === "student") {
@@ -373,7 +380,12 @@ watch(timeLimit, (lim) => {
             <AppRadio
               v-if="q.type === 'multiple-choice'"
               v-model="answers[idx]"
-              :items="q.options.map((opt) => sanitize(opt))"
+              :items="
+                q.options.map((opt, i) => ({
+                  label: `${String.fromCharCode(65 + i)}. ${sanitize(opt)}`,
+                  value: sanitize(opt),
+                }))
+              "
               class="pl-5"
               :disabled="isDoneWithExam"
             />

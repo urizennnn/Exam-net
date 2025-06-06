@@ -9,6 +9,9 @@ import {
 } from "vue-router";
 
 import {
+  useDocumentStore,
+} from "../../store/server/document";
+import {
   axiosInstance,
 } from "../../utils/axiosConfig";
 import {
@@ -42,6 +45,12 @@ async function onSubmit() {
     } = await axiosInstance.post(`/exams/${loginForm.examKey}`, {
       email: loginForm.email.toLowerCase(),
     });
+
+    const documentStore = useDocumentStore();
+    const questions = data.questions || data.exam?.questions;
+    if (questions) {
+      documentStore.setQuestions(questions);
+    }
 
     document.cookie = `student=${data.access_token}; Path=/; Secure; SameSite=Strict`;
     localStorage.setItem("email", loginForm.email.toLowerCase());

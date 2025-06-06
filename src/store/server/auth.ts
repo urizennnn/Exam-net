@@ -54,7 +54,8 @@ export const useAuthStore = defineStore("auth", {
       }
       catch (error: any) {
         this.success = false;
-        const errorMessage = error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
       }
@@ -78,7 +79,8 @@ export const useAuthStore = defineStore("auth", {
       }
       catch (error: any) {
         this.success = false;
-        const errorMessage = error.response?.data?.message || error.message || "Network Error";
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
       }
@@ -108,12 +110,22 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
-    logout() {
-      this.clearAccessToken();
-      this.clearToken("name");
-      router.push({
-        name: "login",
-      });
+    async logout() {
+      try {
+        await axiosInstance.post("/logout");
+      }
+      catch (error: any) {
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
+        errorToast(errorMessage);
+      }
+      finally {
+        this.clearAccessToken();
+        this.clearToken("name");
+        router.push({
+          name: "login",
+        });
+      }
     },
   },
   getters: {
