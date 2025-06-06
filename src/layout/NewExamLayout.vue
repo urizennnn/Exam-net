@@ -4,6 +4,7 @@ import {
 } from "pinia";
 import {
   computed,
+  onMounted,
   ref,
   watch,
 } from "vue";
@@ -73,6 +74,19 @@ const {
 }
   = storeToRefs(useDocumentStore());
 
+onMounted(() => {
+  if (!route.params.id) {
+    const storedKey = localStorage.getItem("examKey");
+    if (storedKey) {
+      newExamStore.examId = storedKey;
+    }
+    else {
+      generateExamKey();
+      localStorage.setItem("examKey", newExamStore.examId);
+    }
+  }
+});
+
 function toggleShowNameExamModal() {
   showNameExamModal.value = !showNameExamModal.value;
 
@@ -83,7 +97,6 @@ function toggleShowNameExamModal() {
 }
 
 async function submitExam() {
-  generateExamKey();
   examServerLoading.value = true;
   const file = await generatePdfBlob(newExamStore.editorContent);
   const {
@@ -94,8 +107,9 @@ async function submitExam() {
       file,
     }, false);
   }
+  const examKey = localStorage.getItem("examKey") || newExamStore.examId;
   await createExam({
-    examKey: newExamStore.examId,
+    examKey,
     examName: newExamStore.examName,
     access: "open",
     question: url,
@@ -115,7 +129,8 @@ async function submitExam() {
   if (examServerSuccess.value) {
     clearNewExamData();
     localStorage.setItem("examPreview", JSON.stringify(documentResult.value));
-    router.push(`/preview/${newExamStore.examId}`);
+    localStorage.removeItem("examKey");
+    router.push(`/preview/${examKey}`);
   }
 }
 

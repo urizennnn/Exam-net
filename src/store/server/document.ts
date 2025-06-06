@@ -50,9 +50,12 @@ export const useDocumentStore = defineStore("documents", {
         const formData = new FormData();
         formData.append("file", payload.file);
 
+        const examKey = localStorage.getItem("examKey");
+        const url = examKey ? `/process/${examKey}` : "/process";
+
         const {
           data: initial,
-        } = await axiosInstance.post("/process", formData, {
+        } = await axiosInstance.post(url, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
