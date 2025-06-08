@@ -28,6 +28,9 @@ import {
   questionFormatTeacher,
   sanitize,
 } from "../../utils/functions";
+import {
+  errorToast,
+} from "../../utils/toast";
 
 const now = ref(new Date());
 let timer: number | null = null;
@@ -80,6 +83,17 @@ const seconds = computed(() => remainingTime.value % 60);
 const submitExamModal = ref(false);
 const isDoneWithExam = ref(false);
 const showScoreModal = ref(false);
+
+const violationCount = ref(0);
+const initialWidth = window.innerWidth;
+
+const questionsPerPage = 10;
+const currentPage = ref(0);
+const totalPages = computed(() => Math.ceil(documentResult.value.length / questionsPerPage));
+const paginatedQuestions = computed(() => {
+  const start = currentPage.value * questionsPerPage;
+  return documentResult.value.slice(start, start + questionsPerPage);
+});
 
 function toggleShowTimeLimit() {
   showTimeLimit.value = !showTimeLimit.value;
@@ -148,6 +162,38 @@ function startTimer(reset = false) {
   }, 1000);
 }
 
+function handleViolation() {
+  violationCount.value++;
+  errorToast("Please don't exit tab or resize screen until exam is finished to avoid issues");
+  if (violationCount.value >= 3 && mode.value === "student" && !isDoneWithExam.value) {
+    handleExamSubmit();
+  }
+}
+
+function onVisibilityChange() {
+  if (document.hidden) {
+    handleViolation();
+  }
+}
+
+function onResize() {
+  if (window.innerWidth < initialWidth) {
+    handleViolation();
+  }
+}
+
+function nextPage() {
+  if (currentPage.value < totalPages.value - 1) {
+    currentPage.value++;
+  }
+}
+
+function prevPage() {
+  if (currentPage.value > 0) {
+    currentPage.value--;
+  }
+}
+
 onMounted(async () => {
   await getExam({
     id: examID.value,
@@ -172,6 +218,9 @@ onMounted(async () => {
     now.value = new Date();
     timer = window.setInterval(() => (now.value = new Date()), 60000);
   }, ms);
+
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  window.addEventListener("resize", onResize);
 });
 
 onBeforeUnmount(() => {
@@ -186,6 +235,8 @@ onUnmounted(() => {
   if (intervalId) {
     clearInterval(intervalId);
   }
+  document.removeEventListener("visibilitychange", onVisibilityChange);
+  window.removeEventListener("resize", onResize);
 });
 
 watch(timeLimit, (lim) => {
@@ -375,16 +426,16 @@ watch(timeLimit, (lim) => {
         </div>
         <div v-else class="text-xl p-3 bg-white shadow-md flex flex-col gap-4">
           <div
-            v-for="(q, idx) in documentResult"
+            v-for="(q, idx) in paginatedQuestions"
             :key="idx"
             class="select-none flex flex-col gap-1"
           >
             <p class="font-semibold">
-              {{ idx + 1 }}. {{ q.question }}
+              {{ idx + 1 + currentPage * questionsPerPage }}. {{ q.question }}
             </p>
             <AppRadio
               v-if="q.type === 'multiple-choice'"
-              v-model="answers[idx]"
+              v-model="answers[idx + currentPage * questionsPerPage]"
               :items="
                 q.options.map((opt, i) => ({
                   label: `${String.fromCharCode(65 + i)}. ${sanitize(opt)}`,
@@ -396,13 +447,29 @@ watch(timeLimit, (lim) => {
             />
             <AppTextarea
               v-else
-              v-model="answers[idx]"
+              v-model="answers[idx + currentPage * questionsPerPage]"
               class="pl-5"
               placeholder="Type your answer here…"
               base-class="bg-gray-200 ring-0 inset-shadow-md"
               autoresize
               :disabled="isDoneWithExam"
               :rows="4"
+            />
+          </div>
+          <div v-if="totalPages > 1" class="flex justify-between mt-4">
+            <AppButton
+              label="Prev"
+              theme="secondary"
+              class="px-4"
+              :disabled="currentPage === 0"
+              @click="prevPage"
+            />
+            <AppButton
+              label="Next"
+              theme="secondary"
+              class="px-4"
+              :disabled="currentPage >= totalPages - 1"
+              @click="nextPage"
             />
           </div>
         </div>
