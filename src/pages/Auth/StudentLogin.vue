@@ -49,7 +49,18 @@ async function onSubmit() {
     const documentStore = useDocumentStore();
     const questions = data.questions || data.exam?.questions;
     if (questions) {
-      documentStore.setQuestions(questions);
+      const parsed = questions.map((q: any) => {
+        if (typeof q === "string") {
+          try {
+            return JSON.parse(q);
+          }
+          catch {
+            return q;
+          }
+        }
+        return q;
+      });
+      documentStore.setQuestions(parsed);
     }
 
     document.cookie = `student=${data.access_token}; Path=/; Secure; SameSite=Strict`;
