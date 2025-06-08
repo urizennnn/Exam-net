@@ -68,6 +68,7 @@ export type Exam = {
   lecturer: string;
   ongoing: number;
   question: string;
+  question_text?: string;
   settings: {
     examType: {
       hidePoints: boolean;
