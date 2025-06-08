@@ -123,6 +123,11 @@ async function handleExamSubmit() {
       "Content-Type": "multipart/form-data",
     },
   });
+  await axiosInstance.post(`/exams/${examKey}/logout`, {
+    email: {
+      email,
+    },
+  });
   toggleSubmitExamModal();
 }
 
