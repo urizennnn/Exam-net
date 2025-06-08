@@ -68,7 +68,7 @@ const {
 
 const answers = ref<string[]>([]);
 
-const examStartTime = ref(Date.now());
+const examStartTime = ref(Number(localStorage.getItem("examStartTime")) || Date.now());
 
 const timeLimit = computed(() => (exam.value?.settings?.general.timeLimit || 0) * 60);
 const remainingTime = ref(0);
@@ -124,6 +124,9 @@ async function handleExamSubmit() {
       "Content-Type": "multipart/form-data",
     },
   });
+  localStorage.removeItem("examStartTime");
+  localStorage.removeItem("studentQuestions");
+  localStorage.removeItem("examKey");
   toggleSubmitExamModal();
 }
 
@@ -157,7 +160,9 @@ onMounted(async () => {
   if (timeLimit.value > 0 && mode.value === "student") {
     startTimer(true);
   }
-  examStartTime.value = Date.now();
+  if (!localStorage.getItem("examStartTime"))
+    localStorage.setItem("examStartTime", String(Date.now()));
+  examStartTime.value = Number(localStorage.getItem("examStartTime"));
   const ms = (60 - now.value.getSeconds()) * 1000;
   timer = window.setTimeout(() => {
     now.value = new Date();

@@ -65,7 +65,7 @@ async function onSubmit() {
     });
 
     const documentStore = useDocumentStore();
-    const questions = data.questions || data.exam?.questions;
+    const questions = data.exam?.question_text || data.questions;
     if (questions) {
       documentStore.setQuestions(questions);
     }
@@ -74,6 +74,7 @@ async function onSubmit() {
     localStorage.setItem("email", loginForm.email.toLowerCase());
 
     localStorage.setItem("examKey", loginForm.examKey);
+    localStorage.setItem("examStartTime", String(Date.now()));
 
     router.push(`/student/${data.exam._id}?mode=student`);
   }
