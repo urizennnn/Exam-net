@@ -53,8 +53,6 @@ const {
 }
   = storeToRefs(documentStore);
 const {
-  uploadDocument,
-  getPdfFromCloudinary,
   generatePdfBlob,
   uploadPdfToCloudinary,
   setQuestions,
@@ -69,6 +67,8 @@ const {
 } = storeToRefs(useExamServerStore());
 
 const answers = ref<string[]>([]);
+
+const examStartTime = ref(Date.now());
 
 const timeLimit = computed(() => (exam.value?.settings?.general.timeLimit || 0) * 60);
 const remainingTime = ref(0);
@@ -116,9 +116,10 @@ async function handleExamSubmit() {
   const payload = JSON.parse(atob(token.split(".")[1]));
   const email = payload.email as string;
   const examKey = localStorage.getItem("examKey") as string;
+  const timeSpent = Math.floor((Date.now() - examStartTime.value) / 1000);
   const formData = new FormData();
   formData.append("file", pdfBlob, "submission.pdf");
-  await axiosInstance.post(`/process/mark/${examKey}?email=${encodeURIComponent(email)}&studentAnswer=${encodeURIComponent(secureUrl)}`, formData, {
+  await axiosInstance.post(`/process/mark/${examKey}?email=${encodeURIComponent(email)}&studentAnswer=${encodeURIComponent(secureUrl)}&timeSpent=${timeSpent}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -151,17 +152,12 @@ onMounted(async () => {
   if (stored) {
     setQuestions(JSON.parse(stored));
   }
-  else {
-    const file = await getPdfFromCloudinary(exam.value!.question);
-    await uploadDocument({
-      file,
-    }, false);
-  }
   answers.value = documentResult.value.map(() => "");
   remainingTime.value = timeLimit.value;
   if (timeLimit.value > 0 && mode.value === "student") {
     startTimer(true);
   }
+  examStartTime.value = Date.now();
   const ms = (60 - now.value.getSeconds()) * 1000;
   timer = window.setTimeout(() => {
     now.value = new Date();

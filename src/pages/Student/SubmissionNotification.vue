@@ -17,7 +17,7 @@ onMounted(() => {
   preventBack();
   window.addEventListener("popstate", preventBack);
   setTimeout(() => {
-    window.removeEventListener("popstate", preventBack);
+    sessionStorage.setItem("no-back", "1");
     router.replace("/student-login");
   }, 5000);
 });

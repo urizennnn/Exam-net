@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import {
   computed,
+  onMounted,
+  onUnmounted,
   reactive,
   ref,
 } from "vue";
@@ -35,6 +37,22 @@ const inputUI = {
 };
 const isFormComplete = computed(() => {
   return loginForm.email !== "" && loginForm.examKey !== "";
+});
+
+function preventBack() {
+  window.history.pushState(null, "", window.location.href);
+}
+
+onMounted(() => {
+  if (sessionStorage.getItem("no-back")) {
+    preventBack();
+    window.addEventListener("popstate", preventBack);
+    sessionStorage.removeItem("no-back");
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener("popstate", preventBack);
 });
 
 async function onSubmit() {
