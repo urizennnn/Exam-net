@@ -171,7 +171,7 @@ export const useDocumentStore = defineStore("documents", {
         this.success = false;
         this.loading = true;
 
-        const name = "dt9mahfbl";
+        const name = "dkzladmu2";
         const unsignedPreset = "unsigned_pdf_upload";
         const url = `https://api.cloudinary.com/v1_1/${name}/upload`;
         const formData = new FormData();
