@@ -76,14 +76,8 @@ const {
 
 onMounted(() => {
   if (!route.params.id) {
-    const storedKey = localStorage.getItem("examKey");
-    if (storedKey) {
-      newExamStore.examId = storedKey;
-    }
-    else {
-      generateExamKey();
-      localStorage.setItem("examKey", newExamStore.examId);
-    }
+    generateExamKey();
+    localStorage.setItem("examKey", newExamStore.examId);
   }
 });
 
@@ -129,7 +123,6 @@ async function submitExam() {
   if (examServerSuccess.value) {
     clearNewExamData();
     localStorage.setItem("examPreview", JSON.stringify(documentResult.value));
-    localStorage.removeItem("examKey");
     router.push(`/preview/${examKey}`);
   }
 }

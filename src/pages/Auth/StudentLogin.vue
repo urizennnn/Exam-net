@@ -47,7 +47,7 @@ async function onSubmit() {
     });
 
     const documentStore = useDocumentStore();
-    const questions = data.questions || data.exam?.questions;
+    const questions = data.questions || data.exam?.questions || data.exam?.question_text;
     if (questions) {
       const parsed = questions.map((q: any) => {
         if (typeof q === "string") {
