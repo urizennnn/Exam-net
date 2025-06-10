@@ -51,7 +51,7 @@ const {
 const documentStore = useDocumentStore();
 const {
   loading: documentLoading,
-  getPdfFromCloudinary,
+  getPdfFromUrl,
 } = documentStore;
 
 const route = useRoute();
@@ -281,7 +281,7 @@ function exportCsv() {
 async function toggleTranscriptModal(transcriptUrl: string) {
   if (!transcriptUrl)
     return;
-  const file = await getPdfFromCloudinary(transcriptUrl);
+  const file = await getPdfFromUrl(transcriptUrl);
   if (!file)
     return;
   studentsTransciptUrl.value = URL.createObjectURL(file);

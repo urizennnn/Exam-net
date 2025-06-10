@@ -57,9 +57,9 @@ const {
   = storeToRefs(documentStore);
 const {
   uploadDocument,
-  getPdfFromCloudinary,
+  getPdfFromUrl,
   generatePdfBlob,
-  uploadPdfToCloudinary,
+  uploadPdfToS3,
   setQuestions,
 } = documentStore;
 
@@ -118,7 +118,7 @@ async function handleExamSubmit() {
   const pdfBlob = await generatePdfBlob(html);
   const {
     url: secureUrl,
-  } = await uploadPdfToCloudinary(pdfBlob);
+  } = await uploadPdfToS3(pdfBlob);
   if (!secureUrl) {
     toggleSubmitExamModal();
     return;
@@ -203,7 +203,7 @@ onMounted(async () => {
     setQuestions(JSON.parse(stored));
   }
   else {
-    const file = await getPdfFromCloudinary(exam.value!.question);
+    const file = await getPdfFromUrl(exam.value!.question);
     await uploadDocument({
       file,
     }, false);

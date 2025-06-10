@@ -37,7 +37,7 @@ const {
 }
   = storeToRefs(useDocumentStore());
 const {
-  getPdfFromCloudinary,
+  getPdfFromUrl,
   uploadDocument,
 } = useDocumentStore();
 const {
@@ -58,7 +58,7 @@ onMounted(async () => {
   await getExam({
     id: examID.value,
   });
-  const file = await getPdfFromCloudinary(exam.value?.question);
+  const file = await getPdfFromUrl(exam.value?.question);
   await uploadDocument({
     file,
   }, false);

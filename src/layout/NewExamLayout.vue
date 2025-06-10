@@ -63,7 +63,7 @@ const {
 }
   = storeToRefs(useExamServerStore());
 const {
-  uploadPdfToCloudinary,
+  uploadPdfToS3,
   uploadDocument,
   generatePdfBlob,
 }
@@ -95,7 +95,7 @@ async function submitExam() {
   const file = await generatePdfBlob(newExamStore.editorContent);
   const {
     url,
-  } = await uploadPdfToCloudinary(file);
+  } = await uploadPdfToS3(file);
   if (!documentResult.value) {
     await uploadDocument({
       file,
@@ -131,7 +131,7 @@ async function handleQuestionUpdate() {
   const file = await generatePdfBlob(newExamStore.editorContent);
   const {
     url,
-  } = await uploadPdfToCloudinary(file);
+  } = await uploadPdfToS3(file);
   if (!documentResult.value) {
     await uploadDocument({
       file,

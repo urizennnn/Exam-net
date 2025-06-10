@@ -30,7 +30,7 @@ const newExamStore = useNewExamStore();
 const documentStore = useDocumentStore();
 const {
   uploadDocument,
-  getPdfFromCloudinary,
+  getPdfFromUrl,
 } = useDocumentStore();
 const {
   increaseFormStepTwoCounter,
@@ -164,7 +164,7 @@ onMounted(async () => {
     await getExam({
       id: route.params.id as string,
     });
-    const file = await getPdfFromCloudinary(exam.value.question);
+    const file = await getPdfFromUrl(exam.value.question);
     await uploadDocument({
       file,
     }, false);

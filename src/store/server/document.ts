@@ -166,31 +166,27 @@ export const useDocumentStore = defineStore("documents", {
       });
     },
 
-    async uploadPdfToCloudinary(pdfBlob: Blob) {
+    async uploadPdfToS3(pdfBlob: Blob) {
       try {
         this.success = false;
         this.loading = true;
 
-        const name = "dkzladmu2";
-        const unsignedPreset = "unsigned_pdf_upload";
-        const url = `https://api.cloudinary.com/v1_1/${name}/upload`;
         const formData = new FormData();
+        const file = new File([pdfBlob], "document.pdf", {
+          type: "application/pdf",
+        });
+        formData.append("file", file);
 
-        formData.append("file", pdfBlob);
-        formData.append("upload_preset", unsignedPreset);
-
-        const response = await fetch(url, {
-          method: "POST",
-          body: formData,
+        const {
+          data,
+        } = await axiosInstance.post("/aws/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         });
 
-        if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
-        }
-
-        const data = await response.json();
         return {
-          url: data.secure_url,
+          url: data,
         };
       }
       catch {
@@ -201,7 +197,7 @@ export const useDocumentStore = defineStore("documents", {
       }
     },
 
-    async getPdfFromCloudinary(pdfUrl: string): Promise<File> {
+    async getPdfFromUrl(pdfUrl: string): Promise<File> {
       try {
         this.success = false;
         this.loading = true;
