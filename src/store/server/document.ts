@@ -166,32 +166,42 @@ export const useDocumentStore = defineStore("documents", {
       });
     },
 
-    async uploadPdfToCloudinary(pdfBlob: Blob) {
+    async uploadPdfToS3(pdfBlob: Blob) {
       try {
         this.success = false;
         this.loading = true;
 
-        const name = "dkzladmu2";
-        const unsignedPreset = "unsigned_pdf_upload";
-        const url = `https://api.cloudinary.com/v1_1/${name}/upload`;
-        const formData = new FormData();
+        const region = import.meta.env.VITE_S3_REGION;
+        const bucket = import.meta.env.VITE_S3_BUCKET_NAME;
+        const accessKeyId = import.meta.env.VITE_AWS_ACCESS_KEY;
+        const secretAccessKey = import.meta.env.VITE_AWS_SECRET_KEY;
 
-        formData.append("file", pdfBlob);
-        formData.append("upload_preset", unsignedPreset);
+        const {
+          S3Client,
+          PutObjectCommand,
+        } = await import("@aws-sdk/client-s3");
 
-        const response = await fetch(url, {
-          method: "POST",
-          body: formData,
+        const client = new S3Client({
+          region,
+          credentials: {
+            accessKeyId,
+            secretAccessKey,
+          },
         });
 
-        if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
-        }
+        const key = `uploads/${Date.now()}.pdf`;
+        const command = new PutObjectCommand({
+          Bucket: bucket,
+          Key: key,
+          Body: pdfBlob,
+          ContentType: "application/pdf",
+          ACL: "public-read",
+        });
+        await client.send(command);
 
-        const data = await response.json();
-        return {
-          url: data.secure_url,
-        };
+        const url = `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
+        // eslint-disable-next-line object-curly-newline
+        return { url };
       }
       catch {
         return null;
@@ -201,7 +211,7 @@ export const useDocumentStore = defineStore("documents", {
       }
     },
 
-    async getPdfFromCloudinary(pdfUrl: string): Promise<File> {
+    async getPdfFromS3(pdfUrl: string): Promise<File> {
       try {
         this.success = false;
         this.loading = true;

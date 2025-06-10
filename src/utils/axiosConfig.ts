@@ -5,7 +5,7 @@ import {
 } from "../store/server/auth";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://qyxcaa7ndw.us-east-1.awsapprunner.com/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

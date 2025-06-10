@@ -12,9 +12,8 @@
     "lint:fix": "eslint --fix"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.826.0",
     "@ckeditor/ckeditor5-vue": "^7.3.0",
-    "@cloudinary/url-gen": "^1.21.0",
-    "@cloudinary/vue": "^1.13.1",
     "@nuxt/ui": "^3.1.0",
     "@tailwindcss/vite": "^4.0.12",
     "axios": "^1.8.4",
