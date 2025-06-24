@@ -51,7 +51,7 @@ export const useDocumentStore = defineStore("documents", {
         formData.append("file", payload.file);
 
         const examKey = localStorage.getItem("examKey");
-        const url = examKey ? `/process/${examKey}` : "/process";
+        const url = examKey ? `/process/?examKey=${examKey}` : "/process";
 
         const {
           data: initial,

@@ -47,7 +47,7 @@ async function onSubmit() {
     });
 
     const documentStore = useDocumentStore();
-    const questions = data.questions || data.exam?.questions || data.exam?.question_text;
+    const questions = data.questions;
     if (questions) {
       const parsed = questions.map((q: any) => {
         if (typeof q === "string") {
@@ -68,7 +68,7 @@ async function onSubmit() {
 
     localStorage.setItem("examKey", loginForm.examKey);
 
-    router.push(`/student/${data.exam._id}?mode=student`);
+    router.push(`/student/${data.id}?mode=student`);
   }
   catch (error: any) {
     const msg
