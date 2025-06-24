@@ -123,12 +123,7 @@ async function handleExamSubmit() {
     toggleSubmitExamModal();
     return;
   }
-  const cookie = document.cookie
-    .split("; ")
-    .find(c => c.startsWith("student="))!;
-  const token = cookie.split("=")[1];
-  const payload = JSON.parse(atob(token.split(".")[1]));
-  const email = payload.email as string;
+  const email = localStorage.getItem("email") as string;
   const examKey = localStorage.getItem("examKey") as string;
   const formData = new FormData();
   formData.append("file", pdfBlob, "submission.pdf");

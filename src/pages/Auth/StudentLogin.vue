@@ -63,7 +63,6 @@ async function onSubmit() {
       documentStore.setQuestions(parsed);
     }
 
-    document.cookie = `student=${data.access_token}; Path=/; Secure; SameSite=Strict`;
     localStorage.setItem("email", loginForm.email.toLowerCase());
 
     localStorage.setItem("examKey", loginForm.examKey);
