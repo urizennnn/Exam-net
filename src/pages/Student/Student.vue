@@ -76,6 +76,7 @@ const answers = ref<string[]>([]);
 const timeLimit = computed(() => (exam.value?.settings?.general.timeLimit || 0) * 60);
 const remainingTime = ref(0);
 let intervalId: number | null = null;
+const examStartTime = ref<number>(Date.now());
 
 const minutes = computed(() => Math.floor(remainingTime.value / 60));
 const seconds = computed(() => remainingTime.value % 60);
@@ -125,9 +126,17 @@ async function handleExamSubmit() {
   }
   const email = localStorage.getItem("email") as string;
   const examKey = localStorage.getItem("examKey") as string;
+  const timeSpent = timeLimit.value > 0
+    ? timeLimit.value - remainingTime.value
+    : Math.floor((Date.now() - examStartTime.value) / 1000);
   const formData = new FormData();
   formData.append("file", pdfBlob, "submission.pdf");
-  await axiosInstance.post(`/process/mark/${examKey}?email=${encodeURIComponent(email)}&studentAnswer=${encodeURIComponent(secureUrl)}`, formData, {
+  const params = new URLSearchParams({
+    email,
+    studentAnswer: secureUrl,
+    timeSpent: String(timeSpent),
+  });
+  await axiosInstance.post(`/process/mark/${examKey}?${params.toString()}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -136,6 +145,7 @@ async function handleExamSubmit() {
     email: {
       email,
     },
+    timeSpent,
   });
   toggleSubmitExamModal();
 }
@@ -193,6 +203,7 @@ onMounted(async () => {
   await getExam({
     id: examID.value,
   });
+  examStartTime.value = Date.now();
   const stored = localStorage.getItem("studentQuestions");
   if (stored) {
     setQuestions(JSON.parse(stored));
