@@ -5,7 +5,7 @@ import {
 } from "../store/server/auth";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://exam-mode-be.onrender.com/api",
+  baseURL: "https://qyxcaa7ndw.us-east-1.awsapprunner.com/api",
   headers: {
     "Content-Type": "application/json",
   },
