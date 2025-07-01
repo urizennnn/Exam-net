@@ -4,6 +4,7 @@ import {
 } from "pinia";
 import {
   computed,
+  onMounted,
   reactive,
   ref,
 } from "vue";
@@ -14,6 +15,9 @@ import {
 import {
   useAuthStore,
 } from "../../store/server/auth";
+import {
+  getCookie,
+} from "../../utils/functions";
 
 const loginForm = reactive({
   email: "",
@@ -32,14 +36,24 @@ const isFormComplete = computed(() => {
   return loginForm.email !== "" && loginForm.password !== "";
 });
 const router = useRouter();
+const authStore = useAuthStore();
 const {
   login,
-} = useAuthStore();
+} = authStore;
 const {
   success: authSuccess,
   loading: authLoading,
-}
-  = storeToRefs(useAuthStore());
+} = storeToRefs(authStore);
+
+onMounted(() => {
+  const token = getCookie("token");
+  if (token) {
+    authStore.setAccessToken(token);
+    router.push({
+      name: "exams",
+    });
+  }
+});
 
 async function onSubmit() {
   await login(loginForm);

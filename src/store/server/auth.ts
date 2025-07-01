@@ -131,7 +131,15 @@ export const useAuthStore = defineStore("auth", {
   getters: {
     getAuthToken(state) {
       const storageToken = localStorage.getItem("access");
-      return storageToken || state.access;
+      if (storageToken)
+        return storageToken;
+      const cookieToken = typeof document !== "undefined"
+        ? document.cookie
+          .split("; ")
+          .map(c => c.split("="))
+          .find(([name]) => name === "token")?.[1]
+        : null;
+      return cookieToken || state.access;
     },
   },
 });
