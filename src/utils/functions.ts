@@ -99,3 +99,17 @@ export function downloadFile(fileName: string) {
   link.click();
   document.body.removeChild(link);
 }
+
+export function getCookie(name: string) {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  const cookieArr = document.cookie.split("; ");
+  for (const cookie of cookieArr) {
+    const [cookieName, cookieValue] = cookie.split("=");
+    if (cookieName === name) {
+      return cookieValue;
+    }
+  }
+  return null;
+}
