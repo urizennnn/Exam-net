@@ -3,9 +3,14 @@ import axios from "axios";
 import {
   useAuthStore,
 } from "../store/server/auth";
+import {
+  errorToast,
+} from "./toast";
+
+const baseURL = import.meta.env.VITE_API_BASE_URL || "";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://qyxcaa7ndw.us-east-1.awsapprunner.com/api",
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -39,12 +44,24 @@ axiosInstance.interceptors.response.use(response => response, (error) => {
   console.error({
     error,
   });
-  if (error.response && error.response.status === 401) {
-    // reset store
-    const {
-      logout,
-    } = useAuthStore();
-    logout();
+
+  const status = error.response?.status;
+  const requestUrl: string = error.config?.url || "";
+
+  if (status === 401) {
+    const excluded = ["/users/login", "/users/signup", "/users/logout"];
+    const shouldLogout = !excluded.some(url => requestUrl.includes(url));
+    if (shouldLogout) {
+      const {
+        logout,
+      } = useAuthStore();
+      logout();
+    }
   }
+
+  if (status === 429) {
+    errorToast("You are making too many requests, wait a minute");
+  }
+
   return Promise.reject(error ?? "Unable to reach server, try again later");
 });
