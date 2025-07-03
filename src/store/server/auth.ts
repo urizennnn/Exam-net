@@ -41,7 +41,9 @@ export const useAuthStore = defineStore("auth", {
         this.loading = true;
         const {
           data,
-        } = await axiosInstance.post("/users/login", payload);
+        } = await axiosInstance.post("/users/login", payload, {
+          withCredentials: true,
+        });
         const {
           access_token,
           name,
@@ -133,12 +135,13 @@ export const useAuthStore = defineStore("auth", {
       const storageToken = localStorage.getItem("access");
       if (storageToken)
         return storageToken;
-      const cookieToken = typeof document !== "undefined"
-        ? document.cookie
-          .split("; ")
-          .map(c => c.split("="))
-          .find(([name]) => name === "token")?.[1]
-        : null;
+      const cookieToken
+        = typeof document !== "undefined"
+          ? document.cookie
+            .split("; ")
+            .map(c => c.split("="))
+            .find(([name]) => name === "token")?.[1]
+          : null;
       return cookieToken || state.access;
     },
   },
