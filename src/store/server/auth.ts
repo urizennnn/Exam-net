@@ -41,9 +41,7 @@ export const useAuthStore = defineStore("auth", {
         this.loading = true;
         const {
           data,
-        } = await axiosInstance.post("/users/login", payload, {
-          withCredentials: true,
-        });
+        } = await axiosInstance.post("/users/login", payload);
         const {
           access_token,
           name,
