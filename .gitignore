@@ -46,3 +46,4 @@ venv/
 auto-imports.d.ts
 components.d.ts
 
+.vercel
