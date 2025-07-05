@@ -7,7 +7,7 @@ import {
 
 import {
   useExamServerStore,
-} from "../../src/store/server/exam";
+} from "../../../src/store/server/exam";
 import {
   useAdminStore,
 } from "../store/admin";
@@ -44,14 +44,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">
-      Admin Panel
-    </h1>
-    <section class="mb-6">
-      <h2 class="text-xl font-semibold mb-2">
-        Users
-      </h2>
+  <section class="w-full h-auto bg-white flex">
+    <section class="bg-gray-800 w-full h-screen relative p-4 hidden lg:block">
+      <img src="../../../src/assets/svg/Asset 11.svg" alt="logo" class="h-[30px]">
+      <img
+        src="../../../src/assets/images/Humaaans.png"
+        alt="background"
+        class="w-full h-[80dvh] mt-4 object-center object-fill"
+      >
+    </section>
+    <section class="w-full p-4">
+      <div class="flex flex-col items-center mb-4">
+        <img
+          src="../../../src/assets/svg/Asset 7.svg"
+          alt="logo"
+          class="w-[100px] h-[100px]"
+        >
+        <h1 class="text-2xl font-bold mt-2">
+          Admin Panel
+        </h1>
+      </div>
+      <section class="mb-6">
+        <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+          <img src="../../../src/assets/svg/Asset 10.svg" alt="users" class="h-5 w-5">
+          Users
+        </h2>
       <form class="flex gap-2 mb-4" @submit.prevent="addUser">
         <input v-model="form.name" placeholder="Name" class="border p-1">
         <input v-model="form.email" placeholder="Email" class="border p-1">
@@ -108,7 +125,8 @@ onMounted(() => {
       </table>
     </section>
     <section>
-      <h2 class="text-xl font-semibold mb-2">
+      <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+        <img src="../../../src/assets/svg/Asset 8.svg" alt="exams" class="h-5 w-5">
         Exams
       </h2>
       <ul>
@@ -117,5 +135,6 @@ onMounted(() => {
         </li>
       </ul>
     </section>
-  </div>
+  </section>
+</section>
 </template>
