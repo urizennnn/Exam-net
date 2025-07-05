@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import { axiosInstance } from "../../src/utils/axiosConfig";
-import { errorToast, successToast } from "../../src/utils/toast";
-import type { BaseState } from "../../src/utils/types";
+import { axiosInstance } from "../../../src/utils/axiosConfig";
+import { errorToast, successToast } from "../../../src/utils/toast";
+import type { BaseState } from "../../../src/utils/types";
 
 export interface User {
   _id: string;
