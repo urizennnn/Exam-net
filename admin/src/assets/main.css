@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #51a2ff;
+  border-radius: 2.5rem;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #51a2ff;
+}

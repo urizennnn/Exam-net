@@ -17,6 +17,7 @@ Thumbs.db
 dist/
 build/
 /target
+dist-admin/
 
 # Ignore dependency directories
 vendor/
