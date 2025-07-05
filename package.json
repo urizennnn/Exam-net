@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "admin": "vite --config admin/vite.config.ts",
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write \"**/*.{ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
