@@ -19,6 +19,16 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      "@root": resolve(__dirname, "../../src"),
+      "@admin": resolve(__dirname, "./src"),
+      "@nuxt/ui/dist/runtime/components": "@nuxt/ui/components",
+    },
+  },
+  server: {
+    port: 5174,
+  },
   build: {
     outDir: resolve(__dirname, "../../dist-admin"),
   },

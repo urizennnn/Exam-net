@@ -31,7 +31,7 @@ onMounted(() => {
       <section class="w-full p-4">
         <div class="flex flex-col items-center mb-4">
           <img
-            src="../../../src/assets/svg/Asset 7.svg"
+            src="@root/assets/svg/Asset 7.svg"
             alt="logo"
             class="w-[100px] h-[100px]"
           >
@@ -41,7 +41,7 @@ onMounted(() => {
         </div>
         <section class="mb-6">
           <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
-            <img src="../../../src/assets/svg/Asset 10.svg" alt="complaints" class="h-5 w-5">
+            <img src="@root/assets/svg/Asset 10.svg" alt="complaints" class="h-5 w-5">
             Complaints
           </h2>
           <table class="w-full border-collapse">

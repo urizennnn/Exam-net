@@ -16,4 +16,9 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      "@nuxt/ui/dist/runtime/components": "@nuxt/ui/components",
+    },
+  },
 });

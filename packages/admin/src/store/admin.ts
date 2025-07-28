@@ -4,15 +4,15 @@ import {
 
 import type {
   BaseState,
-} from "../../../src/utils/types";
+} from "@root/utils/types";
 
 import {
   axiosInstance,
-} from "../../../src/utils/axiosConfig";
+} from "@root/utils/axiosConfig";
 import {
   errorToast,
   successToast,
-} from "../../../src/utils/toast";
+} from "@root/utils/toast";
 
 export type User = {
   _id: string;
