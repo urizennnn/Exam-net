@@ -1,7 +1,4 @@
-import {
-  createRouter,
-  createWebHistory,
-} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 import MainLayout from "../layout/MainLayout.vue";
 import NewExamLayout from "../layout/NewExamLayout.vue";
@@ -18,6 +15,7 @@ import Preview from "../pages/Preview/Preview.vue";
 import License from "../pages/School/License.vue";
 import Student from "../pages/Student/Student.vue";
 import StudentSubmission from "../pages/Student/SubmissionNotification.vue";
+import Support from "../pages/Auth/Support.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,6 +69,11 @@ const router = createRouter({
           path: "/monitoring-results/:id?",
           name: "monitoring-results",
           component: MonitoringResults,
+        },
+        {
+          path: "/support",
+          name: "support",
+          component: Support,
         },
       ],
     },

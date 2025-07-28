@@ -1,10 +1,9 @@
-import {
-  createRouter,
-  createWebHistory,
-} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router"
 
-import AdminDashboard from "../pages/AdminDashboard.vue";
-import AdminLogin from "../pages/AdminLogin.vue";
+import AdminDashboard from "../pages/AdminDashboard.vue"
+import AdminLogin from "../pages/AdminLogin.vue"
+import ManageUsers from "../pages/ManageUsers.vue"
+import Complaints from "../pages/Complaints.vue"
 
 const router = createRouter({
   history: createWebHistory("/admin/"),
@@ -19,7 +18,18 @@ const router = createRouter({
       name: "admin-dashboard",
       component: AdminDashboard,
     },
+    {
+      path: "/users",
+      name: "admin-users",
+      component: ManageUsers,
+    },
+    {
+      path: "/complaints",
+      name: "admin-complaints",
+      component: Complaints,
+    },
   ],
-});
+})
 
-export default router;
+export default router
+
