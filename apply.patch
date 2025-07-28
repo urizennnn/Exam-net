@@ -1,9 +1,16 @@
  (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/.env.example b/.env.example
+index b76bad501835f5f5588cfed79c9c17f68216edad..f8af6dd036377a52170bf37615ad13d2b7bf4b2f 100644
+--- a/.env.example
++++ b/.env.example
+@@ -1 +1,2 @@
+ VITE_API_BASE_URL=some_url
++VITE_AUTH_API_URL=https://auth.example.com
 diff --git a/README.md b/README.md
-index fa9f17647e702a8e203e1fbe0bc4016753e89be1..48f386c0232a074a3996569d64907907bf1bb032 100644
+index 48f386c0232a074a3996569d64907907bf1bb032..e942302741f296f5cacf27604221dc05ad55d2a9 100644
 --- a/README.md
 +++ b/README.md
-@@ -1,13 +1,34 @@
+@@ -1,34 +1,37 @@
  # Vue 3 + Vite
  
  This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
@@ -17,272 +24,68 @@ index fa9f17647e702a8e203e1fbe0bc4016753e89be1..48f386c0232a074a3996569d64907907
  ```bash
  npm run admin:dev
  ```
-+
-+### How It Works
-+
-+All member accounts are created from the admin portal. From the **Members** page administrators can invite new users by entering their name, email and role. The dashboard sends a `POST /admin/invite` request which triggers an email using `templates/member-invitation.html`.
-+
-+The members list is retrieved via `GET /admin/members` and follows this shape:
-+
-+```ts
-+{
-+  id: string;
-+  name: string;
-+  email: string;
-+  role: string;
-+  invitedAt: string;
-+  isOnline: boolean;
-+}
-+```
-+
-+Deleting a member uses `DELETE /admin/members/:id`.
-+
-+Email templates are located in the `templates/` folder. Integrate them with your mailer by loading the HTML file and replacing the placeholders with dynamic data before sending.
-diff --git a/packages/admin/src/components/AdminLayout.vue b/packages/admin/src/components/AdminLayout.vue
-index a5406316c8ec4071fa96f6cbd6b84344885038c7..3c77118c37b2af136b45462ff489cbb13ca7e61e 100644
---- a/packages/admin/src/components/AdminLayout.vue
-+++ b/packages/admin/src/components/AdminLayout.vue
-@@ -1,21 +1,21 @@
- <template>
-   <section class="flex flex-col w-full bg-zinc-300 h-[100dvh] text-black pb-4">
-     <nav class="flex items-center z-50 justify-between px-5 bg-gray-800 cursor-pointer">
-       <img src="@root/assets/svg/Asset 11.svg" alt="logo" class="h-[30px]">
-       <div class="flex items-center gap-4">
-         <RouterLink to="/admin/dashboard" class="text-white">
-           Dashboard
-         </RouterLink>
--        <RouterLink to="/admin/users" class="text-white">
--          Manage Users
-+        <RouterLink to="/admin/members" class="text-white">
-+          Members
-         </RouterLink>
-         <RouterLink to="/admin/complaints" class="text-white">
-           Complaints
-         </RouterLink>
-       </div>
-     </nav>
-     <section class="flex-1 bg-zinc-300">
-       <slot />
-     </section>
-   </section>
- </template>
-diff --git a/packages/admin/src/pages/AdminDashboard.vue b/packages/admin/src/pages/AdminDashboard.vue
-index 2d30a59f2c299ea9c2ee54799c60fc2d9be79715..ed89b49f2c6209583ed85a4a166c3f4a86955029 100644
---- a/packages/admin/src/pages/AdminDashboard.vue
-+++ b/packages/admin/src/pages/AdminDashboard.vue
-@@ -1,135 +1,153 @@
- <script setup lang="ts">
- import {
-   computed,
-   onMounted,
-   reactive,
- } from "vue";
  
- import {
-   useExamServerStore,
- } from "@root/store/server/exam";
++Both the main application and the admin portal expect `VITE_AUTH_API_URL` to be
++set to the authentication service base URL.
 +
- import AdminLayout from "../components/AdminLayout.vue";
- import {
-   useAdminStore,
- } from "../store/admin";
+ ### How It Works
  
- const adminStore = useAdminStore();
- const examStore = useExamServerStore();
+ All member accounts are created from the admin portal. From the **Members** page administrators can invite new users by entering their name, email and role. The dashboard sends a `POST /admin/invite` request which triggers an email using `templates/member-invitation.html`.
  
- const form = reactive({
-   name: "",
-   email: "",
--  password: "",
-+  role: "member",
- });
+ The members list is retrieved via `GET /admin/members` and follows this shape:
  
--const users = computed(() => adminStore.users);
-+const members = computed(() => adminStore.members);
- const exams = computed(() => examStore.exams);
- 
--function addUser() {
--  adminStore.addUser(form);
-+function invite() {
-+  adminStore.inviteMember(form);
-   form.name = "";
-   form.email = "";
--  form.password = "";
--}
--function deleteUser(id: string) {
--  adminStore.deleteUser(id);
+ ```ts
+ {
+   id: string;
+   name: string;
+   email: string;
+   role: string;
+   invitedAt: string;
+   isOnline: boolean;
  }
--function logoutUser(id: string) {
--  adminStore.logoutUser(id);
-+function removeMember(id: string) {
-+  // eslint-disable-next-line no-alert
-+  if (confirm("Delete this member?")) {
-+    adminStore.deleteMember(id);
-+  }
- }
+ ```
  
- onMounted(() => {
--  adminStore.fetchUsers();
-+  adminStore.fetchMembers();
-   examStore.getExams();
- });
- </script>
+ Deleting a member uses `DELETE /admin/members/:id`.
  
- <template>
-   <AdminLayout>
-     <section class="w-full h-auto bg-white flex">
-       <section class="w-full p-4">
-         <div class="flex flex-col items-center mb-4">
-           <img
-             src="@root/assets/svg/Asset 7.svg"
-             alt="logo"
-             class="w-[100px] h-[100px]"
-           >
-           <h1 class="text-2xl font-bold mt-2">
-             Admin Panel
-           </h1>
-         </div>
-         <section class="mb-6">
-           <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
-             <img src="@root/assets/svg/Asset 10.svg" alt="users" class="h-5 w-5">
--            Users
-+            Invite Member
-           </h2>
--          <form class="flex gap-2 mb-4" @submit.prevent="addUser">
-+          <form class="flex gap-2 mb-4" @submit.prevent="invite">
-             <input v-model="form.name" placeholder="Name" class="border p-1">
-             <input v-model="form.email" placeholder="Email" class="border p-1">
--            <input
--              v-model="form.password"
--              type="password"
--              placeholder="Password"
--              class="border p-1"
--            >
-+            <select v-model="form.role" class="border p-1">
-+              <option value="member">
-+                Member
-+              </option>
-+              <option value="admin">
-+                Admin
-+              </option>
-+            </select>
-             <button type="submit" class="bg-green-500 text-white px-2 py-1">
--              Add
-+              Invite
-             </button>
-           </form>
-           <table class="w-full border-collapse">
-             <thead>
-               <tr>
-                 <th class="border px-2 py-1 text-left">
--                  Name
-+                  Full Name
-                 </th>
-                 <th class="border px-2 py-1 text-left">
-                   Email
-                 </th>
-+                <th class="border px-2 py-1 text-left">
-+                  Role
-+                </th>
-+                <th class="border px-2 py-1 text-left">
-+                  Invited At
-+                </th>
-                 <th class="border px-2 py-1 text-left">
-                   Status
-                 </th>
-                 <th class="border px-2 py-1 text-left">
-                   Actions
-                 </th>
-               </tr>
-             </thead>
-             <tbody>
--              <tr v-for="u in users" :key="u._id">
-+              <tr v-for="m in members" :key="m.id">
-                 <td class="border px-2 py-1">
--                  {{ u.name }}
-+                  {{ m.name }}
-                 </td>
-                 <td class="border px-2 py-1">
--                  {{ u.email }}
-+                  {{ m.email }}
-                 </td>
-                 <td class="border px-2 py-1">
--                  <span :class="u.online ? 'text-green-600' : 'text-gray-500'">
--                    {{ u.online ? "Online" : "Offline" }}
--                  </span>
-+                  {{ m.role }}
-                 </td>
-                 <td class="border px-2 py-1">
--                  <button class="text-red-600 mr-2" @click="deleteUser(u._id)">
--                    Delete
--                  </button>
--                  <button class="text-yellow-600" @click="logoutUser(u._id)">
--                    Force Logout
-+                  {{ m.invitedAt }}
-+                </td>
-+                <td class="border px-2 py-1">
-+                  <span
-+                    :class="m.isOnline ? 'text-green-600' : 'text-gray-500'"
-+                    class="flex items-center gap-1"
-+                  >
-+                    <span
-+                      class="h-2 w-2 rounded-full"
-+                      :class="m.isOnline ? 'bg-green-600' : 'bg-gray-500'"
-+                    />
-+                    {{ m.isOnline ? 'Online' : 'Offline' }}
-+                  </span>
-+                </td>
-+                <td class="border px-2 py-1 text-center">
-+                  <button class="text-red-600" @click="removeMember(m.id)">
-+                    🗑️
-                   </button>
-                 </td>
-               </tr>
-             </tbody>
-           </table>
-         </section>
-       </section>
-       <section>
-         <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
-           <img src="@root/assets/svg/Asset 8.svg" alt="exams" class="h-5 w-5">
-           Exams
-         </h2>
-         <ul>
-           <li v-for="e in exams" :key="e.examKey" class="border-b py-1">
-             {{ e.examName }} - {{ e.access }}
-           </li>
-         </ul>
-       </section>
-     </section>
-   </AdminLayout>
- </template>
+ Email templates are located in the `templates/` folder. Integrate them with your mailer by loading the HTML file and replacing the placeholders with dynamic data before sending.
+diff --git a/packages/admin/.env.example b/packages/admin/.env.example
+new file mode 100644
+index 0000000000000000000000000000000000000000..818b696972c900cc62deda6272a59c89b5ac2dc8
+--- /dev/null
++++ b/packages/admin/.env.example
+@@ -0,0 +1 @@
++VITE_AUTH_API_URL=https://auth.example.com
 diff --git a/packages/admin/src/pages/AdminLogin.vue b/packages/admin/src/pages/AdminLogin.vue
-index 4b0b9dc64ed16c208822faaf0a66c6dd6056e193..73cc96f7c80883ec493164db8aed55637819d475 100644
+index 73cc96f7c80883ec493164db8aed55637819d475..94ffe375e4a4f6df5c421862fb868abd7f31872e 100644
 --- a/packages/admin/src/pages/AdminLogin.vue
 +++ b/packages/admin/src/pages/AdminLogin.vue
-@@ -1,71 +1,95 @@
+@@ -1,95 +1,120 @@
  <script lang="ts" setup>
-+import AppForm from "@root/components/AppForm.vue";
-+import {
-+  storeToRefs,
-+} from "pinia";
- import {
-   computed,
-+  onMounted,
-   reactive,
-   ref,
- } from "vue";
- import {
-   useRouter,
- } from "vue-router";
+ import AppForm from "@root/components/AppForm.vue";
+-import {
+-  storeToRefs,
+-} from "pinia";
+-import {
+-  computed,
+-  onMounted,
+-  reactive,
+-  ref,
+-} from "vue";
+-import {
+-  useRouter,
+-} from "vue-router";
++import { storeToRefs } from "pinia";
++import { computed, onMounted, reactive, ref } from "vue";
++import { useRouter } from "vue-router";
  
--import AppForm from "@root/components/AppForm.vue";
- import {
-   useAuthStore,
- } from "@root/store/server/auth";
-+import {
-+  getCookie,
-+} from "@root/utils/functions";
+-import {
+-  useAuthStore,
+-} from "@root/store/server/auth";
+-import {
+-  getCookie,
+-} from "@root/utils/functions";
++import { useAuthStore } from "@root/store/server/auth";
++import { getToken } from "@root/utils/token";
  
  const loginForm = reactive({
    email: "",
@@ -299,31 +102,35 @@ index 4b0b9dc64ed16c208822faaf0a66c6dd6056e193..73cc96f7c80883ec493164db8aed5563
  };
  const router = useRouter();
  const authStore = useAuthStore();
-+const {
-+  login,
-+} = authStore;
-+const {
-+  success: authSuccess,
-+  loading: authLoading,
-+} = storeToRefs(authStore);
+-const {
+-  login,
+-} = authStore;
+-const {
+-  success: authSuccess,
+-  loading: authLoading,
+-} = storeToRefs(authStore);
++const { login } = authStore;
++const { success: authSuccess, loading: authLoading } = storeToRefs(authStore);
  
- const isFormComplete = computed(() => loginForm.email !== "" && loginForm.password !== "");
+-const isFormComplete = computed(() => loginForm.email !== "" && loginForm.password !== "");
++const isFormComplete = computed(
++  () => loginForm.email !== "" && loginForm.password !== "",
++);
  
-+onMounted(() => {
-+  const token = getCookie("token");
-+  if (token) {
-+    authStore.setAccessToken(token);
-+    router.push({
-+      name: "admin-dashboard",
-+    });
-+  }
-+});
-+
+ onMounted(() => {
+-  const token = getCookie("token");
++  const token = getToken();
+   if (token) {
+     authStore.setAccessToken(token);
+     router.push({
+       name: "admin-dashboard",
+     });
+   }
+ });
+ 
  async function onSubmit() {
--  await authStore.login(loginForm);
--  if (authStore.success) {
-+  await login(loginForm);
-+  if (authSuccess.value) {
+   await login(loginForm);
+   if (authSuccess.value) {
      router.push({
        name: "admin-dashboard",
      });
@@ -334,429 +141,200 @@ index 4b0b9dc64ed16c208822faaf0a66c6dd6056e193..73cc96f7c80883ec493164db8aed5563
  <template>
    <section class="w-full h-screen bg-white flex">
      <section class="bg-gray-800 w-full h-screen relative p-4 hidden lg:block">
-       <img src="@root/assets/svg/Asset 11.svg" alt="logo" class="h-[30px]">
-       <img src="@root/assets/images/Humaaans.png" alt="background" class="w-full h-[80dvh] mt-4 object-center object-fill">
+-      <img src="@root/assets/svg/Asset 11.svg" alt="logo" class="h-[30px]">
+-      <img src="@root/assets/images/Humaaans.png" alt="background" class="w-full h-[80dvh] mt-4 object-center object-fill">
++      <img src="@root/assets/svg/Asset 11.svg" alt="logo" class="h-[30px]" />
++      <img
++        src="@root/assets/images/Humaaans.png"
++        alt="background"
++        class="w-full h-[80dvh] mt-4 object-center object-fill"
++      />
      </section>
-     <section class="w-full flex flex-col items-center h-screen justify-center p-4">
-       <img src="@root/assets/svg/Asset 7.svg" alt="logo" class="w-[100px] h-[100px] mb-4">
+-    <section class="w-full flex flex-col items-center h-screen justify-center p-4">
+-      <img src="@root/assets/svg/Asset 7.svg" alt="logo" class="w-[100px] h-[100px] mb-4">
++    <section
++      class="w-full flex flex-col items-center h-screen justify-center p-4"
++    >
++      <img
++        src="@root/assets/svg/Asset 7.svg"
++        alt="logo"
++        class="w-[100px] h-[100px] mb-4"
++      />
        <div class="w-full max-w-[400px]">
-         <AppForm :state="loginForm" title="Admin Portal Login" @submit="onSubmit">
+-        <AppForm :state="loginForm" title="Admin Portal Login" @submit="onSubmit">
++        <AppForm
++          :state="loginForm"
++          title="Admin Portal Login"
++          @submit="onSubmit"
++        >
            <UFormField label="Email" name="email" :ui="FormFieldUI">
-             <UInput v-model="loginForm.email" placeholder="Enter your email" color="info" type="email" :ui="inputUI" />
+-            <UInput v-model="loginForm.email" placeholder="Enter your email" color="info" type="email" :ui="inputUI" />
++            <UInput
++              v-model="loginForm.email"
++              placeholder="Enter your email"
++              color="info"
++              type="email"
++              :ui="inputUI"
++            />
            </UFormField>
            <UFormField label="Password" name="password" :ui="FormFieldUI">
--          <UInput v-model="loginForm.password" placeholder="Enter your password" color="info" :type="showPassword ? 'text' : 'password'" :ui="inputUI">
--            <template #trailing>
--              <UButton variant="link" size="lg" :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" :aria-label="showPassword ? 'Hide password' : 'Show password'" :aria-pressed="showPassword" aria-controls="password" class="cursor-pointer text-black hover:text-black" @click="showPassword = !showPassword" />
--            </template>
--          </UInput>
--        </UFormField>
--        <UButton class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400" :disabled="!isFormComplete || authStore.loading" :loading-auto="authStore.loading" :loading="authStore.loading" @click="onSubmit">
--          Login
--        </UButton>
-+            <UInput v-model="loginForm.password" placeholder="Enter your password" color="info" :type="showPassword ? 'text' : 'password'" :ui="inputUI">
-+              <template #trailing>
-+                <UButton variant="link" size="lg" :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" :aria-label="showPassword ? 'Hide password' : 'Show password'" :aria-pressed="showPassword" aria-controls="password" class="cursor-pointer text-black hover:text-black" @click="showPassword = !showPassword" />
-+              </template>
-+            </UInput>
-+          </UFormField>
-+          <UButton class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400" :disabled="!isFormComplete || authLoading" :loading-auto="authLoading" :loading="authLoading" @click="onSubmit">
-+            Login
-+          </UButton>
+-            <UInput v-model="loginForm.password" placeholder="Enter your password" color="info" :type="showPassword ? 'text' : 'password'" :ui="inputUI">
++            <UInput
++              v-model="loginForm.password"
++              placeholder="Enter your password"
++              color="info"
++              :type="showPassword ? 'text' : 'password'"
++              :ui="inputUI"
++            >
+               <template #trailing>
+-                <UButton variant="link" size="lg" :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" :aria-label="showPassword ? 'Hide password' : 'Show password'" :aria-pressed="showPassword" aria-controls="password" class="cursor-pointer text-black hover:text-black" @click="showPassword = !showPassword" />
++                <UButton
++                  variant="link"
++                  size="lg"
++                  :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
++                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
++                  :aria-pressed="showPassword"
++                  aria-controls="password"
++                  class="cursor-pointer text-black hover:text-black"
++                  @click="showPassword = !showPassword"
++                />
+               </template>
+             </UInput>
+           </UFormField>
+-          <UButton class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400" :disabled="!isFormComplete || authLoading" :loading-auto="authLoading" :loading="authLoading" @click="onSubmit">
++          <UButton
++            class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400"
++            :disabled="!isFormComplete || authLoading"
++            :loading-auto="authLoading"
++            :loading="authLoading"
++            @click="onSubmit"
++          >
+             Login
+           </UButton>
          </AppForm>
        </div>
      </section>
    </section>
  </template>
-diff --git a/packages/admin/src/pages/ManageUsers.vue b/packages/admin/src/pages/Members.vue
-similarity index 55%
-rename from packages/admin/src/pages/ManageUsers.vue
-rename to packages/admin/src/pages/Members.vue
-index 42fac491c2fc6f8ba804dade7d12533a70f3e26f..3582243fe142a828a35d3b50e85a626944bcaa6c 100644
---- a/packages/admin/src/pages/ManageUsers.vue
-+++ b/packages/admin/src/pages/Members.vue
-@@ -1,118 +1,133 @@
- <script setup lang="ts">
- import {
-   computed,
-   onMounted,
-   reactive,
- } from "vue";
+diff --git a/src/pages/Auth/Login.vue b/src/pages/Auth/Login.vue
+index 8c041b9ee1819667468f224529590510033c558d..bdccb9e13bdce3fd32661cea024b454bb47d644d 100644
+--- a/src/pages/Auth/Login.vue
++++ b/src/pages/Auth/Login.vue
+@@ -1,111 +1,93 @@
+ <script lang="ts" setup>
+-import {
+-  storeToRefs,
+-} from "pinia";
+-import {
+-  computed,
+-  onMounted,
+-  reactive,
+-  ref,
+-} from "vue";
+-import {
+-  useRouter,
+-} from "vue-router";
++import { storeToRefs } from "pinia";
++import { computed, onMounted, reactive, ref } from "vue";
++import { useRouter } from "vue-router";
  
- import AdminLayout from "../components/AdminLayout.vue";
- import {
-   useAdminStore,
- } from "../store/admin";
+-import {
+-  useAuthStore,
+-} from "../../store/server/auth";
+-import {
+-  getCookie,
+-} from "../../utils/functions";
++import { useAuthStore } from "../../store/server/auth";
++import { getToken } from "../../utils/token";
  
- const adminStore = useAdminStore();
- 
- const form = reactive({
-   name: "",
+ const loginForm = reactive({
    email: "",
--  password: "",
-+  role: "member",
+   password: "",
  });
--
--const users = computed(() => adminStore.users);
--
--function addUser() {
--  adminStore.addUser(form);
-+const members = computed(() => adminStore.members);
-+function invite() {
-+  adminStore.inviteMember(form);
-   form.name = "";
-   form.email = "";
--  form.password = "";
- }
--function deleteUser(id: string) {
--  adminStore.deleteUser(id);
--}
--function logoutUser(id: string) {
--  adminStore.logoutUser(id);
-+function removeMember(id: string) {
-+  // eslint-disable-next-line no-alert
-+  if (confirm("Delete this member?")) {
-+    adminStore.deleteMember(id);
-+  }
- }
+ const showPassword = ref(false);
+ const FormFieldUI = {
+   label: "text-black text-lg",
+ };
+ const inputUI = {
+   trailing: "pe-1",
+   root: "w-full",
+   base: "p-4 bg-inherit text-black",
+ };
+ const isFormComplete = computed(() => {
+   return loginForm.email !== "" && loginForm.password !== "";
+ });
+ const router = useRouter();
+ const authStore = useAuthStore();
+-const {
+-  login,
+-} = authStore;
+-const {
+-  success: authSuccess,
+-  loading: authLoading,
+-} = storeToRefs(authStore);
++const { login } = authStore;
++const { success: authSuccess, loading: authLoading } = storeToRefs(authStore);
  
  onMounted(() => {
--  adminStore.fetchUsers();
-+  adminStore.fetchMembers();
+-  const token = getCookie("token");
++  const token = getToken();
+   if (token) {
+     authStore.setAccessToken(token);
+     router.push({
+       name: "exams",
+     });
+   }
  });
+ 
+ async function onSubmit() {
+   await login(loginForm);
+ 
+   if (authSuccess.value) {
+     router.push({
+       name: "license",
+     });
+   }
+ }
  </script>
  
  <template>
-   <AdminLayout>
-     <section class="w-full h-auto bg-white flex">
-       <section class="w-full p-4">
-         <div class="flex flex-col items-center mb-4">
-           <img
-             src="@root/assets/svg/Asset 7.svg"
-             alt="logo"
-             class="w-[100px] h-[100px]"
-           >
-           <h1 class="text-2xl font-bold mt-2">
--            Manage Users
-+            Members
-           </h1>
-         </div>
-         <section class="mb-6">
-           <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
-             <img src="@root/assets/svg/Asset 10.svg" alt="users" class="h-5 w-5">
--            Users
-+            Invite Member
-           </h2>
--          <form class="flex gap-2 mb-4" @submit.prevent="addUser">
-+          <form class="flex gap-2 mb-4" @submit.prevent="invite">
-             <input v-model="form.name" placeholder="Name" class="border p-1">
-             <input v-model="form.email" placeholder="Email" class="border p-1">
--            <input
--              v-model="form.password"
--              type="password"
--              placeholder="Password"
--              class="border p-1"
--            >
-+            <select v-model="form.role" class="border p-1">
-+              <option value="member">
-+                Member
-+              </option>
-+              <option value="admin">
-+                Admin
-+              </option>
-+            </select>
-             <button type="submit" class="bg-green-500 text-white px-2 py-1">
--              Add
-+              Invite
-             </button>
-           </form>
-           <table class="w-full border-collapse">
-             <thead>
-               <tr>
-                 <th class="border px-2 py-1 text-left">
--                  Name
-+                  Full Name
-                 </th>
-                 <th class="border px-2 py-1 text-left">
-                   Email
-                 </th>
-+                <th class="border px-2 py-1 text-left">
-+                  Role
-+                </th>
-+                <th class="border px-2 py-1 text-left">
-+                  Invited At
-+                </th>
-                 <th class="border px-2 py-1 text-left">
-                   Status
-                 </th>
-                 <th class="border px-2 py-1 text-left">
-                   Actions
-                 </th>
-               </tr>
-             </thead>
-             <tbody>
--              <tr v-for="u in users" :key="u._id">
-+              <tr v-for="m in members" :key="m.id">
-                 <td class="border px-2 py-1">
--                  {{ u.name }}
-+                  {{ m.name }}
-                 </td>
-                 <td class="border px-2 py-1">
--                  {{ u.email }}
-+                  {{ m.email }}
-                 </td>
-                 <td class="border px-2 py-1">
--                  <span :class="u.online ? 'text-green-600' : 'text-gray-500'">
--                    {{ u.online ? "Online" : "Offline" }}
--                  </span>
-+                  {{ m.role }}
-                 </td>
-                 <td class="border px-2 py-1">
--                  <button class="text-red-600 mr-2" @click="deleteUser(u._id)">
--                    Delete
--                  </button>
--                  <button class="text-yellow-600" @click="logoutUser(u._id)">
--                    Force Logout
-+                  {{ m.invitedAt }}
-+                </td>
-+                <td class="border px-2 py-1">
-+                  <span
-+                    :class="m.isOnline ? 'text-green-600' : 'text-gray-500'"
-+                    class="flex items-center gap-1"
-+                  >
-+                    <span
-+                      class="h-2 w-2 rounded-full"
-+                      :class="m.isOnline ? 'bg-green-600' : 'bg-gray-500'"
-+                    />
-+                    {{ m.isOnline ? 'Online' : 'Offline' }}
-+                  </span>
-+                </td>
-+                <td class="border px-2 py-1 text-center">
-+                  <button class="text-red-600" @click="removeMember(m.id)">
-+                    🗑️
-                   </button>
-                 </td>
-               </tr>
-             </tbody>
-           </table>
-         </section>
-       </section>
+   <section class="w-full h-screen bg-white flex">
+     <section class="bg-gray-800 w-full h-screen relative p-4 hidden lg:block">
+-      <img src="../../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]">
++      <img src="../../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]" />
+       <img
+         src="../../assets/images/Humaaans.png"
+         alt="background"
+         class="w-full h-[80dvh] mt-4 object-center object-fill"
+-      >
++      />
      </section>
-   </AdminLayout>
- </template>
-diff --git a/packages/admin/src/router/index.ts b/packages/admin/src/router/index.ts
-index 4c7617c80da0c3023a8afa8fb8cbf573d7a28ce8..41e46c4426120e52c8a5aef6f1f740ef161d9699 100644
---- a/packages/admin/src/router/index.ts
-+++ b/packages/admin/src/router/index.ts
-@@ -1,37 +1,37 @@
- import {
-   createRouter,
-   createWebHistory,
- } from "vue-router";
- 
- import AdminDashboard from "../pages/AdminDashboard.vue";
- import AdminLogin from "../pages/AdminLogin.vue";
- import Complaints from "../pages/Complaints.vue";
--import ManageUsers from "../pages/ManageUsers.vue";
-+import Members from "../pages/Members.vue";
- 
- const router = createRouter({
-   history: createWebHistory("/admin/"),
-   routes: [
-     {
-       path: "/",
-       name: "admin-login",
-       component: AdminLogin,
-     },
-     {
-       path: "/dashboard",
-       name: "admin-dashboard",
-       component: AdminDashboard,
-     },
-     {
--      path: "/users",
--      name: "admin-users",
--      component: ManageUsers,
-+      path: "/members",
-+      name: "admin-members",
-+      component: Members,
-     },
-     {
-       path: "/complaints",
-       name: "admin-complaints",
-       component: Complaints,
-     },
-   ],
- });
- 
- export default router;
-diff --git a/packages/admin/src/store/admin.ts b/packages/admin/src/store/admin.ts
-index e6181aae725ed01a3390f29aa3568fc1bdb79986..e6c6439e24ed40a29370f37160221c123ebd8507 100644
---- a/packages/admin/src/store/admin.ts
-+++ b/packages/admin/src/store/admin.ts
-@@ -1,109 +1,121 @@
- import {
-   defineStore,
- } from "pinia";
- 
- import type {
-   BaseState,
- } from "@root/utils/types";
- 
- import {
-   axiosInstance,
- } from "@root/utils/axiosConfig";
- import {
-   errorToast,
-   successToast,
- } from "@root/utils/toast";
- 
--export type User = {
--  _id: string;
-+export type Member = {
-+  id: string;
-   name: string;
-   email: string;
--  online: boolean;
-+  role: string;
-+  invitedAt: string;
-+  isOnline: boolean;
- };
- 
- type AdminState = {
--  users: User[];
-+  members: Member[];
- } & BaseState;
- 
- export const useAdminStore = defineStore("admin", {
-   state: (): AdminState => ({
-     loading: false,
-     success: false,
--    users: [],
-+    members: [],
-   }),
-   actions: {
--    async fetchUsers() {
-+    async fetchMembers() {
-       try {
-         this.loading = true;
--        const {
--          data,
--        } = await axiosInstance.get("/admin/users");
--        this.users = data;
-+        // mock response
-+        const data: Member[] = [
-+          {
-+            id: "1",
-+            name: "Jane Doe",
-+            email: "jane@example.com",
-+            role: "member",
-+            invitedAt: new Date().toISOString(),
-+            isOnline: true,
-+          },
-+          {
-+            id: "2",
-+            name: "John Smith",
-+            email: "john@example.com",
-+            role: "member",
-+            invitedAt: new Date().toISOString(),
-+            isOnline: false,
-+          },
-+        ];
-+        this.members = data;
-         this.success = true;
-       }
-       catch (error: any) {
-         this.success = false;
-         const errorMessage
-           = error.response?.data?.message || error.message || "Network Error";
-         errorToast(errorMessage);
-       }
-       finally {
-         this.loading = false;
-       }
-     },
--    async addUser(payload: { name: string; email: string; password: string }) {
--      try {
--        this.loading = true;
--        const {
--          data,
--        } = await axiosInstance.post("/admin/users", payload);
--        successToast(data?.message || "User added");
--        this.fetchUsers();
--      }
--      catch (error: any) {
--        const errorMessage
--          = error.response?.data?.message || error.message || "Network Error";
--        errorToast(errorMessage);
--      }
--      finally {
--        this.loading = false;
--      }
--    },
--    async deleteUser(id: string) {
-+    async inviteMember(payload: { name: string; email: string; role: string }) {
-       try {
-         this.loading = true;
-+        const password = Math.random().toString(36).slice(-8);
-         const {
-           data,
--        } = await axiosInstance.delete(`/admin/users/${id}`);
--        successToast(data?.message || "User deleted");
--        this.fetchUsers();
-+        } = await axiosInstance.post("/admin/invite", {
-+          ...payload,
-+          password,
-+        });
-+        successToast(data?.message || "Invitation sent");
-+        this.members.push({
-+          id: Date.now().toString(),
-+          name: payload.name,
-+          email: payload.email,
-+          role: payload.role,
-+          invitedAt: new Date().toISOString(),
-+          isOnline: false,
-+        });
-       }
-       catch (error: any) {
-         const errorMessage
-           = error.response?.data?.message || error.message || "Network Error";
-         errorToast(errorMessage);
-       }
-       finally {
-         this.loading = false;
-       }
-     },
--    async logoutUser(id: string) {
-+    async deleteMember(id: string) {
-       try {
-         this.loading = true;
-         const {
-           data,
--        } = await axiosInstance.post(`/admin/users/${id}/logout`);
--        successToast(data?.message || "User logged out");
--        this.fetchUsers();
-+        } = await axiosInstance.delete(`/admin/members/${id}`);
-+        successToast(data?.message || "Member deleted");
-+        this.members = this.members.filter(m => m.id !== id);
-       }
-       catch (error: any) {
-         const errorMessage
-           = error.response?.data?.message || error.message || "Network Error";
-         errorToast(errorMessage);
-       }
-       finally {
-         this.loading = false;
-       }
-     },
-+    // Additional actions can be added here
-   },
- });
-diff --git a/src/pages/Auth/Login.vue b/src/pages/Auth/Login.vue
-index 0504de6bdcbed4963ce339cd6fc6140e26db81d3..8c041b9ee1819667468f224529590510033c558d 100644
---- a/src/pages/Auth/Login.vue
-+++ b/src/pages/Auth/Login.vue
-@@ -104,34 +104,31 @@ async function onSubmit() {
+     <section
+       class="w-full flex flex-col items-center h-screen justify-center p-4"
+     >
+       <img
+         src="../../assets/svg/Asset 7.svg"
+         alt="logo"
+         class="w-[100px] h-[100px]"
+-      >
++      />
+       <AppForm :state="loginForm" title="Login" @submit="onSubmit">
+         <UFormField label="Email" name="email" :ui="FormFieldUI">
+           <UInput
+             v-model="loginForm.email"
+             placeholder="Enter your email"
+             color="info"
+             type="email"
+             :ui="inputUI"
+           />
+         </UFormField>
+         <UFormField label="Password" name="password" :ui="FormFieldUI">
+           <UInput
+             v-model="loginForm.password"
+             placeholder="Enter your password"
+             color="info"
+             :type="showPassword ? 'text' : 'password'"
+             :ui="inputUI"
            >
              <template #trailing>
                <UButton
@@ -765,114 +343,213 @@ index 0504de6bdcbed4963ce339cd6fc6140e26db81d3..8c041b9ee1819667468f224529590510
                  :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
                  :aria-pressed="showPassword"
-                 aria-controls="password"
-                 class="cursor-pointer text-black hover:text-black"
-                 @click="showPassword = !showPassword"
-               />
-             </template>
-           </UInput>
-         </UFormField>
-         <UButton
-           class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400"
-           :disabled="!isFormComplete || authLoading"
-           :loading-auto="authLoading"
-           :loading="authLoading"
-           @click="onSubmit"
-         >
-           Login
-         </UButton>
-       </AppForm>
--      <p class="text-black">
--        You don't have an account?
--        <RouterLink to="/signup" class="text-gray-900 font-bold">
--          Register
--        </RouterLink>
-+      <p class="text-black text-center">
-+        Don't have an account? Contact your administrator.
-       </p>
-     </section>
-   </section>
- </template>
-diff --git a/src/router/index.ts b/src/router/index.ts
-index 3e482001c4c6dce3cadaac9ca4d058d12322d23f..851cd15a9d4b23fefbce57b8b364f39e2e3aff08 100644
---- a/src/router/index.ts
-+++ b/src/router/index.ts
-@@ -1,57 +1,54 @@
--import { createRouter, createWebHistory } from "vue-router";
-+import {
-+  createRouter,
-+  createWebHistory,
-+} from "vue-router";
+diff --git a/src/store/server/auth.ts b/src/store/server/auth.ts
+index a3104108b3c89a7e74041fb4801e0eb6ecfaf2b6..7d82ad3c405b92c4e9617340d99c341a592fd06d 100644
+--- a/src/store/server/auth.ts
++++ b/src/store/server/auth.ts
+@@ -1,146 +1,121 @@
+-import {
+-  defineStore,
+-} from "pinia";
++import { defineStore } from "pinia";
  
- import MainLayout from "../layout/MainLayout.vue";
- import NewExamLayout from "../layout/NewExamLayout.vue";
- import Login from "../pages/Auth/Login.vue";
--import Register from "../pages/Auth/Register.vue";
- import StudentLogin from "../pages/Auth/StudentLogin.vue";
-+import Support from "../pages/Auth/Support.vue";
- import Exams from "../pages/Exams/Exams.vue";
- import MonitoringResults from "../pages/MonitoringResults/MonitoringResults.vue";
- import ExamConfig from "../pages/NewExam/ExamConfig.vue";
- import ExamFormat from "../pages/NewExam/ExamFormat.vue";
- import NewQuestion from "../pages/NewExam/NewQuestion.vue";
- import NotFound from "../pages/NotFound.vue";
- import Preview from "../pages/Preview/Preview.vue";
- import License from "../pages/School/License.vue";
- import Student from "../pages/Student/Student.vue";
- import StudentSubmission from "../pages/Student/SubmissionNotification.vue";
--import Support from "../pages/Auth/Support.vue";
+-import type {
+-  BaseState,
+-} from "../../utils/types";
++import type { BaseState } from "../../utils/types";
  
- const router = createRouter({
-   history: createWebHistory(import.meta.env.BASE_URL),
-   routes: [
-     {
-       path: "/",
-       name: "login",
-       component: Login,
+ import router from "../../router";
++import { axiosInstance } from "../../utils/axiosConfig";
++import axios from "axios";
+ import {
+-  axiosInstance,
+-} from "../../utils/axiosConfig";
+-import {
+-  errorToast,
+-  successToast,
+-} from "../../utils/toast";
++  saveToken,
++  getToken as getStoredToken,
++  removeToken,
++} from "../../utils/token";
++import { errorToast, successToast } from "../../utils/toast";
+ 
+ type AuthState = {
+-  access: string;
++  token: string;
+ } & BaseState;
+ 
+ type LoginPayload = {
+   email: string;
+   password: string;
+ };
+ 
+ type RegisterPayload = {
+   name: string;
+ } & LoginPayload;
+ 
+ export const useAuthStore = defineStore("auth", {
+   state: (): AuthState => ({
+     loading: false,
+     success: false,
+-    access: "",
++    token: "",
+   }),
+   actions: {
+     async login(payload: LoginPayload) {
+       try {
+         this.success = false;
+         this.loading = true;
+-        const {
+-          data,
+-        } = await axiosInstance.post("/users/login", payload);
+-        const {
+-          access_token,
+-          name,
+-        } = data;
+-        this.access = access_token;
+-        this.setAccessToken(access_token);
+-        this.setToken("name", name);
++        const authUrl = `${import.meta.env.VITE_AUTH_API_URL || ""}/auth/login`;
++        const { data } = await axios.post(authUrl, payload);
++        const { token, user } = data;
++        this.token = token;
++        this.setAccessToken(token);
++        this.setToken("name", user?.name);
+         successToast("Login Successful");
+         this.success = true;
+-      }
+-      catch (error: any) {
++      } catch (error: any) {
+         this.success = false;
+-        const errorMessage
+-          = error.response?.data?.message || error.message || "Network Error";
++        const errorMessage =
++          error.response?.data?.message || error.message || "Network Error";
+         errorToast(errorMessage);
+         throw new Error(errorMessage);
+-      }
+-      finally {
++      } finally {
+         this.loading = false;
+       }
      },
--    {
--      path: "/signup",
--      name: "register",
--      component: Register,
--    },
-     {
-       path: "/",
-       component: MainLayout,
-       children: [
-         {
-           path: "license",
-           name: "license",
-           component: License,
-         },
-         {
-           path: "exams",
-           name: "exams",
-           component: Exams,
-         },
-         {
-           path: "new-exam",
-           component: NewExamLayout,
-           children: [
-             {
-               path: "",
-               name: "new-exam",
-               component: ExamFormat,
-             },
-             {
-               path: "new-question/:id?",
+ 
+     async register(payload: RegisterPayload) {
+       try {
+         this.success = false;
+         this.loading = true;
+-        const {
+-          data,
+-        } = await axiosInstance.post("/users/signup", payload);
+-        const {
+-          message,
+-        } = data;
++        const { data } = await axiosInstance.post("/users/signup", payload);
++        const { message } = data;
+         this.success = true;
+         successToast(message);
+-      }
+-      catch (error: any) {
++      } catch (error: any) {
+         this.success = false;
+-        const errorMessage
+-          = error.response?.data?.message || error.message || "Network Error";
++        const errorMessage =
++          error.response?.data?.message || error.message || "Network Error";
+         errorToast(errorMessage);
+         throw new Error(errorMessage);
+-      }
+-      finally {
++      } finally {
+         this.loading = false;
+       }
+     },
+ 
+     setAccessToken(token: string) {
+       this.clearAccessToken();
+-      this.access = token;
+-      this.setToken("access", token);
++      this.token = token;
++      saveToken(token);
+     },
+ 
+     clearAccessToken() {
+-      this.access = "";
+-      this.clearToken("access");
++      this.token = "";
++      removeToken();
+     },
+ 
+-    setToken(key: string, token: string) {
+-      localStorage.setItem(key, JSON.stringify(token));
++    setToken(key: string, value: string) {
++      localStorage.setItem(key, JSON.stringify(value));
+     },
+ 
+     clearToken(key: string) {
+       if (localStorage.getItem(key)) {
+         localStorage.removeItem(key);
+       }
+     },
+ 
+     async logout() {
+       try {
+         await axiosInstance.post("/users/logout");
+-      }
+-      catch (error: any) {
+-        const errorMessage
+-          = error.response?.data?.message || error.message || "Network Error";
++      } catch (error: any) {
++        const errorMessage =
++          error.response?.data?.message || error.message || "Network Error";
+         errorToast(errorMessage);
+-      }
+-      finally {
++      } finally {
+         this.clearAccessToken();
+         this.clearToken("name");
+         router.push({
+           name: "login",
+         });
+       }
+     },
+   },
+   getters: {
+     getAuthToken(state) {
+-      const storageToken = localStorage.getItem("access");
+-      if (storageToken)
+-        return storageToken;
+-      const cookieToken
+-        = typeof document !== "undefined"
+-          ? document.cookie
+-            .split("; ")
+-            .map(c => c.split("="))
+-            .find(([name]) => name === "token")?.[1]
+-          : null;
+-      return cookieToken || state.access;
++      const storageToken = getStoredToken();
++      if (storageToken) return storageToken;
++      return state.token;
+     },
+   },
+ });
 diff --git a/src/utils/axiosConfig.ts b/src/utils/axiosConfig.ts
-index 11509ee1a8bd268d95b39b43fdbbe71769940f08..3cc928c3ebb6c8766edaa8ac609fe723a37347ad 100644
+index 3cc928c3ebb6c8766edaa8ac609fe723a37347ad..f24881236ab33f43ea5c1ab94d57588b23a96250 100644
 --- a/src/utils/axiosConfig.ts
 +++ b/src/utils/axiosConfig.ts
-@@ -1,68 +1,68 @@
+@@ -1,68 +1,60 @@
  import axios from "axios";
  
- import {
-   useAuthStore,
- } from "../store/server/auth";
- import {
-   errorToast,
- } from "./toast";
+-import {
+-  useAuthStore,
+-} from "../store/server/auth";
+-import {
+-  errorToast,
+-} from "./toast";
++import { useAuthStore } from "../store/server/auth";
++import { errorToast } from "./toast";
++import { getToken } from "./token";
  
  const baseURL = import.meta.env.VITE_API_BASE_URL || "";
  
@@ -884,222 +561,110 @@ index 11509ee1a8bd268d95b39b43fdbbe71769940f08..3cc928c3ebb6c8766edaa8ac609fe723
    withCredentials: true,
  });
  
- axiosInstance.interceptors.request.use((config) => {
-   const {
-     getAuthToken,
-     access,
-   } = useAuthStore();
+-axiosInstance.interceptors.request.use((config) => {
+-  const {
+-    getAuthToken,
+-    access,
+-  } = useAuthStore();
++axiosInstance.interceptors.request.use(
++  (config) => {
++    const store = useAuthStore();
++    const token = store.token || getToken();
  
--  const excludedUrls = ["/users/login", "/users/signup"];
-+  const excludedUrls = ["/users/login"];
+-  const excludedUrls = ["/users/login"];
++    const excludedUrls = ["/auth/login"];
  
-   const isExcludedUrl = excludedUrls.some(url => config.url?.includes(url));
+-  const isExcludedUrl = excludedUrls.some(url => config.url?.includes(url));
++    const isExcludedUrl = excludedUrls.some((url) => config.url?.includes(url));
  
-   if (!isExcludedUrl) {
-     if (getAuthToken) {
-       if (access) {
-         config.headers.Authorization = `Bearer ${access}`;
-       }
-       else {
-         config.headers.Authorization = `Bearer ${JSON.parse(getAuthToken)}`;
-       }
+-  if (!isExcludedUrl) {
+-    if (getAuthToken) {
+-      if (access) {
+-        config.headers.Authorization = `Bearer ${access}`;
+-      }
+-      else {
+-        config.headers.Authorization = `Bearer ${JSON.parse(getAuthToken)}`;
+-      }
++    if (!isExcludedUrl && token) {
++      config.headers.Authorization = `Bearer ${token}`;
      }
-   }
+-  }
+-
+-  return config;
+-}, error => Promise.reject(error));
+-
+-axiosInstance.interceptors.response.use(response => response, (error) => {
+-  console.error({
+-    error,
+-  });
+-
+-  const status = error.response?.status;
+-  const requestUrl: string = error.config?.url || "";
  
-   return config;
- }, error => Promise.reject(error));
- 
- axiosInstance.interceptors.response.use(response => response, (error) => {
-   console.error({
-     error,
-   });
- 
-   const status = error.response?.status;
-   const requestUrl: string = error.config?.url || "";
- 
-   if (status === 401) {
--    const excluded = ["/users/login", "/users/signup", "/users/logout"];
-+    const excluded = ["/users/login", "/users/logout"];
-     const shouldLogout = !excluded.some(url => requestUrl.includes(url));
-     if (shouldLogout) {
-       const {
-         logout,
-       } = useAuthStore();
-       logout();
+-  if (status === 401) {
+-    const excluded = ["/users/login", "/users/logout"];
+-    const shouldLogout = !excluded.some(url => requestUrl.includes(url));
+-    if (shouldLogout) {
+-      const {
+-        logout,
+-      } = useAuthStore();
+-      logout();
++    return config;
++  },
++  (error) => Promise.reject(error),
++);
++
++axiosInstance.interceptors.response.use(
++  (response) => response,
++  (error) => {
++    console.error({
++      error,
++    });
++
++    const status = error.response?.status;
++    const requestUrl: string = error.config?.url || "";
++
++    if (status === 401) {
++      const excluded = ["/auth/login", "/users/logout"];
++      const shouldLogout = !excluded.some((url) => requestUrl.includes(url));
++      if (shouldLogout) {
++        const { logout } = useAuthStore();
++        logout();
++      }
      }
-   }
+-  }
  
-   if (status === 429) {
-     errorToast("You are making too many requests, wait a minute");
-   }
+-  if (status === 429) {
+-    errorToast("You are making too many requests, wait a minute");
+-  }
++    if (status === 429) {
++      errorToast("You are making too many requests, wait a minute");
++    }
  
-   return Promise.reject(error ?? "Unable to reach server, try again later");
- });
-diff --git a/templates/member-invitation.html b/templates/member-invitation.html
+-  return Promise.reject(error ?? "Unable to reach server, try again later");
+-});
++    return Promise.reject(error ?? "Unable to reach server, try again later");
++  },
++);
+diff --git a/src/utils/token.ts b/src/utils/token.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..b155187f26eb306e9a1895e727adaf7b8da7f645
+index 0000000000000000000000000000000000000000..fb6b1da25d0a6199dac7dd4c07a8280925a4a208
 --- /dev/null
-+++ b/templates/member-invitation.html
-@@ -0,0 +1,43 @@
-+<!doctype html>
-+<html lang="en">
-+  <head>
-+    <meta charset="UTF-8" />
-+    <title>You've been invited to join ExamHub</title>
-+    <style>
-+      body {
-+        font-family: Arial, sans-serif;
-+        background: #f9f9f9;
-+        color: #333;
-+      }
-+      .container {
-+        max-width: 600px;
-+        margin: 40px auto;
-+        padding: 20px;
-+        background: #fff;
-+        border: 1px solid #ddd;
-+      }
-+      .btn {
-+        display: inline-block;
-+        padding: 10px 20px;
-+        background: #2563eb;
-+        color: #fff;
-+        text-decoration: none;
-+        border-radius: 4px;
-+      }
-+      .logo {
-+        height: 40px;
-+        margin-bottom: 20px;
-+      }
-+    </style>
-+  </head>
-+  <body>
-+    <div class="container">
-+      <img src="cid:logo" alt="logo" class="logo" />
-+      <h2>Hello {{name}},</h2>
-+      <p>You have been invited to join ExamHub with the email <strong>{{email}}</strong>.</p>
-+      <p>Your temporary password is <strong>{{password}}</strong>.</p>
-+      <p>Please login using the button below:</p>
-+      <p><a href="{{adminUrl}}" class="btn">Login</a></p>
-+    </div>
-+  </body>
-+</html>
-diff --git a/templates/student-exam-invitation.html b/templates/student-exam-invitation.html
-new file mode 100644
-index 0000000000000000000000000000000000000000..a60d464c8096882bfdf8986a303cea7c44cb28b2
---- /dev/null
-+++ b/templates/student-exam-invitation.html
-@@ -0,0 +1,43 @@
-+<!doctype html>
-+<html lang="en">
-+  <head>
-+    <meta charset="UTF-8" />
-+    <title>You're invited to take an exam</title>
-+    <style>
-+      body {
-+        font-family: Arial, sans-serif;
-+        background: #f9f9f9;
-+        color: #333;
-+      }
-+      .container {
-+        max-width: 600px;
-+        margin: 40px auto;
-+        padding: 20px;
-+        background: #fff;
-+        border: 1px solid #ddd;
-+      }
-+      .btn {
-+        display: inline-block;
-+        padding: 10px 20px;
-+        background: #2563eb;
-+        color: #fff;
-+        text-decoration: none;
-+        border-radius: 4px;
-+      }
-+      .logo {
-+        height: 40px;
-+        margin-bottom: 20px;
-+      }
-+    </style>
-+  </head>
-+  <body>
-+    <div class="container">
-+      <img src="cid:logo" alt="logo" class="logo" />
-+      <p>Dear {{studentName}},</p>
-+      <p>You're invited to take the {{examName}} on {{examDate}}.</p>
-+      <p>To start, click the link below and log in with your email and code <strong>{{accessCode}}</strong>.</p>
-+      <p><a href="{{examUrl}}" class="btn">Take Exam</a></p>
-+      <p>Good luck!</p>
-+    </div>
-+  </body>
-+</html>
-diff --git a/templates/transcript.html b/templates/transcript.html
-new file mode 100644
-index 0000000000000000000000000000000000000000..b862f8826bc89f779a9f6158c9554ac3231cea43
---- /dev/null
-+++ b/templates/transcript.html
-@@ -0,0 +1,61 @@
-+<!doctype html>
-+<html lang="en">
-+  <head>
-+    <meta charset="UTF-8" />
-+    <title>Transcript</title>
-+    <style>
-+      body {
-+        font-family: Arial, sans-serif;
-+        padding: 20px;
-+        color: #333;
-+      }
-+      .container {
-+        max-width: 800px;
-+        margin: auto;
-+      }
-+      table {
-+        width: 100%;
-+        border-collapse: collapse;
-+        margin-top: 20px;
-+      }
-+      th,
-+      td {
-+        border: 1px solid #e5e5e5;
-+        padding: 8px;
-+        text-align: left;
-+      }
-+      th {
-+        background: #f3f3f3;
-+      }
-+    </style>
-+  </head>
-+  <body>
-+    <div class="container">
-+      <header>
-+        <img src="cid:logo" alt="logo" style="height: 40px" />
-+        <h1>Transcript</h1>
-+      </header>
-+      <p><strong>Name:</strong> {{studentName}}</p>
-+      <p><strong>Exam Date:</strong> {{examDate}}</p>
-+      <p><strong>Score:</strong> {{score}}</p>
-+      <table>
-+        <thead>
-+          <tr>
-+            <th>Question</th>
-+            <th>Your Answer</th>
-+            <th>Correct Answer</th>
-+          </tr>
-+        </thead>
-+        <tbody>
-+          {{#each answers}}
-+          <tr>
-+            <td>{{question}}</td>
-+            <td>{{answer}}</td>
-+            <td>{{correct}}</td>
-+          </tr>
-+          {{/each}}
-+        </tbody>
-+      </table>
-+    </div>
-+  </body>
-+</html>
++++ b/src/utils/token.ts
+@@ -0,0 +1,13 @@
++export const TOKEN_KEY = "jwt";
++
++export function saveToken(token: string) {
++  localStorage.setItem(TOKEN_KEY, token);
++}
++
++export function getToken(): string | null {
++  return localStorage.getItem(TOKEN_KEY);
++}
++
++export function removeToken() {
++  localStorage.removeItem(TOKEN_KEY);
++}
  
 EOF
 )

@@ -12,6 +12,9 @@ To start the admin interface run:
 npm run admin:dev
 ```
 
+Both the main application and the admin portal expect `VITE_AUTH_API_URL` to be
+set to the authentication service base URL.
+
 ### How It Works
 
 All member accounts are created from the admin portal. From the **Members** page administrators can invite new users by entering their name, email and role. The dashboard sends a `POST /admin/invite` request which triggers an email using `templates/member-invitation.html`.

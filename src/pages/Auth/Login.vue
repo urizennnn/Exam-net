@@ -1,23 +1,10 @@
 <script lang="ts" setup>
-import {
-  storeToRefs,
-} from "pinia";
-import {
-  computed,
-  onMounted,
-  reactive,
-  ref,
-} from "vue";
-import {
-  useRouter,
-} from "vue-router";
+import { storeToRefs } from "pinia";
+import { computed, onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 
-import {
-  useAuthStore,
-} from "../../store/server/auth";
-import {
-  getCookie,
-} from "../../utils/functions";
+import { useAuthStore } from "../../store/server/auth";
+import { getToken } from "../../utils/token";
 
 const loginForm = reactive({
   email: "",
@@ -37,16 +24,11 @@ const isFormComplete = computed(() => {
 });
 const router = useRouter();
 const authStore = useAuthStore();
-const {
-  login,
-} = authStore;
-const {
-  success: authSuccess,
-  loading: authLoading,
-} = storeToRefs(authStore);
+const { login } = authStore;
+const { success: authSuccess, loading: authLoading } = storeToRefs(authStore);
 
 onMounted(() => {
-  const token = getCookie("token");
+  const token = getToken();
   if (token) {
     authStore.setAccessToken(token);
     router.push({
@@ -69,12 +51,12 @@ async function onSubmit() {
 <template>
   <section class="w-full h-screen bg-white flex">
     <section class="bg-gray-800 w-full h-screen relative p-4 hidden lg:block">
-      <img src="../../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]">
+      <img src="../../assets/svg/Asset 11.svg" alt="logo" class="h-[30px]" />
       <img
         src="../../assets/images/Humaaans.png"
         alt="background"
         class="w-full h-[80dvh] mt-4 object-center object-fill"
-      >
+      />
     </section>
     <section
       class="w-full flex flex-col items-center h-screen justify-center p-4"
@@ -83,7 +65,7 @@ async function onSubmit() {
         src="../../assets/svg/Asset 7.svg"
         alt="logo"
         class="w-[100px] h-[100px]"
-      >
+      />
       <AppForm :state="loginForm" title="Login" @submit="onSubmit">
         <UFormField label="Email" name="email" :ui="FormFieldUI">
           <UInput

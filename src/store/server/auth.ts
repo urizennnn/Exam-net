@@ -1,22 +1,19 @@
-import {
-  defineStore,
-} from "pinia";
+import { defineStore } from "pinia";
 
-import type {
-  BaseState,
-} from "../../utils/types";
+import type { BaseState } from "../../utils/types";
 
 import router from "../../router";
+import { axiosInstance } from "../../utils/axiosConfig";
+import axios from "axios";
 import {
-  axiosInstance,
-} from "../../utils/axiosConfig";
-import {
-  errorToast,
-  successToast,
-} from "../../utils/toast";
+  saveToken,
+  getToken as getStoredToken,
+  removeToken,
+} from "../../utils/token";
+import { errorToast, successToast } from "../../utils/toast";
 
 type AuthState = {
-  access: string;
+  token: string;
 } & BaseState;
 
 type LoginPayload = {
@@ -32,34 +29,28 @@ export const useAuthStore = defineStore("auth", {
   state: (): AuthState => ({
     loading: false,
     success: false,
-    access: "",
+    token: "",
   }),
   actions: {
     async login(payload: LoginPayload) {
       try {
         this.success = false;
         this.loading = true;
-        const {
-          data,
-        } = await axiosInstance.post("/users/login", payload);
-        const {
-          access_token,
-          name,
-        } = data;
-        this.access = access_token;
-        this.setAccessToken(access_token);
-        this.setToken("name", name);
+        const authUrl = `${import.meta.env.VITE_AUTH_API_URL || ""}/auth/login`;
+        const { data } = await axios.post(authUrl, payload);
+        const { token, user } = data;
+        this.token = token;
+        this.setAccessToken(token);
+        this.setToken("name", user?.name);
         successToast("Login Successful");
         this.success = true;
-      }
-      catch (error: any) {
+      } catch (error: any) {
         this.success = false;
-        const errorMessage
-          = error.response?.data?.message || error.message || "Network Error";
+        const errorMessage =
+          error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      }
-      finally {
+      } finally {
         this.loading = false;
       }
     },
@@ -68,40 +59,34 @@ export const useAuthStore = defineStore("auth", {
       try {
         this.success = false;
         this.loading = true;
-        const {
-          data,
-        } = await axiosInstance.post("/users/signup", payload);
-        const {
-          message,
-        } = data;
+        const { data } = await axiosInstance.post("/users/signup", payload);
+        const { message } = data;
         this.success = true;
         successToast(message);
-      }
-      catch (error: any) {
+      } catch (error: any) {
         this.success = false;
-        const errorMessage
-          = error.response?.data?.message || error.message || "Network Error";
+        const errorMessage =
+          error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
         throw new Error(errorMessage);
-      }
-      finally {
+      } finally {
         this.loading = false;
       }
     },
 
     setAccessToken(token: string) {
       this.clearAccessToken();
-      this.access = token;
-      this.setToken("access", token);
+      this.token = token;
+      saveToken(token);
     },
 
     clearAccessToken() {
-      this.access = "";
-      this.clearToken("access");
+      this.token = "";
+      removeToken();
     },
 
-    setToken(key: string, token: string) {
-      localStorage.setItem(key, JSON.stringify(token));
+    setToken(key: string, value: string) {
+      localStorage.setItem(key, JSON.stringify(value));
     },
 
     clearToken(key: string) {
@@ -113,13 +98,11 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       try {
         await axiosInstance.post("/users/logout");
-      }
-      catch (error: any) {
-        const errorMessage
-          = error.response?.data?.message || error.message || "Network Error";
+      } catch (error: any) {
+        const errorMessage =
+          error.response?.data?.message || error.message || "Network Error";
         errorToast(errorMessage);
-      }
-      finally {
+      } finally {
         this.clearAccessToken();
         this.clearToken("name");
         router.push({
@@ -130,17 +113,9 @@ export const useAuthStore = defineStore("auth", {
   },
   getters: {
     getAuthToken(state) {
-      const storageToken = localStorage.getItem("access");
-      if (storageToken)
-        return storageToken;
-      const cookieToken
-        = typeof document !== "undefined"
-          ? document.cookie
-            .split("; ")
-            .map(c => c.split("="))
-            .find(([name]) => name === "token")?.[1]
-          : null;
-      return cookieToken || state.access;
+      const storageToken = getStoredToken();
+      if (storageToken) return storageToken;
+      return state.token;
     },
   },
 });
