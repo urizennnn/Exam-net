@@ -1,7 +1,11 @@
 import ui from "@nuxt/ui/vite";
 import vue from "@vitejs/plugin-vue";
-import { defineConfig } from "vite";
-import { resolve } from "path";
+import {
+  resolve,
+} from "node:path";
+import {
+  defineConfig,
+} from "vite";
 
 export default defineConfig({
   root: resolve(__dirname),
@@ -16,6 +20,6 @@ export default defineConfig({
     }),
   ],
   build: {
-    outDir: resolve(__dirname, "../dist-admin"),
+    outDir: resolve(__dirname, "../../dist-admin"),
   },
 });

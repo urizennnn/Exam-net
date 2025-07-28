@@ -9,5 +9,5 @@ Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://
 To start the admin interface run:
 
 ```bash
-npm run admin
+npm run admin:dev
 ```

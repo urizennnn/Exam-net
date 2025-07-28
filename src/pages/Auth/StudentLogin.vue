@@ -9,8 +9,6 @@ import {
 } from "vue-router";
 
 import AppForm from "../../components/AppForm.vue";
-import AppButton from "../../components/AppButton.vue";
-import AppInput from "../../components/AppInput.vue";
 import {
   useDocumentStore,
 } from "../../store/server/document";
@@ -20,11 +18,6 @@ import {
 import {
   errorToast,
 } from "../../utils/toast";
-import {
-  UFormField,
-  UInput,
-  UButton,
-} from "@nuxt/ui/dist/runtime/components";
 
 const router = useRouter();
 const loading = ref(false);
@@ -143,4 +136,3 @@ async function onSubmit() {
     </section>
   </section>
 </template>
-

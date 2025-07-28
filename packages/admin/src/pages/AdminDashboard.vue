@@ -1,3 +1,49 @@
+<script setup lang="ts">
+import {
+  computed,
+  onMounted,
+  reactive,
+} from "vue";
+
+import {
+  useExamServerStore,
+} from "../../../src/store/server/exam";
+import AdminLayout from "../components/AdminLayout.vue";
+import {
+  useAdminStore,
+} from "../store/admin";
+
+const adminStore = useAdminStore();
+const examStore = useExamServerStore();
+
+const form = reactive({
+  name: "",
+  email: "",
+  password: "",
+});
+
+const users = computed(() => adminStore.users);
+const exams = computed(() => examStore.exams);
+
+function addUser() {
+  adminStore.addUser(form);
+  form.name = "";
+  form.email = "";
+  form.password = "";
+}
+function deleteUser(id: string) {
+  adminStore.deleteUser(id);
+}
+function logoutUser(id: string) {
+  adminStore.logoutUser(id);
+}
+
+onMounted(() => {
+  adminStore.fetchUsers();
+  examStore.getExams();
+});
+</script>
+
 <template>
   <AdminLayout>
     <section class="w-full h-auto bg-white flex">
@@ -9,7 +55,7 @@
             class="w-[100px] h-[100px]"
           >
           <h1 class="text-2xl font-bold mt-2">
-            Manage Users
+            Admin Panel
           </h1>
         </div>
         <section class="mb-6">
@@ -73,47 +119,17 @@
           </table>
         </section>
       </section>
+      <section>
+        <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+          <img src="../../../src/assets/svg/Asset 8.svg" alt="exams" class="h-5 w-5">
+          Exams
+        </h2>
+        <ul>
+          <li v-for="e in exams" :key="e.examKey" class="border-b py-1">
+            {{ e.examName }} - {{ e.access }}
+          </li>
+        </ul>
+      </section>
     </section>
   </AdminLayout>
 </template>
-
-<script setup lang="ts">
-import {
-  computed,
-  onMounted,
-  reactive,
-} from "vue";
-
-import {
-  useAdminStore,
-} from "../store/admin";
-import AdminLayout from "../components/AdminLayout.vue";
-
-const adminStore = useAdminStore();
-
-const form = reactive({
-  name: "",
-  email: "",
-  password: "",
-});
-
-const users = computed(() => adminStore.users);
-
-function addUser() {
-  adminStore.addUser(form);
-  form.name = "";
-  form.email = "";
-  form.password = "";
-}
-function deleteUser(id: string) {
-  adminStore.deleteUser(id);
-}
-function logoutUser(id: string) {
-  adminStore.logoutUser(id);
-}
-
-onMounted(() => {
-  adminStore.fetchUsers();
-});
-</script>
-

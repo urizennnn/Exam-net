@@ -1,0 +1,945 @@
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/README.md b/README.md
+index 28033b943a16b2e1f81f9d1f65878da25fe6ed9b..fa9f17647e702a8e203e1fbe0bc4016753e89be1 100644
+--- a/README.md
++++ b/README.md
+@@ -1,13 +1,13 @@
+ # Vue 3 + Vite
+ 
+ This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+ 
+ Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+ 
+ ## Admin Panel
+ 
+ To start the admin interface run:
+ 
+ ```bash
+-npm run admin
++npm run admin:dev
+ ```
+diff --git a/admin/src/store/admin.ts b/admin/src/store/admin.ts
+deleted file mode 100644
+index d65abc50c6b7e125f4af07e76ff3150afc3730eb..0000000000000000000000000000000000000000
+--- a/admin/src/store/admin.ts
++++ /dev/null
+@@ -1,82 +0,0 @@
+-import { defineStore } from "pinia";
+-import { axiosInstance } from "../../../src/utils/axiosConfig";
+-import { errorToast, successToast } from "../../../src/utils/toast";
+-import type { BaseState } from "../../../src/utils/types";
+-
+-export interface User {
+-  _id: string;
+-  name: string;
+-  email: string;
+-  online: boolean;
+-}
+-
+-type AdminState = {
+-  users: User[];
+-} & BaseState;
+-
+-export const useAdminStore = defineStore("admin", {
+-  state: (): AdminState => ({
+-    loading: false,
+-    success: false,
+-    users: [],
+-  }),
+-  actions: {
+-    async fetchUsers() {
+-      try {
+-        this.loading = true;
+-        const { data } = await axiosInstance.get("/admin/users");
+-        this.users = data;
+-        this.success = true;
+-      } catch (error: any) {
+-        this.success = false;
+-        const errorMessage =
+-          error.response?.data?.message || error.message || "Network Error";
+-        errorToast(errorMessage);
+-      } finally {
+-        this.loading = false;
+-      }
+-    },
+-    async addUser(payload: { name: string; email: string; password: string }) {
+-      try {
+-        this.loading = true;
+-        const { data } = await axiosInstance.post("/admin/users", payload);
+-        successToast(data?.message || "User added");
+-        this.fetchUsers();
+-      } catch (error: any) {
+-        const errorMessage =
+-          error.response?.data?.message || error.message || "Network Error";
+-        errorToast(errorMessage);
+-      } finally {
+-        this.loading = false;
+-      }
+-    },
+-    async deleteUser(id: string) {
+-      try {
+-        this.loading = true;
+-        const { data } = await axiosInstance.delete(`/admin/users/${id}`);
+-        successToast(data?.message || "User deleted");
+-        this.fetchUsers();
+-      } catch (error: any) {
+-        const errorMessage =
+-          error.response?.data?.message || error.message || "Network Error";
+-        errorToast(errorMessage);
+-      } finally {
+-        this.loading = false;
+-      }
+-    },
+-    async logoutUser(id: string) {
+-      try {
+-        this.loading = true;
+-        const { data } = await axiosInstance.post(`/admin/users/${id}/logout`);
+-        successToast(data?.message || "User logged out");
+-        this.fetchUsers();
+-      } catch (error: any) {
+-        const errorMessage =
+-          error.response?.data?.message || error.message || "Network Error";
+-        errorToast(errorMessage);
+-      } finally {
+-        this.loading = false;
+-      }
+-    },
+-  },
+-});
+diff --git a/package.json b/package.json
+index 2f9cb6e61e0aee0566364c13a91caacdf86d754f..a9593b680b0667bbd09fe69e9c0b28b76df2a369 100644
+--- a/package.json
++++ b/package.json
+@@ -1,33 +1,34 @@
+ {
+   "name": "exam-mod-vue",
+   "type": "module",
+   "version": "0.0.0",
+   "private": true,
+   "scripts": {
+-    "dev": "vite",
+-    "admin": "vite --config admin/vite.config.ts",
++    "dev": "nuxt dev",
++    "admin:dev": "cd packages/admin && npm run dev",
++    "admin:start": "cd packages/admin && npm run start",
+     "build": "vite build",
+     "preview": "vite preview",
+     "format": "prettier --write \"**/*.{ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
+     "lint": "eslint",
+     "lint:fix": "eslint --fix"
+   },
+   "dependencies": {
+     "@ckeditor/ckeditor5-vue": "^7.3.0",
+     "@nuxt/ui": "^3.1.0",
+     "@tailwindcss/vite": "^4.0.12",
+     "axios": "^1.8.4",
+     "chart.js": "^4.4.9",
+     "ckeditor5": "^44.3.0",
+     "html2canvas-pro": "^1.5.10",
+     "jspdf": "^3.0.1",
+     "markdown-it": "^14.1.0",
+     "pdf-lib": "^1.17.1",
+     "pinia": "^3.0.1",
+     "prettier": "^3.5.3",
+     "splitpanes": "^4.0.3",
+     "tailwindcss": "^4.0.12",
+     "uid": "^2.0.2",
+     "vue": "^3.5.13",
+     "vue-chartjs": "^5.3.2",
+     "vue-router": "^4.5.0"
+diff --git a/admin/index.html b/packages/admin/index.html
+similarity index 100%
+rename from admin/index.html
+rename to packages/admin/index.html
+diff --git a/packages/admin/package.json b/packages/admin/package.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..740910afc55e5b8e0cf7e2bb8dbba9d225220a4d
+--- /dev/null
++++ b/packages/admin/package.json
+@@ -0,0 +1,10 @@
++{
++  "name": "admin-dashboard",
++  "type": "module",
++  "private": true,
++  "scripts": {
++    "dev": "vite",
++    "build": "vite build",
++    "start": "vite preview"
++  }
++}
+diff --git a/admin/src/App.vue b/packages/admin/src/App.vue
+similarity index 100%
+rename from admin/src/App.vue
+rename to packages/admin/src/App.vue
+diff --git a/admin/src/assets/main.css b/packages/admin/src/assets/main.css
+similarity index 100%
+rename from admin/src/assets/main.css
+rename to packages/admin/src/assets/main.css
+diff --git a/admin/src/components/AdminLayout.vue b/packages/admin/src/components/AdminLayout.vue
+similarity index 57%
+rename from admin/src/components/AdminLayout.vue
+rename to packages/admin/src/components/AdminLayout.vue
+index 3f34aff659450fb85f8e729d368e2f884226d0b4..b814f373afab46b5417450e2902ac8f9c4107440 100644
+--- a/admin/src/components/AdminLayout.vue
++++ b/packages/admin/src/components/AdminLayout.vue
+@@ -1,16 +1,21 @@
+ <template>
+   <section class="flex flex-col w-full bg-zinc-300 h-[100dvh] text-black pb-4">
+     <nav class="flex items-center z-50 justify-between px-5 bg-gray-800 cursor-pointer">
+       <img src="../../../src/assets/svg/Asset 11.svg" alt="logo" class="h-[30px]">
+       <div class="flex items-center gap-4">
+-        <RouterLink to="/admin/dashboard" class="text-white">Dashboard</RouterLink>
+-        <RouterLink to="/admin/users" class="text-white">Manage Users</RouterLink>
+-        <RouterLink to="/admin/complaints" class="text-white">Complaints</RouterLink>
++        <RouterLink to="/admin/dashboard" class="text-white">
++          Dashboard
++        </RouterLink>
++        <RouterLink to="/admin/users" class="text-white">
++          Manage Users
++        </RouterLink>
++        <RouterLink to="/admin/complaints" class="text-white">
++          Complaints
++        </RouterLink>
+       </div>
+     </nav>
+     <section class="flex-1 bg-zinc-300">
+       <slot />
+     </section>
+   </section>
+ </template>
+-
+diff --git a/admin/src/main.ts b/packages/admin/src/main.ts
+similarity index 75%
+rename from admin/src/main.ts
+rename to packages/admin/src/main.ts
+index 1643a06a8be4c9ad21c1dc081900a5c2da9ca5cf..24e9d7695b72767f3d086500b6651a0982d4ad36 100644
+--- a/admin/src/main.ts
++++ b/packages/admin/src/main.ts
+@@ -1,13 +1,20 @@
+ import ui from "@nuxt/ui/vue-plugin";
++
+ import "./assets/main.css";
+-import { createPinia } from "pinia";
+-import { createApp } from "vue";
++
++import {
++  createPinia,
++} from "pinia";
++import {
++  createApp,
++} from "vue";
++
+ import App from "./App.vue";
+ import router from "./router";
+ 
+ const pinia = createPinia();
+ const app = createApp(App);
+ app.use(router);
+ app.use(pinia);
+ app.use(ui);
+ app.mount("#app");
+diff --git a/admin/src/pages/AdminDashboard.vue b/packages/admin/src/pages/AdminDashboard.vue
+similarity index 99%
+rename from admin/src/pages/AdminDashboard.vue
+rename to packages/admin/src/pages/AdminDashboard.vue
+index ac3846357e6ad463e2df6afad0fe0961a3d34317..c19d47115919c203f530dd5a5cfb71b42792fe8a 100644
+--- a/admin/src/pages/AdminDashboard.vue
++++ b/packages/admin/src/pages/AdminDashboard.vue
+@@ -1,25 +1,71 @@
++<script setup lang="ts">
++import {
++  computed,
++  onMounted,
++  reactive,
++} from "vue";
++
++import {
++  useExamServerStore,
++} from "../../../src/store/server/exam";
++import AdminLayout from "../components/AdminLayout.vue";
++import {
++  useAdminStore,
++} from "../store/admin";
++
++const adminStore = useAdminStore();
++const examStore = useExamServerStore();
++
++const form = reactive({
++  name: "",
++  email: "",
++  password: "",
++});
++
++const users = computed(() => adminStore.users);
++const exams = computed(() => examStore.exams);
++
++function addUser() {
++  adminStore.addUser(form);
++  form.name = "";
++  form.email = "";
++  form.password = "";
++}
++function deleteUser(id: string) {
++  adminStore.deleteUser(id);
++}
++function logoutUser(id: string) {
++  adminStore.logoutUser(id);
++}
++
++onMounted(() => {
++  adminStore.fetchUsers();
++  examStore.getExams();
++});
++</script>
++
+ <template>
+   <AdminLayout>
+     <section class="w-full h-auto bg-white flex">
+       <section class="w-full p-4">
+         <div class="flex flex-col items-center mb-4">
+           <img
+             src="../../../src/assets/svg/Asset 7.svg"
+             alt="logo"
+             class="w-[100px] h-[100px]"
+           >
+           <h1 class="text-2xl font-bold mt-2">
+             Admin Panel
+           </h1>
+         </div>
+         <section class="mb-6">
+           <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+             <img src="../../../src/assets/svg/Asset 10.svg" alt="users" class="h-5 w-5">
+             Users
+           </h2>
+           <form class="flex gap-2 mb-4" @submit.prevent="addUser">
+             <input v-model="form.name" placeholder="Name" class="border p-1">
+             <input v-model="form.email" placeholder="Email" class="border p-1">
+             <input
+               v-model="form.password"
+               type="password"
+@@ -65,72 +111,25 @@
+                     Delete
+                   </button>
+                   <button class="text-yellow-600" @click="logoutUser(u._id)">
+                     Force Logout
+                   </button>
+                 </td>
+               </tr>
+             </tbody>
+           </table>
+         </section>
+       </section>
+       <section>
+         <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+           <img src="../../../src/assets/svg/Asset 8.svg" alt="exams" class="h-5 w-5">
+           Exams
+         </h2>
+         <ul>
+           <li v-for="e in exams" :key="e.examKey" class="border-b py-1">
+             {{ e.examName }} - {{ e.access }}
+           </li>
+         </ul>
+       </section>
+     </section>
+   </AdminLayout>
+ </template>
+-
+-<script setup lang="ts">
+-import {
+-  computed,
+-  onMounted,
+-  reactive,
+-} from "vue";
+-
+-import {
+-  useExamServerStore,
+-} from "../../../src/store/server/exam";
+-import {
+-  useAdminStore,
+-} from "../store/admin";
+-import AdminLayout from "../components/AdminLayout.vue";
+-
+-const adminStore = useAdminStore();
+-const examStore = useExamServerStore();
+-
+-const form = reactive({
+-  name: "",
+-  email: "",
+-  password: "",
+-});
+-
+-const users = computed(() => adminStore.users);
+-const exams = computed(() => examStore.exams);
+-
+-function addUser() {
+-  adminStore.addUser(form);
+-  form.name = "";
+-  form.email = "";
+-  form.password = "";
+-}
+-function deleteUser(id: string) {
+-  adminStore.deleteUser(id);
+-}
+-function logoutUser(id: string) {
+-  adminStore.logoutUser(id);
+-}
+-
+-onMounted(() => {
+-  adminStore.fetchUsers();
+-  examStore.getExams();
+-});
+-</script>
+-
+diff --git a/admin/src/pages/AdminLogin.vue b/packages/admin/src/pages/AdminLogin.vue
+similarity index 100%
+rename from admin/src/pages/AdminLogin.vue
+rename to packages/admin/src/pages/AdminLogin.vue
+diff --git a/admin/src/pages/Complaints.vue b/packages/admin/src/pages/Complaints.vue
+similarity index 99%
+rename from admin/src/pages/Complaints.vue
+rename to packages/admin/src/pages/Complaints.vue
+index c740e9ab1b68a8e7be8ebd684254c1ad22373211..69ecbb59fb95d216f997073b927aeb043a3b7337 100644
+--- a/admin/src/pages/Complaints.vue
++++ b/packages/admin/src/pages/Complaints.vue
+@@ -1,25 +1,52 @@
++<script setup lang="ts">
++import {
++  onMounted,
++  reactive,
++} from "vue";
++
++import AdminLayout from "../components/AdminLayout.vue";
++
++// Dummy data for complaints
++const complaints = reactive([
++  {
++    name: "John Doe",
++    email: "john.doe@example.com",
++    complaint: "Exam was too difficult.",
++  },
++  {
++    name: "Jane Smith",
++    email: "jane.smith@example.com",
++    complaint: "Technical issues during the exam.",
++  },
++]);
++
++onMounted(() => {
++  // Fetch complaints from backend here
++});
++</script>
++
+ <template>
+   <AdminLayout>
+     <section class="w-full h-auto bg-white flex">
+       <section class="w-full p-4">
+         <div class="flex flex-col items-center mb-4">
+           <img
+             src="../../../src/assets/svg/Asset 7.svg"
+             alt="logo"
+             class="w-[100px] h-[100px]"
+           >
+           <h1 class="text-2xl font-bold mt-2">
+             Student Complaints
+           </h1>
+         </div>
+         <section class="mb-6">
+           <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+             <img src="../../../src/assets/svg/Asset 10.svg" alt="complaints" class="h-5 w-5">
+             Complaints
+           </h2>
+           <table class="w-full border-collapse">
+             <thead>
+               <tr>
+                 <th class="border px-2 py-1 text-left">
+                   Name
+                 </th>
+@@ -28,53 +55,25 @@
+                 </th>
+                 <th class="border px-2 py-1 text-left">
+                   Complaint
+                 </th>
+               </tr>
+             </thead>
+             <tbody>
+               <tr v-for="(c, index) in complaints" :key="index">
+                 <td class="border px-2 py-1">
+                   {{ c.name }}
+                 </td>
+                 <td class="border px-2 py-1">
+                   {{ c.email }}
+                 </td>
+                 <td class="border px-2 py-1">
+                   {{ c.complaint }}
+                 </td>
+               </tr>
+             </tbody>
+           </table>
+         </section>
+       </section>
+     </section>
+   </AdminLayout>
+ </template>
+-
+-<script setup lang="ts">
+-import {
+-  computed,
+-  onMounted,
+-  reactive,
+-} from "vue";
+-import AdminLayout from "../components/AdminLayout.vue";
+-
+-// Dummy data for complaints
+-const complaints = reactive([
+-  {
+-    name: "John Doe",
+-    email: "john.doe@example.com",
+-    complaint: "Exam was too difficult.",
+-  },
+-  {
+-    name: "Jane Smith",
+-    email: "jane.smith@example.com",
+-    complaint: "Technical issues during the exam.",
+-  },
+-]);
+-
+-onMounted(() => {
+-  // Fetch complaints from backend here
+-});
+-</script>
+-
+diff --git a/admin/src/pages/ManageUsers.vue b/packages/admin/src/pages/ManageUsers.vue
+similarity index 99%
+rename from admin/src/pages/ManageUsers.vue
+rename to packages/admin/src/pages/ManageUsers.vue
+index ba9bd4a69711a67523232ac9f1e03d920537fcff..577e7e6eac1d0c6b526967a8289be2b2d97f148f 100644
+--- a/admin/src/pages/ManageUsers.vue
++++ b/packages/admin/src/pages/ManageUsers.vue
+@@ -1,25 +1,65 @@
++<script setup lang="ts">
++import {
++  computed,
++  onMounted,
++  reactive,
++} from "vue";
++
++import AdminLayout from "../components/AdminLayout.vue";
++import {
++  useAdminStore,
++} from "../store/admin";
++
++const adminStore = useAdminStore();
++
++const form = reactive({
++  name: "",
++  email: "",
++  password: "",
++});
++
++const users = computed(() => adminStore.users);
++
++function addUser() {
++  adminStore.addUser(form);
++  form.name = "";
++  form.email = "";
++  form.password = "";
++}
++function deleteUser(id: string) {
++  adminStore.deleteUser(id);
++}
++function logoutUser(id: string) {
++  adminStore.logoutUser(id);
++}
++
++onMounted(() => {
++  adminStore.fetchUsers();
++});
++</script>
++
+ <template>
+   <AdminLayout>
+     <section class="w-full h-auto bg-white flex">
+       <section class="w-full p-4">
+         <div class="flex flex-col items-center mb-4">
+           <img
+             src="../../../src/assets/svg/Asset 7.svg"
+             alt="logo"
+             class="w-[100px] h-[100px]"
+           >
+           <h1 class="text-2xl font-bold mt-2">
+             Manage Users
+           </h1>
+         </div>
+         <section class="mb-6">
+           <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+             <img src="../../../src/assets/svg/Asset 10.svg" alt="users" class="h-5 w-5">
+             Users
+           </h2>
+           <form class="flex gap-2 mb-4" @submit.prevent="addUser">
+             <input v-model="form.name" placeholder="Name" class="border p-1">
+             <input v-model="form.email" placeholder="Email" class="border p-1">
+             <input
+               v-model="form.password"
+               type="password"
+@@ -54,66 +94,25 @@
+                 </td>
+                 <td class="border px-2 py-1">
+                   {{ u.email }}
+                 </td>
+                 <td class="border px-2 py-1">
+                   <span :class="u.online ? 'text-green-600' : 'text-gray-500'">
+                     {{ u.online ? "Online" : "Offline" }}
+                   </span>
+                 </td>
+                 <td class="border px-2 py-1">
+                   <button class="text-red-600 mr-2" @click="deleteUser(u._id)">
+                     Delete
+                   </button>
+                   <button class="text-yellow-600" @click="logoutUser(u._id)">
+                     Force Logout
+                   </button>
+                 </td>
+               </tr>
+             </tbody>
+           </table>
+         </section>
+       </section>
+     </section>
+   </AdminLayout>
+ </template>
+-
+-<script setup lang="ts">
+-import {
+-  computed,
+-  onMounted,
+-  reactive,
+-} from "vue";
+-
+-import {
+-  useAdminStore,
+-} from "../store/admin";
+-import AdminLayout from "../components/AdminLayout.vue";
+-
+-const adminStore = useAdminStore();
+-
+-const form = reactive({
+-  name: "",
+-  email: "",
+-  password: "",
+-});
+-
+-const users = computed(() => adminStore.users);
+-
+-function addUser() {
+-  adminStore.addUser(form);
+-  form.name = "";
+-  form.email = "";
+-  form.password = "";
+-}
+-function deleteUser(id: string) {
+-  adminStore.deleteUser(id);
+-}
+-function logoutUser(id: string) {
+-  adminStore.logoutUser(id);
+-}
+-
+-onMounted(() => {
+-  adminStore.fetchUsers();
+-});
+-</script>
+-
+diff --git a/admin/src/router/index.ts b/packages/admin/src/router/index.ts
+similarity index 60%
+rename from admin/src/router/index.ts
+rename to packages/admin/src/router/index.ts
+index 87fdd565bc003aaeba12c63b901f86c83b094fbb..4c7617c80da0c3023a8afa8fb8cbf573d7a28ce8 100644
+--- a/admin/src/router/index.ts
++++ b/packages/admin/src/router/index.ts
+@@ -1,35 +1,37 @@
+-import { createRouter, createWebHistory } from "vue-router"
++import {
++  createRouter,
++  createWebHistory,
++} from "vue-router";
+ 
+-import AdminDashboard from "../pages/AdminDashboard.vue"
+-import AdminLogin from "../pages/AdminLogin.vue"
+-import ManageUsers from "../pages/ManageUsers.vue"
+-import Complaints from "../pages/Complaints.vue"
++import AdminDashboard from "../pages/AdminDashboard.vue";
++import AdminLogin from "../pages/AdminLogin.vue";
++import Complaints from "../pages/Complaints.vue";
++import ManageUsers from "../pages/ManageUsers.vue";
+ 
+ const router = createRouter({
+   history: createWebHistory("/admin/"),
+   routes: [
+     {
+       path: "/",
+       name: "admin-login",
+       component: AdminLogin,
+     },
+     {
+       path: "/dashboard",
+       name: "admin-dashboard",
+       component: AdminDashboard,
+     },
+     {
+       path: "/users",
+       name: "admin-users",
+       component: ManageUsers,
+     },
+     {
+       path: "/complaints",
+       name: "admin-complaints",
+       component: Complaints,
+     },
+   ],
+-})
+-
+-export default router
++});
+ 
++export default router;
+diff --git a/packages/admin/src/store/admin.ts b/packages/admin/src/store/admin.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..3431d21f98fe73128423e1aa2eb707f2a8349325
+--- /dev/null
++++ b/packages/admin/src/store/admin.ts
+@@ -0,0 +1,109 @@
++import {
++  defineStore,
++} from "pinia";
++
++import type {
++  BaseState,
++} from "../../../src/utils/types";
++
++import {
++  axiosInstance,
++} from "../../../src/utils/axiosConfig";
++import {
++  errorToast,
++  successToast,
++} from "../../../src/utils/toast";
++
++export type User = {
++  _id: string;
++  name: string;
++  email: string;
++  online: boolean;
++};
++
++type AdminState = {
++  users: User[];
++} & BaseState;
++
++export const useAdminStore = defineStore("admin", {
++  state: (): AdminState => ({
++    loading: false,
++    success: false,
++    users: [],
++  }),
++  actions: {
++    async fetchUsers() {
++      try {
++        this.loading = true;
++        const {
++          data,
++        } = await axiosInstance.get("/admin/users");
++        this.users = data;
++        this.success = true;
++      }
++      catch (error: any) {
++        this.success = false;
++        const errorMessage
++          = error.response?.data?.message || error.message || "Network Error";
++        errorToast(errorMessage);
++      }
++      finally {
++        this.loading = false;
++      }
++    },
++    async addUser(payload: { name: string; email: string; password: string }) {
++      try {
++        this.loading = true;
++        const {
++          data,
++        } = await axiosInstance.post("/admin/users", payload);
++        successToast(data?.message || "User added");
++        this.fetchUsers();
++      }
++      catch (error: any) {
++        const errorMessage
++          = error.response?.data?.message || error.message || "Network Error";
++        errorToast(errorMessage);
++      }
++      finally {
++        this.loading = false;
++      }
++    },
++    async deleteUser(id: string) {
++      try {
++        this.loading = true;
++        const {
++          data,
++        } = await axiosInstance.delete(`/admin/users/${id}`);
++        successToast(data?.message || "User deleted");
++        this.fetchUsers();
++      }
++      catch (error: any) {
++        const errorMessage
++          = error.response?.data?.message || error.message || "Network Error";
++        errorToast(errorMessage);
++      }
++      finally {
++        this.loading = false;
++      }
++    },
++    async logoutUser(id: string) {
++      try {
++        this.loading = true;
++        const {
++          data,
++        } = await axiosInstance.post(`/admin/users/${id}/logout`);
++        successToast(data?.message || "User logged out");
++        this.fetchUsers();
++      }
++      catch (error: any) {
++        const errorMessage
++          = error.response?.data?.message || error.message || "Network Error";
++        errorToast(errorMessage);
++      }
++      finally {
++        this.loading = false;
++      }
++    },
++  },
++});
+diff --git a/admin/tsconfig.json b/packages/admin/tsconfig.json
+similarity index 100%
+rename from admin/tsconfig.json
+rename to packages/admin/tsconfig.json
+diff --git a/admin/vite.config.ts b/packages/admin/vite.config.ts
+similarity index 67%
+rename from admin/vite.config.ts
+rename to packages/admin/vite.config.ts
+index d6bef794f084e0db1b01d88cf9c0f62b0640e801..e050f73a8b15f020ed81da6909154a42443b7b4b 100644
+--- a/admin/vite.config.ts
++++ b/packages/admin/vite.config.ts
+@@ -1,21 +1,25 @@
+ import ui from "@nuxt/ui/vite";
+ import vue from "@vitejs/plugin-vue";
+-import { defineConfig } from "vite";
+-import { resolve } from "path";
++import {
++  resolve,
++} from "node:path";
++import {
++  defineConfig,
++} from "vite";
+ 
+ export default defineConfig({
+   root: resolve(__dirname),
+   plugins: [
+     vue(),
+     ui({
+       ui: {
+         colors: {
+           neutral: "neutral",
+         },
+       },
+     }),
+   ],
+   build: {
+-    outDir: resolve(__dirname, "../dist-admin"),
++    outDir: resolve(__dirname, "../../dist-admin"),
+   },
+ });
+diff --git a/src/pages/Auth/StudentLogin.vue b/src/pages/Auth/StudentLogin.vue
+index 3a2b2f3c6540f3b523dc4d6420df1a55f2b1fe6c..72f3bdad4c74a37d363b5b73ee89b2635f6a42e4 100644
+--- a/src/pages/Auth/StudentLogin.vue
++++ b/src/pages/Auth/StudentLogin.vue
+@@ -1,52 +1,45 @@
+ <script lang="ts" setup>
+ import {
+   computed,
+   reactive,
+   ref,
+ } from "vue";
+ import {
+   useRouter,
+ } from "vue-router";
+ 
+ import AppForm from "../../components/AppForm.vue";
+-import AppButton from "../../components/AppButton.vue";
+-import AppInput from "../../components/AppInput.vue";
+ import {
+   useDocumentStore,
+ } from "../../store/server/document";
+ import {
+   axiosInstance,
+ } from "../../utils/axiosConfig";
+ import {
+   errorToast,
+ } from "../../utils/toast";
+-import {
+-  UFormField,
+-  UInput,
+-  UButton,
+-} from "@nuxt/ui/dist/runtime/components";
+ 
+ const router = useRouter();
+ const loading = ref(false);
+ const loginForm = reactive({
+   email: "",
+   examKey: "",
+ });
+ 
+ const FormFieldUI = {
+   label: "text-black text-lg",
+ };
+ const inputUI = {
+   trailing: "pe-1",
+   root: "w-full",
+   base: "p-4 bg-inherit text-black",
+ };
+ const isFormComplete = computed(() => {
+   return loginForm.email !== "" && loginForm.examKey !== "";
+ });
+ 
+ async function onSubmit() {
+   try {
+     loading.value = true;
+     const {
+       data,
+@@ -121,26 +114,25 @@ async function onSubmit() {
+             v-model="loginForm.examKey"
+             placeholder="Enter exam key"
+             color="info"
+             type="text"
+             :ui="inputUI"
+           />
+         </UFormField>
+         <UButton
+           class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400"
+           :disabled="!isFormComplete || loading"
+           :loading="loading"
+           @click="onSubmit"
+         >
+           Access Exam
+         </UButton>
+       </AppForm>
+       <p class="text-black">
+         Need help?
+         <RouterLink to="/support" class="text-gray-900 font-bold">
+           Contact Support
+         </RouterLink>
+       </p>
+     </section>
+   </section>
+ </template>
+-
+ 
+EOF
+)

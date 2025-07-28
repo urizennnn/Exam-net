@@ -1,3 +1,30 @@
+<script setup lang="ts">
+import {
+  onMounted,
+  reactive,
+} from "vue";
+
+import AdminLayout from "../components/AdminLayout.vue";
+
+// Dummy data for complaints
+const complaints = reactive([
+  {
+    name: "John Doe",
+    email: "john.doe@example.com",
+    complaint: "Exam was too difficult.",
+  },
+  {
+    name: "Jane Smith",
+    email: "jane.smith@example.com",
+    complaint: "Technical issues during the exam.",
+  },
+]);
+
+onMounted(() => {
+  // Fetch complaints from backend here
+});
+</script>
+
 <template>
   <AdminLayout>
     <section class="w-full h-auto bg-white flex">
@@ -50,31 +77,3 @@
     </section>
   </AdminLayout>
 </template>
-
-<script setup lang="ts">
-import {
-  computed,
-  onMounted,
-  reactive,
-} from "vue";
-import AdminLayout from "../components/AdminLayout.vue";
-
-// Dummy data for complaints
-const complaints = reactive([
-  {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    complaint: "Exam was too difficult.",
-  },
-  {
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    complaint: "Technical issues during the exam.",
-  },
-]);
-
-onMounted(() => {
-  // Fetch complaints from backend here
-});
-</script>
-

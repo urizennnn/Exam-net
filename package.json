@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "admin": "vite --config admin/vite.config.ts",
+    "dev": "vite dev",
+    "admin:dev": "cd packages/admin && npm run dev",
+    "admin:start": "cd packages/admin && npm run start",
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write \"**/*.{ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
