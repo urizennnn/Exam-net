@@ -49,3 +49,4 @@ components.d.ts
 
 .vercetl
 *.patch
+apply.patch

@@ -36,12 +36,11 @@ export const useAuthStore = defineStore("auth", {
       try {
         this.success = false;
         this.loading = true;
-        const authUrl = `${import.meta.env.VITE_AUTH_API_URL || ""}/auth/login`;
-        const { data } = await axios.post(authUrl, payload);
-        const { token, user } = data;
+        const { data } = await axiosInstance.post("/users/login", payload);
+        const { access_token: token, name } = data;
         this.token = token;
         this.setAccessToken(token);
-        this.setToken("name", user?.name);
+        this.setToken("name", name);
         successToast("Login Successful");
         this.success = true;
       } catch (error: any) {
