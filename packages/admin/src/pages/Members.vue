@@ -15,26 +15,23 @@ const adminStore = useAdminStore();
 const form = reactive({
   name: "",
   email: "",
-  password: "",
+  role: "member",
 });
-
-const users = computed(() => adminStore.users);
-
-function addUser() {
-  adminStore.addUser(form);
+const members = computed(() => adminStore.members);
+function invite() {
+  adminStore.inviteMember(form);
   form.name = "";
   form.email = "";
-  form.password = "";
 }
-function deleteUser(id: string) {
-  adminStore.deleteUser(id);
-}
-function logoutUser(id: string) {
-  adminStore.logoutUser(id);
+function removeMember(id: string) {
+  // eslint-disable-next-line no-alert
+  if (confirm("Delete this member?")) {
+    adminStore.deleteMember(id);
+  }
 }
 
 onMounted(() => {
-  adminStore.fetchUsers();
+  adminStore.fetchMembers();
 });
 </script>
 
@@ -49,35 +46,43 @@ onMounted(() => {
             class="w-[100px] h-[100px]"
           >
           <h1 class="text-2xl font-bold mt-2">
-            Manage Users
+            Members
           </h1>
         </div>
         <section class="mb-6">
           <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
             <img src="@root/assets/svg/Asset 10.svg" alt="users" class="h-5 w-5">
-            Users
+            Invite Member
           </h2>
-          <form class="flex gap-2 mb-4" @submit.prevent="addUser">
+          <form class="flex gap-2 mb-4" @submit.prevent="invite">
             <input v-model="form.name" placeholder="Name" class="border p-1">
             <input v-model="form.email" placeholder="Email" class="border p-1">
-            <input
-              v-model="form.password"
-              type="password"
-              placeholder="Password"
-              class="border p-1"
-            >
+            <select v-model="form.role" class="border p-1">
+              <option value="member">
+                Member
+              </option>
+              <option value="admin">
+                Admin
+              </option>
+            </select>
             <button type="submit" class="bg-green-500 text-white px-2 py-1">
-              Add
+              Invite
             </button>
           </form>
           <table class="w-full border-collapse">
             <thead>
               <tr>
                 <th class="border px-2 py-1 text-left">
-                  Name
+                  Full Name
                 </th>
                 <th class="border px-2 py-1 text-left">
                   Email
+                </th>
+                <th class="border px-2 py-1 text-left">
+                  Role
+                </th>
+                <th class="border px-2 py-1 text-left">
+                  Invited At
                 </th>
                 <th class="border px-2 py-1 text-left">
                   Status
@@ -88,24 +93,34 @@ onMounted(() => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="u in users" :key="u._id">
+              <tr v-for="m in members" :key="m.id">
                 <td class="border px-2 py-1">
-                  {{ u.name }}
+                  {{ m.name }}
                 </td>
                 <td class="border px-2 py-1">
-                  {{ u.email }}
+                  {{ m.email }}
                 </td>
                 <td class="border px-2 py-1">
-                  <span :class="u.online ? 'text-green-600' : 'text-gray-500'">
-                    {{ u.online ? "Online" : "Offline" }}
+                  {{ m.role }}
+                </td>
+                <td class="border px-2 py-1">
+                  {{ m.invitedAt }}
+                </td>
+                <td class="border px-2 py-1">
+                  <span
+                    :class="m.isOnline ? 'text-green-600' : 'text-gray-500'"
+                    class="flex items-center gap-1"
+                  >
+                    <span
+                      class="h-2 w-2 rounded-full"
+                      :class="m.isOnline ? 'bg-green-600' : 'bg-gray-500'"
+                    />
+                    {{ m.isOnline ? 'Online' : 'Offline' }}
                   </span>
                 </td>
-                <td class="border px-2 py-1">
-                  <button class="text-red-600 mr-2" @click="deleteUser(u._id)">
-                    Delete
-                  </button>
-                  <button class="text-yellow-600" @click="logoutUser(u._id)">
-                    Force Logout
+                <td class="border px-2 py-1 text-center">
+                  <button class="text-red-600" @click="removeMember(m.id)">
+                    🗑️
                   </button>
                 </td>
               </tr>

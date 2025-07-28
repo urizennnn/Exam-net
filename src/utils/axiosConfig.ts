@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use((config) => {
     access,
   } = useAuthStore();
 
-  const excludedUrls = ["/users/login", "/users/signup"];
+  const excludedUrls = ["/users/login"];
 
   const isExcludedUrl = excludedUrls.some(url => config.url?.includes(url));
 
@@ -50,7 +50,7 @@ axiosInstance.interceptors.response.use(response => response, (error) => {
   const requestUrl: string = error.config?.url || "";
 
   if (status === 401) {
-    const excluded = ["/users/login", "/users/signup", "/users/logout"];
+    const excluded = ["/users/login", "/users/logout"];
     const shouldLogout = !excluded.some(url => requestUrl.includes(url));
     if (shouldLogout) {
       const {

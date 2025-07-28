@@ -1,10 +1,13 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+} from "vue-router";
 
 import MainLayout from "../layout/MainLayout.vue";
 import NewExamLayout from "../layout/NewExamLayout.vue";
 import Login from "../pages/Auth/Login.vue";
-import Register from "../pages/Auth/Register.vue";
 import StudentLogin from "../pages/Auth/StudentLogin.vue";
+import Support from "../pages/Auth/Support.vue";
 import Exams from "../pages/Exams/Exams.vue";
 import MonitoringResults from "../pages/MonitoringResults/MonitoringResults.vue";
 import ExamConfig from "../pages/NewExam/ExamConfig.vue";
@@ -15,7 +18,6 @@ import Preview from "../pages/Preview/Preview.vue";
 import License from "../pages/School/License.vue";
 import Student from "../pages/Student/Student.vue";
 import StudentSubmission from "../pages/Student/SubmissionNotification.vue";
-import Support from "../pages/Auth/Support.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,11 +26,6 @@ const router = createRouter({
       path: "/",
       name: "login",
       component: Login,
-    },
-    {
-      path: "/signup",
-      name: "register",
-      component: Register,
     },
     {
       path: "/",

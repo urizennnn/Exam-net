@@ -1,6 +1,11 @@
 <script lang="ts" setup>
+import AppForm from "@root/components/AppForm.vue";
+import {
+  storeToRefs,
+} from "pinia";
 import {
   computed,
+  onMounted,
   reactive,
   ref,
 } from "vue";
@@ -8,10 +13,12 @@ import {
   useRouter,
 } from "vue-router";
 
-import AppForm from "@root/components/AppForm.vue";
 import {
   useAuthStore,
 } from "@root/store/server/auth";
+import {
+  getCookie,
+} from "@root/utils/functions";
 
 const loginForm = reactive({
   email: "",
@@ -28,12 +35,29 @@ const inputUI = {
 };
 const router = useRouter();
 const authStore = useAuthStore();
+const {
+  login,
+} = authStore;
+const {
+  success: authSuccess,
+  loading: authLoading,
+} = storeToRefs(authStore);
 
 const isFormComplete = computed(() => loginForm.email !== "" && loginForm.password !== "");
 
+onMounted(() => {
+  const token = getCookie("token");
+  if (token) {
+    authStore.setAccessToken(token);
+    router.push({
+      name: "admin-dashboard",
+    });
+  }
+});
+
 async function onSubmit() {
-  await authStore.login(loginForm);
-  if (authStore.success) {
+  await login(loginForm);
+  if (authSuccess.value) {
     router.push({
       name: "admin-dashboard",
     });
@@ -55,15 +79,15 @@ async function onSubmit() {
             <UInput v-model="loginForm.email" placeholder="Enter your email" color="info" type="email" :ui="inputUI" />
           </UFormField>
           <UFormField label="Password" name="password" :ui="FormFieldUI">
-          <UInput v-model="loginForm.password" placeholder="Enter your password" color="info" :type="showPassword ? 'text' : 'password'" :ui="inputUI">
-            <template #trailing>
-              <UButton variant="link" size="lg" :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" :aria-label="showPassword ? 'Hide password' : 'Show password'" :aria-pressed="showPassword" aria-controls="password" class="cursor-pointer text-black hover:text-black" @click="showPassword = !showPassword" />
-            </template>
-          </UInput>
-        </UFormField>
-        <UButton class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400" :disabled="!isFormComplete || authStore.loading" :loading-auto="authStore.loading" :loading="authStore.loading" @click="onSubmit">
-          Login
-        </UButton>
+            <UInput v-model="loginForm.password" placeholder="Enter your password" color="info" :type="showPassword ? 'text' : 'password'" :ui="inputUI">
+              <template #trailing>
+                <UButton variant="link" size="lg" :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" :aria-label="showPassword ? 'Hide password' : 'Show password'" :aria-pressed="showPassword" aria-controls="password" class="cursor-pointer text-black hover:text-black" @click="showPassword = !showPassword" />
+              </template>
+            </UInput>
+          </UFormField>
+          <UButton class="w-full items-center justify-center outline p-3 mt-3 cursor-pointer bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400" :disabled="!isFormComplete || authLoading" :loading-auto="authLoading" :loading="authLoading" @click="onSubmit">
+            Login
+          </UButton>
         </AppForm>
       </div>
     </section>

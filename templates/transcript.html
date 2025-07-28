@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Transcript</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        color: #333;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #e5e5e5;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background: #f3f3f3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <img src="cid:logo" alt="logo" style="height: 40px" />
+        <h1>Transcript</h1>
+      </header>
+      <p><strong>Name:</strong> {{studentName}}</p>
+      <p><strong>Exam Date:</strong> {{examDate}}</p>
+      <p><strong>Score:</strong> {{score}}</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Your Answer</th>
+            <th>Correct Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each answers}}
+          <tr>
+            <td>{{question}}</td>
+            <td>{{answer}}</td>
+            <td>{{correct}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

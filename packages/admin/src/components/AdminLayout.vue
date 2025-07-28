@@ -6,8 +6,8 @@
         <RouterLink to="/admin/dashboard" class="text-white">
           Dashboard
         </RouterLink>
-        <RouterLink to="/admin/users" class="text-white">
-          Manage Users
+        <RouterLink to="/admin/members" class="text-white">
+          Members
         </RouterLink>
         <RouterLink to="/admin/complaints" class="text-white">
           Complaints

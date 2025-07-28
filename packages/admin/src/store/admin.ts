@@ -14,31 +14,49 @@ import {
   successToast,
 } from "@root/utils/toast";
 
-export type User = {
-  _id: string;
+export type Member = {
+  id: string;
   name: string;
   email: string;
-  online: boolean;
+  role: string;
+  invitedAt: string;
+  isOnline: boolean;
 };
 
 type AdminState = {
-  users: User[];
+  members: Member[];
 } & BaseState;
 
 export const useAdminStore = defineStore("admin", {
   state: (): AdminState => ({
     loading: false,
     success: false,
-    users: [],
+    members: [],
   }),
   actions: {
-    async fetchUsers() {
+    async fetchMembers() {
       try {
         this.loading = true;
-        const {
-          data,
-        } = await axiosInstance.get("/admin/users");
-        this.users = data;
+        // mock response
+        const data: Member[] = [
+          {
+            id: "1",
+            name: "Jane Doe",
+            email: "jane@example.com",
+            role: "member",
+            invitedAt: new Date().toISOString(),
+            isOnline: true,
+          },
+          {
+            id: "2",
+            name: "John Smith",
+            email: "john@example.com",
+            role: "member",
+            invitedAt: new Date().toISOString(),
+            isOnline: false,
+          },
+        ];
+        this.members = data;
         this.success = true;
       }
       catch (error: any) {
@@ -51,14 +69,25 @@ export const useAdminStore = defineStore("admin", {
         this.loading = false;
       }
     },
-    async addUser(payload: { name: string; email: string; password: string }) {
+    async inviteMember(payload: { name: string; email: string; role: string }) {
       try {
         this.loading = true;
+        const password = Math.random().toString(36).slice(-8);
         const {
           data,
-        } = await axiosInstance.post("/admin/users", payload);
-        successToast(data?.message || "User added");
-        this.fetchUsers();
+        } = await axiosInstance.post("/admin/invite", {
+          ...payload,
+          password,
+        });
+        successToast(data?.message || "Invitation sent");
+        this.members.push({
+          id: Date.now().toString(),
+          name: payload.name,
+          email: payload.email,
+          role: payload.role,
+          invitedAt: new Date().toISOString(),
+          isOnline: false,
+        });
       }
       catch (error: any) {
         const errorMessage
@@ -69,14 +98,14 @@ export const useAdminStore = defineStore("admin", {
         this.loading = false;
       }
     },
-    async deleteUser(id: string) {
+    async deleteMember(id: string) {
       try {
         this.loading = true;
         const {
           data,
-        } = await axiosInstance.delete(`/admin/users/${id}`);
-        successToast(data?.message || "User deleted");
-        this.fetchUsers();
+        } = await axiosInstance.delete(`/admin/members/${id}`);
+        successToast(data?.message || "Member deleted");
+        this.members = this.members.filter(m => m.id !== id);
       }
       catch (error: any) {
         const errorMessage
@@ -87,23 +116,6 @@ export const useAdminStore = defineStore("admin", {
         this.loading = false;
       }
     },
-    async logoutUser(id: string) {
-      try {
-        this.loading = true;
-        const {
-          data,
-        } = await axiosInstance.post(`/admin/users/${id}/logout`);
-        successToast(data?.message || "User logged out");
-        this.fetchUsers();
-      }
-      catch (error: any) {
-        const errorMessage
-          = error.response?.data?.message || error.message || "Network Error";
-        errorToast(errorMessage);
-      }
-      finally {
-        this.loading = false;
-      }
-    },
+    // Additional actions can be added here
   },
 });

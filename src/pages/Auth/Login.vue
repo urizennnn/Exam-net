@@ -126,11 +126,8 @@ async function onSubmit() {
           Login
         </UButton>
       </AppForm>
-      <p class="text-black">
-        You don't have an account?
-        <RouterLink to="/signup" class="text-gray-900 font-bold">
-          Register
-        </RouterLink>
+      <p class="text-black text-center">
+        Don't have an account? Contact your administrator.
       </p>
     </section>
   </section>
