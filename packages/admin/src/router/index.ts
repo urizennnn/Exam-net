@@ -7,6 +7,8 @@ import AdminDashboard from "../pages/AdminDashboard.vue";
 import AdminLogin from "../pages/AdminLogin.vue";
 import Complaints from "../pages/Complaints.vue";
 import Members from "../pages/Members.vue";
+import Exams from "../pages/Exams.vue";
+import Settings from "../pages/Settings.vue";
 
 const router = createRouter({
   history: createWebHistory("/admin/"),
@@ -30,6 +32,16 @@ const router = createRouter({
       path: "/complaints",
       name: "admin-complaints",
       component: Complaints,
+    },
+    {
+      path: "/exams",
+      name: "admin-exams",
+      component: Exams,
+    },
+    {
+      path: "/settings",
+      name: "admin-settings",
+      component: Settings,
     },
   ],
 });

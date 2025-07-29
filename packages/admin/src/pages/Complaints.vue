@@ -29,16 +29,9 @@ onMounted(() => {
   <AdminLayout>
     <section class="w-full h-auto bg-white flex">
       <section class="w-full p-4">
-        <div class="flex flex-col items-center mb-4">
-          <img
-            src="@root/assets/svg/Asset 7.svg"
-            alt="logo"
-            class="w-[100px] h-[100px]"
-          >
-          <h1 class="text-2xl font-bold mt-2">
-            Student Complaints
-          </h1>
-        </div>
+        <h1 class="text-2xl font-bold mb-4 text-center">
+          Student Complaints
+        </h1>
         <section class="mb-6">
           <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
             <img src="@root/assets/svg/Asset 10.svg" alt="complaints" class="h-5 w-5">
