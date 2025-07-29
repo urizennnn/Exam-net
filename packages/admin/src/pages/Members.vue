@@ -1,126 +1,34 @@
 <script setup lang="ts">
-import {
-  computed,
-  onMounted,
-  reactive,
-} from "vue";
+import { onMounted } from 'vue'
+import AdminLayout from '../components/AdminLayout.vue'
+import InviteMemberForm from '@root/components/admin/InviteMemberForm.vue'
+import MembersToolbar from '@root/components/admin/MembersToolbar.vue'
+import MembersTable from '@root/components/admin/MembersTable.vue'
+import { useMembersStore } from '@root/store/members'
 
-import AdminLayout from "../components/AdminLayout.vue";
-import {
-  useAdminStore,
-} from "../store/admin";
-
-const adminStore = useAdminStore();
-
-const form = reactive({
-  name: "",
-  email: "",
-  role: "member",
-});
-const members = computed(() => adminStore.members);
-function invite() {
-  adminStore.inviteMember(form);
-  form.name = "";
-  form.email = "";
-}
-function removeMember(id: string) {
-  // eslint-disable-next-line no-alert
-  if (confirm("Delete this member?")) {
-    adminStore.deleteMember(id);
-  }
-}
+const store = useMembersStore()
 
 onMounted(() => {
-  adminStore.fetchMembers();
-});
+  store.load()
+})
 </script>
-
 <template>
   <AdminLayout>
-    <section class="w-full h-auto bg-white flex">
-      <section class="w-full p-4">
-        <h1 class="text-2xl font-bold mb-4 text-center">
-          Members
-        </h1>
-        <section class="mb-6">
-          <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
-            <img src="@root/assets/svg/Asset 10.svg" alt="users" class="h-5 w-5">
-            Invite Member
-          </h2>
-          <form class="flex gap-2 mb-4" @submit.prevent="invite">
-            <input v-model="form.name" placeholder="Name" class="border p-1">
-            <input v-model="form.email" placeholder="Email" class="border p-1">
-            <select v-model="form.role" class="border p-1">
-              <option value="member">
-                Member
-              </option>
-              <option value="admin">
-                Admin
-              </option>
-            </select>
-            <button type="submit" class="bg-green-500 text-white px-2 py-1">
-              Invite
-            </button>
-          </form>
-          <table class="w-full border-collapse">
-            <thead>
-              <tr>
-                <th class="border px-2 py-1 text-left">
-                  Full Name
-                </th>
-                <th class="border px-2 py-1 text-left">
-                  Email
-                </th>
-                <th class="border px-2 py-1 text-left">
-                  Role
-                </th>
-                <th class="border px-2 py-1 text-left">
-                  Invited At
-                </th>
-                <th class="border px-2 py-1 text-left">
-                  Status
-                </th>
-                <th class="border px-2 py-1 text-left">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="m in members" :key="m.id">
-                <td class="border px-2 py-1">
-                  {{ m.name }}
-                </td>
-                <td class="border px-2 py-1">
-                  {{ m.email }}
-                </td>
-                <td class="border px-2 py-1">
-                  {{ m.role }}
-                </td>
-                <td class="border px-2 py-1">
-                  {{ m.invitedAt }}
-                </td>
-                <td class="border px-2 py-1">
-                  <span
-                    :class="m.isOnline ? 'text-green-600' : 'text-gray-500'"
-                    class="flex items-center gap-1"
-                  >
-                    <span
-                      class="h-2 w-2 rounded-full"
-                      :class="m.isOnline ? 'bg-green-600' : 'bg-gray-500'"
-                    />
-                    {{ m.isOnline ? 'Online' : 'Offline' }}
-                  </span>
-                </td>
-                <td class="border px-2 py-1 text-center">
-                  <button class="text-red-600" @click="removeMember(m.id)">
-                    🗑️
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </section>
-    </section>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 fade-in">
+      <div class="card p-4 mb-6">
+        <InviteMemberForm @members:list:refresh="store.load" />
+      </div>
+      <div class="card p-4">
+        <MembersToolbar
+          v-model:search="store.search"
+          v-model:status="store.status"
+        />
+        <MembersTable
+          :members="store.members"
+          :loading="store.loading"
+          @delete="store.remove"
+        />
+      </div>
+    </div>
   </AdminLayout>
 </template>
