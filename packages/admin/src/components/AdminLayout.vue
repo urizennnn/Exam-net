@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AdminNavBar from './AdminNavBar.vue';
+import AdminNavBar from "./AdminNavBar.vue";
 </script>
 
 <template>
