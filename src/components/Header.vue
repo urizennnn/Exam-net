@@ -28,9 +28,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-gray-500 px-5 py-1">
-    <p class="text-white lg:text-[14px] text-[12px]">
-      Hello {{ username || 'there!' }}
+  <div class="w-full h-10 flex items-center bg-primary-700 px-6">
+    <p class="font-medium text-sm tracking-wide text-white">
+      Hello {{ username || "there!" }}
     </p>
   </div>
 </template>

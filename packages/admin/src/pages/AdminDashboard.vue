@@ -42,7 +42,7 @@ onMounted(() => {
 <template>
   <AdminLayout>
     <div class="container mx-auto p-4 space-y-6">
-      <h1 class="text-2xl font-bold text-center">
+      <h1 class="mt-8 text-2xl font-bold text-center">
         Admin Dashboard
       </h1>
       <div class="grid grid-cols-12 gap-6">
