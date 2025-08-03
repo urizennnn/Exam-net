@@ -10,6 +10,8 @@ import {
 } from "@root/store/server/exam";
 
 import AdminLayout from "../components/AdminLayout.vue";
+import DashboardSection from "../components/DashboardSection.vue";
+import EmptyState from "../components/EmptyState.vue";
 import InviteMemberForm from "../components/InviteMemberForm.vue";
 import {
   useAdminStore,
@@ -39,31 +41,45 @@ onMounted(() => {
 
 <template>
   <AdminLayout>
-    <section class="container mx-auto p-4 flex flex-col lg:flex-row gap-6">
-      <section class="flex-1">
-        <h1 class="text-2xl font-bold mb-4 text-center">
-          Admin Dashboard
-        </h1>
-        <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
-          <img src="@root/assets/svg/Asset 10.svg" alt="users" class="h-5 w-5">
-          Invite Member
-        </h2>
-        <InviteMemberForm class="mb-6" @invited="handleInvite" />
-        <Suspense>
-          <MembersTable :members="members" :loading="loading" @delete="handleDelete" />
-        </Suspense>
-      </section>
-      <section class="lg:w-1/3">
-        <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
-          <img src="@root/assets/svg/Asset 8.svg" alt="exams" class="h-5 w-5">
-          Exams
-        </h2>
-        <ul>
-          <li v-for="e in exams" :key="e.examKey" class="border-b py-1">
-            {{ e.examName }} - {{ e.access }}
-          </li>
-        </ul>
-      </section>
-    </section>
+    <div class="container mx-auto p-4 space-y-6">
+      <h1 class="text-2xl font-bold text-center">
+        Admin Dashboard
+      </h1>
+      <div class="grid grid-cols-12 gap-6">
+        <DashboardSection title="Members" class="col-span-12 lg:col-span-8">
+          <template #icon>
+            <img src="@root/assets/svg/Asset 10.svg" alt="users" class="h-5 w-5">
+          </template>
+          <InviteMemberForm class="mb-6" @invited="handleInvite" />
+          <Suspense>
+            <MembersTable
+              :members="members"
+              :loading="loading"
+              @delete="handleDelete"
+            />
+          </Suspense>
+        </DashboardSection>
+        <DashboardSection title="Exams" class="col-span-12 lg:col-span-4">
+          <template #icon>
+            <img src="@root/assets/svg/Asset 8.svg" alt="exams" class="h-5 w-5">
+          </template>
+          <ul v-if="exams.length" class="divide-y">
+            <li
+              v-for="e in exams"
+              :key="e.examKey"
+              class="py-2 flex items-center justify-between"
+            >
+              <span>{{ e.examName }}</span>
+              <span class="badge badge-neutral">{{ e.access }}</span>
+            </li>
+          </ul>
+          <EmptyState
+            v-else
+            icon="i-tabler-file"
+            action-label="Create Exam"
+          />
+        </DashboardSection>
+      </div>
+    </div>
   </AdminLayout>
 </template>
