@@ -34,6 +34,26 @@ function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+const UNICODE_TO_ASCII: Record<string, string> = {
+  "\u2192": "->", "\u2190": "<-", "\u2194": "<->", "\u2191": "^", "\u2193": "v",
+  "\u2013": "-", "\u2014": "--", "\u2018": "'", "\u2019": "'",
+  "\u201C": '"', "\u201D": '"', "\u2026": "...", "\u2022": "*",
+  "\u00B7": "*", "\u2212": "-", "\u00D7": "x", "\u00F7": "/",
+  "\u2248": "~=", "\u2260": "!=", "\u2264": "<=", "\u2265": ">=",
+};
+
+function sanitizeForWinAnsi(text: string): string {
+  return text
+    .split("")
+    .map(ch => {
+      if (UNICODE_TO_ASCII[ch]) return UNICODE_TO_ASCII[ch];
+      const code = ch.charCodeAt(0);
+      if ((code >= 0x20 && code <= 0x7E) || (code >= 0xA0 && code <= 0xFF)) return ch;
+      return "";
+    })
+    .join("");
+}
+
 export const useDocumentStore = defineStore("documents", {
   state: (): DocumentStore => ({
     loading: false,
@@ -101,7 +121,7 @@ export const useDocumentStore = defineStore("documents", {
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const temp = document.createElement("div");
       temp.innerHTML = htmlContent;
-      const fullText = temp.textContent || "";
+      const fullText = sanitizeForWinAnsi(temp.textContent || "");
 
       const fontSize = 10;
       const lineHeight = fontSize * 1.2;
