@@ -164,12 +164,16 @@ onMounted(async () => {
     await getExam({
       id: route.params.id as string,
     });
-    const file = await getPdfFromUrl(exam.value.question);
-    await uploadDocument({
-      file,
-    }, false);
-    if (documentSuccess.value) {
-      newExamStore.editorContent = questionFormatTeacher(documentResult.value);
+    if (exam.value?.question_text?.length) {
+      documentResult.value = exam.value.question_text;
+      newExamStore.editorContent = questionFormatTeacher(exam.value.question_text);
+    }
+    else {
+      const file = await getPdfFromUrl(exam.value.question);
+      await uploadDocument({ file }, false);
+      if (documentSuccess.value) {
+        newExamStore.editorContent = questionFormatTeacher(documentResult.value);
+      }
     }
     return;
   }

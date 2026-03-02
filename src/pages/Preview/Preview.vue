@@ -72,10 +72,13 @@ onMounted(async () => {
   await getExam({
     id: examID.value,
   });
-  const file = await getPdfFromUrl(exam.value?.question);
-  await uploadDocument({
-    file,
-  }, false);
+  if (exam.value?.question_text?.length) {
+    documentResult.value = exam.value.question_text;
+  }
+  else {
+    const file = await getPdfFromUrl(exam.value?.question);
+    await uploadDocument({ file }, false);
+  }
 });
 </script>
 

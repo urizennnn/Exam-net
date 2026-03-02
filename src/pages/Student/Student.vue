@@ -204,15 +204,18 @@ onMounted(async () => {
     id: examID.value,
   });
   examStartTime.value = Date.now();
-  const stored = localStorage.getItem("studentQuestions");
-  if (stored) {
-    setQuestions(JSON.parse(stored));
+  if (exam.value?.question_text?.length) {
+    setQuestions(exam.value.question_text);
   }
   else {
-    const file = await getPdfFromUrl(exam.value!.question);
-    await uploadDocument({
-      file,
-    }, false);
+    const stored = localStorage.getItem("studentQuestions");
+    if (stored) {
+      setQuestions(JSON.parse(stored));
+    }
+    else {
+      const file = await getPdfFromUrl(exam.value!.question);
+      await uploadDocument({ file }, false);
+    }
   }
   answers.value = documentResult.value.map(() => "");
   remainingTime.value = timeLimit.value;

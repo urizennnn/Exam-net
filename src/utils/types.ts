@@ -58,6 +58,13 @@ export type TabsType = {
   value: string;
 };
 
+export type ParsedQuestion = {
+  type: string;
+  question: string;
+  options: string[];
+  answer: string;
+};
+
 export type Exam = {
   _id?: string;
   access: string;
@@ -68,7 +75,8 @@ export type Exam = {
   lecturer: string;
   ongoing: number;
   question: string;
-  question_text?: string;
+  question_text?: ParsedQuestion[];
+  pdfUrl?: string;
   settings: {
     examType: {
       hidePoints: boolean;
