@@ -39,6 +39,7 @@ const {
 const {
   getPdfFromUrl,
   uploadDocument,
+  reparseQuestions,
 } = useDocumentStore();
 const {
   getExam,
@@ -49,9 +50,22 @@ const {
 } = storeToRefs(useExamServerStore());
 const timeLimit = computed(() => exam.value?.settings?.general.timeLimit * 60 || 0);
 
+const reparsing = ref(false);
+
 function handleSubmitExam() {
   localStorage.removeItem("examPreview");
   documentResult.value = [];
+}
+
+async function handleReassess() {
+  if (!exam.value?.examKey) return;
+  reparsing.value = true;
+  try {
+    await reparseQuestions(exam.value.examKey);
+  }
+  finally {
+    reparsing.value = false;
+  }
 }
 
 onMounted(async () => {
@@ -140,6 +154,15 @@ onMounted(async () => {
       >
         <h1>Exam</h1>
         <div class="flex items-center gap-4">
+          <AppButton
+            label="Reassess Questions"
+            left-icon="i-lucide-refresh-cw"
+            theme="variant"
+            class="rounded-lg! px-4! py-2! text-sm!"
+            :loading="reparsing"
+            :disabled="reparsing || documentLoading"
+            @click="handleReassess"
+          />
           <AppButton
             :class="`${fileDirectionHorizontal ? 'hover:text-orange-400 text-orange-400' : 'text-white hover:text-white'}`"
             icon="i-lucide-rows-2"

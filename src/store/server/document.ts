@@ -247,6 +247,30 @@ export const useDocumentStore = defineStore("documents", {
       }
     },
 
+    async reparseQuestions(examKey: string) {
+      try {
+        this.loading = true;
+        await axiosInstance.post(`/process/reparse/${examKey}`);
+        const { data: exam } = await axiosInstance.get(`/exams/${examKey}`);
+        if (exam?.question_text) {
+          this.result = exam.question_text;
+          localStorage.setItem("examPreview", JSON.stringify(this.result));
+        }
+        this.success = true;
+        successToast("Questions reassessed successfully");
+      }
+      catch (error: any) {
+        this.success = false;
+        const errorMessage
+          = error.response?.data?.message || error.message || "Network Error";
+        errorToast(errorMessage);
+        throw new Error(errorMessage);
+      }
+      finally {
+        this.loading = false;
+      }
+    },
+
     setQuestions(questions: Array<{
       type: string;
       question: string;
